@@ -32,14 +32,6 @@ static uint8_t isBackground(uint8_t mode) {
     return mode && MASK_BACKGROUND;
 }
 
-static uint8_t isLeftPipe(uint8_t mode) {
-    return mode && MASK_L_PIPE;
-}
-
-static uint8_t isRightPipe(uint8_t mode) {
-    return mode && MASK_R_PIPE;
-}
-
 pid_t createProcess(uint64_t rip, uint8_t priority, char *name, uint64_t argc, char *argv[], uint8_t mode) {
     Process *newProcess = alloc(sizeof(Process));
     
@@ -72,13 +64,22 @@ pid_t createProcess(uint64_t rip, uint8_t priority, char *name, uint64_t argc, c
 
     processes[processCounter++] = newProcess;
 
-    addToReady(newProcess->pid);
+    return newProcess->pid;
+}
 
-    if(!isBackground(mode)) {
-        block(newProcess->parent);
+int exec(pid_t pid) {
+    if(!isValidPid(pid))
+        return -1;
+
+    if(addToReady(processes[pid]->pid) < 0) {
+        return -1;
     }
 
-    return newProcess->pid;
+    if(!isBackground(processes[pid]->mode)) {
+        block(processes[pid]->parent);
+    }
+
+    return 0;
 }
 
 int kill(pid_t pid) {
