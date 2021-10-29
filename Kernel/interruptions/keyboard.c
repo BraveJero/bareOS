@@ -14,14 +14,14 @@ uint8_t flags = 0;
 
 typedef uint8_t BufferPtr;
 
-static uint8_t buffer[BUFFER_SIZE] = {0};
+static int8_t buffer[BUFFER_SIZE] = {0};
 static BufferPtr w_pointer = 0, r_pointer = 0;
 
 // https://stanislavs.org/helppc/make_codes.html
-unsigned char lowerScancodeToAscii[128] = {
+int8_t lowerScancodeToAscii[128] = {
 
     0,   27,   '1',  '2', '3',  '4', '5', '6', '7', '8', '9', '0', '-',
-    '=', '\b', '\t', 'q', 'w',  'e', 'r', 't', 'y', 'u', 'i', 'o', 'p',
+    '=', '\b', -1,   'q', 'w',  'e', 'r', 't', 'y', 'u', 'i', 'o', 'p',
     '[', ']',  '\n', 0,   'a',  's', 'd', 'f', 'g', 'h', 'j', 'k', 'l',
     ';', '\'', '`',  0,   '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',',
     '.', '/',  0,    '*', 0,    ' ', 0,   0,   0,   0,   0,   0,   0,
@@ -30,10 +30,10 @@ unsigned char lowerScancodeToAscii[128] = {
 
 };
 
-unsigned char upperScancodeToAscii[128] = {
+int8_t upperScancodeToAscii[128] = {
 
     0,   27,   '!',  '@', '#', '$', '%', '^', '&', '*', '(', ')', '_',
-    '+', '\b', 1,    'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
+    '+', '\b', -1,   'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
     '{', '}',  '\n', 0,   'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L',
     ':', '"',  '~',  0,   '|', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<',
     '>', '?',  0,    '*', 0,   ' ', 0,   0,   0,   0,   0,   0,   0,
@@ -42,7 +42,7 @@ unsigned char upperScancodeToAscii[128] = {
 
 };
 
-static void appendBuffer(char c) {
+static void appendBuffer(int8_t c) {
   buffer[w_pointer++] = c;
   return;
 }
@@ -92,8 +92,7 @@ long copy_from_buffer(char *buf, size_t count) {
 
   long i = 0;
 
-  while (i < count &&
-         r_pointer != w_pointer)
+  while (i < count && r_pointer != w_pointer)
     buf[i++] = buffer[r_pointer++];
 
   return i;
