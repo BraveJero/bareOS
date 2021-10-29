@@ -50,4 +50,9 @@ exec: ; int exec(pid_t pid);
     int 80h
     ret
 
+dup: ; int dup(pid_t pid, int old, int new);
+    mov rax, 18
+    int 80h
+    ret
+
 ; TODO: check if syscalls could be handled in a better way
