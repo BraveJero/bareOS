@@ -29,6 +29,7 @@ int getPriority(pid_t pid);
 uint8_t isReady(pid_t pid);
 uint8_t isBlocked(pid_t pid);
 uint8_t isTerminated(pid_t pid);
+int dup(pid_t pid, int old, int new);
 void showAllPs(void);
 
 #endif
