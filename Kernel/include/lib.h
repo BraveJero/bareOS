@@ -18,7 +18,8 @@ uint8_t getKey();
 
 int64_t exchange(int64_t mutex, int64_t value);
 
-void acquire(int *mutex);
-void release(int *mutex);
+void acquire(int64_t *mutex);
+
+void release(int64_t *mutex);
 
 #endif

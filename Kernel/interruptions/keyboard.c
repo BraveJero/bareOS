@@ -17,6 +17,7 @@ typedef uint8_t BufferPtr;
 static int8_t buffer[BUFFER_SIZE] = {0};
 static BufferPtr w_pointer = 0, r_pointer = 0;
 static uint16_t write, lock;
+static uint16_t readers = 0;
 
 int initKeyboard(void) {
   write = sem_open(KEYBOARD_WRITE_SEM, 0);
@@ -59,8 +60,11 @@ static void appendBuffer(int8_t c) {
 
   buffer[w_pointer++] = c;
 
-  if (sem_post(write) < 0) {
-    return;
+  while (readers){
+    readers--;
+    if (sem_post(write) < 0){
+      return;
+    }
   }
 
   if (sem_post(lock) < 0)
@@ -104,9 +108,6 @@ void keyboard_handler() {
 // }
 
 long stdRead(char *buf, size_t count) {
-  if (r_pointer == w_pointer)
-    return -1;
-
   if (count > BUFFER_SIZE) {
     return 0;
   }
@@ -117,6 +118,7 @@ long stdRead(char *buf, size_t count) {
     return -1;
 
   while (r_pointer == w_pointer) {
+    readers++;
     if (sem_post(lock) < 0)
       return -1;
     if (sem_wait(write) < 0)

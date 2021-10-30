@@ -45,12 +45,12 @@ void *memcpy(void *destination, const void *source, uint64_t length) {
   return destination;
 }
 
-void acquire(int *mutex) {
-	while (exchange(mutex, 1) != 0);  // TODO: Re-Check if this is done correctly.
+void acquire(int64_t *mutex) {
+	while (exchange((uint64_t) mutex, 1) != 0);  // TODO: Re-Check if this is done correctly.
   return;
 }
 
-void release(int *mutex) {
-	exchange(mutex, 0);
+void release(int64_t *mutex) {
+	exchange((uint64_t) mutex, 0);
   return;
 }

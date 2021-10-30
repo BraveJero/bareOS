@@ -13,7 +13,7 @@ typedef struct pipe {
 static Pipe *pipes[MAX_PIPES] = {0};
 static uint8_t waiting = 0;
 
-static nextFreeIdx(void) {
+static int nextFreeIdx(void) {
   for (int i = 0; i < MAX_PIPES; i++) {
     if (pipes[i] == NULL) {
       return i;
@@ -179,4 +179,5 @@ int closePipe(uint8_t pipeID) {
   sem_close(pipes[pipeID]->write);
   free(pipes[pipeID]);
   pipes[pipeID] = NULL;
+  return 0;
 }

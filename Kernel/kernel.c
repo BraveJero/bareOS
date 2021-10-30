@@ -147,6 +147,7 @@ int main() {
   declarePrompt(&prompt);
 
   initMgr();
+  initKeyboard();
   initScheduler();
 
 	// createProcess((uint64_t) &printA, 0, "printA", 0, NULL);
