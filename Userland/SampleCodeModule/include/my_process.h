@@ -14,5 +14,6 @@ pid_t getpid(void);
 int nice(pid_t pid, int adjustment);
 void exit();
 void yield(void);
+int dup(pid_t pid, int old, int new);
 
 #endif

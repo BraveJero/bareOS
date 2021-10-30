@@ -23,7 +23,7 @@ uint64_t sys_date(dateType *pDate);
 uint64_t sys_mem(uint64_t rdi, uint64_t rsi, uint8_t rdx);
 void sys_ps(void);
 pid_t sys_createPs(uint64_t rip, char *name, int argc, char *argv[],
-                   uint8_t mode);
+uint8_t mode);
 int sys_block(pid_t pid);
 int sys_unblock(pid_t pid);
 int sys_kill(pid_t pid);
@@ -35,14 +35,29 @@ int sys_sem_open(uint8_t id, uint64_t value);
 int sys_sem_wait(uint8_t semID);
 int sys_sem_post(uint8_t semID);
 int sys_sem_close(uint8_t semID);
+int sys_exec(pid_t pid);
+int sys_dup(pid_t pid, int old, int new);
 
 static PSysCall sysCalls[255] = {
-    (PSysCall)&sys_read,     (PSysCall)&sys_write,    (PSysCall)&sys_date,
-    (PSysCall)&sys_mem,      (PSysCall)&sys_ps,       (PSysCall)&sys_createPs,
-    (PSysCall)&sys_block,    (PSysCall)&sys_unblock,  (PSysCall)&sys_kill,
-    (PSysCall)&sys_getpid,   (PSysCall)&sys_nice,     (PSysCall)&sys_exit,
-    (PSysCall)&sys_yield,    (PSysCall)&sys_sem_open, (PSysCall)&sys_sem_post,
-    (PSysCall)&sys_sem_wait, (PSysCall)&sys_sem_close};
+    (PSysCall)&sys_read,     
+    (PSysCall)&sys_write,    
+    (PSysCall)&sys_date,
+    (PSysCall)&sys_mem,      
+    (PSysCall)&sys_ps,       
+    (PSysCall)&sys_createPs,
+    (PSysCall)&sys_block,    
+    (PSysCall)&sys_unblock,  
+    (PSysCall)&sys_kill,
+    (PSysCall)&sys_getpid,   
+    (PSysCall)&sys_nice,     
+    (PSysCall)&sys_exit,
+    (PSysCall)&sys_yield,    
+    (PSysCall)&sys_sem_open, 
+    (PSysCall)&sys_sem_post,
+    (PSysCall)&sys_sem_wait, 
+    (PSysCall)&sys_sem_close,
+    (PSysCall)&sys_exec
+    };
 
 uint64_t sysCallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx,
                            uint64_t rcx, uint64_t r8, uint64_t rax) {
@@ -150,3 +165,7 @@ int sys_sem_wait(uint8_t semID) { return sem_wait(semID); }
 int sys_sem_post(uint8_t semID) { return sem_post(semID); }
 
 int sys_sem_close(uint8_t semID) { return sem_close(semID); }
+
+int sys_exec(pid_t pid) { return exec(pid); }
+
+int sys_dup(pid_t pid, int old, int new) { return dup(pid, old, new); }

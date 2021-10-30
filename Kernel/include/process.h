@@ -17,6 +17,7 @@ void _int20(void);
 
 
 pid_t createProcess(uint64_t rip, uint8_t priority, char *name, uint64_t argc, char *argv[], uint8_t mode);
+int exec(pid_t pid);
 int kill(pid_t pid);
 int block(pid_t pid);
 int unblock(pid_t pid);
@@ -28,6 +29,7 @@ int getPriority(pid_t pid);
 uint8_t isReady(pid_t pid);
 uint8_t isBlocked(pid_t pid);
 uint8_t isTerminated(pid_t pid);
+int dup(pid_t pid, int old, int new);
 void showAllPs(void);
 
 #endif

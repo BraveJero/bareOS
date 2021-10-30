@@ -8,9 +8,13 @@
 #define MAX_PROCESS_COUNT 256
 #define PROCESS_SIZE 8 * 1024
 
+#define STDIN_FILENO 0
+#define STDOUT_FILENO 1
+
+#define READ 0
+#define WRITE 1
+
 #define MASK_BACKGROUND (0x1)
-#define MASK_L_PIPE (0x1 << 1)
-#define MASK_R_PIPE (0x1 << 2)
 
 typedef struct process {
     pid_t pid, parent;
@@ -18,6 +22,7 @@ typedef struct process {
     uint8_t priority, mode;
     Status status;
     uint64_t rsp, rip, stack_base;
+    int fds[2] // save the "stdin" and "stdout" for this process.
 } Process;
 
 static pid_t processCounter = 0;
@@ -30,14 +35,6 @@ static uint8_t isValidPid(pid_t pid) {
 
 static uint8_t isBackground(uint8_t mode) {
     return mode && MASK_BACKGROUND;
-}
-
-static uint8_t isLeftPipe(uint8_t mode) {
-    return mode && MASK_L_PIPE;
-}
-
-static uint8_t isRightPipe(uint8_t mode) {
-    return mode && MASK_R_PIPE;
 }
 
 pid_t createProcess(uint64_t rip, uint8_t priority, char *name, uint64_t argc, char *argv[], uint8_t mode) {
@@ -62,6 +59,8 @@ pid_t createProcess(uint64_t rip, uint8_t priority, char *name, uint64_t argc, c
     newProcess->rip = rip;
     newProcess->priority = priority;
     newProcess->mode = mode;
+    newProcess->fds[READ] = STDIN_FILENO;
+    newProcess->fds[WRITE] = STDOUT_FILENO;
     newProcess->name = alloc(strlen(name) + 1);
 
     if(newProcess->name == NULL) {
@@ -72,13 +71,22 @@ pid_t createProcess(uint64_t rip, uint8_t priority, char *name, uint64_t argc, c
 
     processes[processCounter++] = newProcess;
 
-    addToReady(newProcess->pid);
+    return newProcess->pid;
+}
 
-    if(!isBackground(mode)) {
-        block(newProcess->parent);
+int exec(pid_t pid) {
+    if(!isValidPid(pid))
+        return -1;
+
+    if(addToReady(processes[pid]->pid) < 0) {
+        return -1;
     }
 
-    return newProcess->pid;
+    if(!isBackground(processes[pid]->mode)) {
+        block(processes[pid]->parent);
+    }
+
+    return 0;
 }
 
 int kill(pid_t pid) {
@@ -155,6 +163,14 @@ int setPriority(pid_t pid, uint8_t priority) {
     return 0;
 }
 
+// changes the stdin/stdout for the given new fd of given process.
+int dup(pid_t pid, int old, int new) {
+    if((old != STDIN_FILENO && old != STDOUT_FILENO) || !isValidPid(pid))
+        return -1;
+    processes[pid]->fds[old] = new;
+    return 0;    
+}
+
 void showAllPs() {
     ncNewline();
     ncPrint("---------------------------------------");
@@ -182,6 +198,12 @@ void showAllPs() {
             ncNewline();
             ncPrint("Status: ");
             ncPrint(states[processes[i]->status]);
+            ncNewline();
+            ncPrint("Process reads from: ");
+            ncPrintDec(processes[i]->fds[READ]);
+            ncNewline();
+            ncPrint("Process writes to: ");
+            ncPrintDec(processes[i]->fds[WRITE]);
             ncNewline();
             if(isBackground(processes[i]->mode)){
                 ncPrint("Process in background");
