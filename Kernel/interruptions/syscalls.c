@@ -2,6 +2,7 @@
 #include <keyboard.h>
 #include <lib.h>
 #include <naiveConsole.h>
+#include <pipe.h>
 #include <process.h>
 #include <scheduler.h>
 #include <stdint.h>
@@ -55,8 +56,11 @@ int64_t sys_write(uint8_t fd, char *buffer, uint64_t count) {
   if (buffer == NULL || count == 0)
     return -1;
 
-  if (fd > 2)
-    return -1;
+  // if (fd == STDIN_FILENO) // TODO: Check this.
+  //   return -1;
+
+  if (fd > 3)
+    return pipeWrite(fd, buffer, count);
 
   Color *fontColor = (fd == STD_ERR) ? &RED : &WHITE;
 
@@ -67,18 +71,16 @@ int64_t sys_write(uint8_t fd, char *buffer, uint64_t count) {
 }
 
 int64_t sys_read(unsigned int fd, char *buf, size_t count) {
-  long read_count = -1;
-  while (read_count == -1) {
-    if ((read_count = copy_from_buffer(buf, count)) == -1) {
-      _sti();
-      _hlt();
-      _cli();
-    }
-    if (read_count < count) {
-      buf[read_count] = '\0';
-    }
-  }
-  return read_count;
+  // if (fd == STDERR_FILENO || fd == STDOUT_FILENO) // TODO: Check this.
+  //   return -1;
+
+  if (buf == NULL || count == 0)
+    return -1;
+
+  if (fd > 3)
+    return pipeRead(fd, buf, count);
+
+  return stdRead(buf, count);
 }
 
 uint8_t BCDToDec(uint8_t bcd) {

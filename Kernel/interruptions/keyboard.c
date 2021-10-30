@@ -16,6 +16,17 @@ typedef uint8_t BufferPtr;
 
 static int8_t buffer[BUFFER_SIZE] = {0};
 static BufferPtr w_pointer = 0, r_pointer = 0;
+static uint16_t write, lock;
+
+int initKeyboard(void) {
+  write = sem_open(KEYBOARD_WRITE_SEM, 0);
+  if (write == -1)
+    return -1;
+  lock = sem_open(KEYBOARD_BLOCK_SEM, 1);
+  if (lock == -1)
+    return -1;
+  return 0;
+}
 
 // https://stanislavs.org/helppc/make_codes.html
 int8_t lowerScancodeToAscii[128] = {
@@ -43,7 +54,17 @@ int8_t upperScancodeToAscii[128] = {
 };
 
 static void appendBuffer(int8_t c) {
+  if (sem_wait(lock) < 0)
+    return;
+
   buffer[w_pointer++] = c;
+
+  if (sem_post(write) < 0) {
+    return;
+  }
+
+  if (sem_post(lock) < 0)
+    return;
   return;
 }
 
@@ -82,7 +103,7 @@ void keyboard_handler() {
 //   return -1;
 // }
 
-long copy_from_buffer(char *buf, size_t count) {
+long stdRead(char *buf, size_t count) {
   if (r_pointer == w_pointer)
     return -1;
 
@@ -92,8 +113,26 @@ long copy_from_buffer(char *buf, size_t count) {
 
   long i = 0;
 
+  if (sem_wait(lock) < 0)
+    return -1;
+
+  while (r_pointer == w_pointer) {
+    if (sem_post(lock) < 0)
+      return -1;
+    if (sem_wait(write) < 0)
+      return -1;
+    if (sem_wait(lock) < 0)
+      return -1;
+  }
+
   while (i < count && r_pointer != w_pointer)
     buf[i++] = buffer[r_pointer++];
+
+  if (sem_post(lock) < 0)
+    return -1;
+
+  if (i < count)
+    buf[i] = '\0';
 
   return i;
 }
