@@ -6,6 +6,6 @@
 #include <utils.h>
 #include <lib.h>
 
-void cat(int argc, char *argv[]);
+void cat(void);
 
 #endif
