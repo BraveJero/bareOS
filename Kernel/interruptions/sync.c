@@ -86,6 +86,14 @@ int sem_close(uint16_t semID) {
   return 0;
 }
 
+void printBlockedProcesses(uint16_t semId) {
+  if(semId > MAX_SEMS || semaphores[semId] == NULL)
+    return;
+    
+  ncPrint("Blocked processes: ");
+  printQueue(semaphores[semId]->blockedQueue);
+}
+
 void sem_dump(void) {
   ncNewline();
   ncPrint("---------------------------------------");
@@ -104,8 +112,7 @@ void sem_dump(void) {
       ncPrint("Amount of processes blocked: ");
       ncPrintDec(queueSize(semaphores[i]->blockedQueue));
       ncNewline();
-      ncPrint("Blocked processes: ");
-      printQueue(semaphores[i]->blockedQueue);
+      printBlockedProcesses(semaphores[i]->blockedQueue);
       ncNewline();
       ncPrint("---------------------------------------");
     }

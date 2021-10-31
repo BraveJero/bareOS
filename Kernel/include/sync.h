@@ -22,6 +22,8 @@ int sem_post(uint16_t semID);
 
 int sem_close(uint16_t semID);
 
+void printBlockedProcesses(uint16_t semId);
+
 void sem_dump(void);
 
 #endif
