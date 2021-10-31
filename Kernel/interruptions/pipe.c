@@ -119,7 +119,7 @@ int pipeWrite(int fd, const char *buf, size_t count) {
   if (fd % 2 == 0 || pipes[(fd - 1) / 2] == NULL) {
     return -1;
   }
-  fd = (fd - 1) / 2; // TODO: Check truncation.
+  fd = (fd - 1) / 2;
 
   long i = 0;
 

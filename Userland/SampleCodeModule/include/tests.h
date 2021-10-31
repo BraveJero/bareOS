@@ -18,8 +18,8 @@
 #define TOTAL_PAIR_PROCESSES 2
 #define SEM_ID 10
 #define SEM_ID2 11
-#define MINOR_WAIT 1000000                               // TODO: To prevent a process from flooding the screen
-#define WAIT      10000000                              // TODO: Long enough to see theese processes beeing run at least twice
+#define MINOR_WAIT 1000000            // To prevent a process from flooding the screen
+#define WAIT      10000000            // Long enough to see theese processes beeing run at least twice
 #define TOTAL_PROCESSES 3    // In testPrio
 
 

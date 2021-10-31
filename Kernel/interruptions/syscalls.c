@@ -67,7 +67,7 @@ int64_t sys_write(uint8_t fd, char *buffer, uint64_t count) {
   if (buffer == NULL || count == 0)
     return -1;
 
-  if (fd == STDIN_FILENO) // TODO: Check this.
+  if (fd == STDIN_FILENO)
     return -1;
 
   if (fd > 3)
@@ -82,7 +82,7 @@ int64_t sys_write(uint8_t fd, char *buffer, uint64_t count) {
 }
 
 int64_t sys_read(unsigned int fd, char *buf, size_t count) {
-  if (fd == STDERR_FILENO || fd == STDOUT_FILENO) // TODO: Check this.
+  if (fd == STDERR_FILENO || fd == STDOUT_FILENO)
     return -1;
 
   if (buf == NULL || count == 0)

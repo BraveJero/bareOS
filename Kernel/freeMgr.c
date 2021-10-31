@@ -20,7 +20,7 @@ static BlockLink startBlock, *endBlock = NULL;
 member of an BlockLink_t structure is set then the block belongs to the
 application.  When the bit is free the block is still part of the free heap
 space. */
-static size_t blockAllocatedBit = 0; // TODO: Ask why is this needed.
+static size_t blockAllocatedBit = 0;
 
 int initMgr() {
   BlockLink *firstFreeBlock;
@@ -41,7 +41,7 @@ int initMgr() {
 
   hAddress = ((size_t)alignedHeap) + totalHeapSize;
   hAddress -= blockLinkSize;
-  hAddress &= ~((size_t)BYTE_ALIGNMENT_MASK); // TODO: Ask why this is needed.
+  hAddress &= ~((size_t)BYTE_ALIGNMENT_MASK);
 
   endBlock = (void *)hAddress;
   endBlock->blockSize = 0;

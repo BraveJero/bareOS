@@ -217,7 +217,7 @@ void testSync() {
     if (exec(createPs((uint64_t)&inc, "inc", 3, argv, BACKGROUND)) < 0) {
       put_s(STDOUT_FILENO, "Error when executing.\n");
       return;
-    } // TODO: add macro foreground / background
+    }
     if (exec(createPs((uint64_t)&inc, "inc", 3, argv2, BACKGROUND)) < 0) {
       put_s(STDOUT_FILENO, "Error when executing.\n");
       return;
