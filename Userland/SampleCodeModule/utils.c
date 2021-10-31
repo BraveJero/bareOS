@@ -13,7 +13,7 @@
 void printDate() {
   dateType currDate;
   fillDate(&currDate);
-  print_f(1, "Date: %d/%d/%d\nTime: %d:%d:%d (UTC)\n", currDate.day,
+  print_f(STDOUT, "Date: %d/%d/%d\nTime: %d:%d:%d (UTC)\n", currDate.day,
           currDate.month, currDate.year + 2000, currDate.hour, currDate.minute,
           currDate.second);
 }
@@ -25,14 +25,14 @@ void printmem() {
   int ans;
 
   do {
-    print_f(1,
+    print_f(STDOUT,
             "Ingrese una direccion de 64 bits a partir de la cual leer:\n0x");
     ans = get_s(buffer, BUFFER_SIZE);
   } while (ans == -1);
 
   for (int i = 0; i < ans; i++) {
     if (!ISHEXA(buffer[i])) {
-      print_f(1, "\nNo es una direccion valida\n");
+      print_f(STDOUT, "\nNo es una direccion valida\n");
       return;
     }
   }
@@ -41,12 +41,12 @@ void printmem() {
 
   // fillMem debería devolver la cantidad de bytes leídos correctamente
   // Actualmente como no hay validación, siempre es 32
-  // print_f(1, "%x\n", fillMem(dir, arr, BYTES_TO_READ));
+  // print_f(STDOUT, "%x\n", fillMem(dir, arr, BYTES_TO_READ));
   fillMem(dir, arr, BYTES_TO_READ);
   for (int i = 0; i < BYTES_TO_READ; i++)
-    print_f(1, "\n0x%x: %xh", dir + i, arr[i]);
+    print_f(STDOUT, "\n0x%x: %xh", dir + i, arr[i]);
 
-  print_f(1, "\n");
+  print_f(STDOUT, "\n");
 }
 
 void printFeatures() {
@@ -54,28 +54,28 @@ void printFeatures() {
   uint32_t eax, ebx, ecx, edx;
 
   if (supports_cpuid()) {
-    print_f(1, "CPUID: YES\n");
+    print_f(STDOUT, "CPUID: YES\n");
 
-    __get_cpuid(1, &eax, &ebx, &ecx, &edx);
-    print_f(1, "MX: %s\n", (edx & CPUID_FEAT_EDX_MMX) == 0 ? "NO" : "YES");
-    print_f(1, "SSE: %s\n", (edx & CPUID_FEAT_EDX_SSE) == 0 ? "NO" : "YES");
-    print_f(1, "SSE2: %s\n", (edx & CPUID_FEAT_EDX_SSE2) == 0 ? "NO" : "YES");
-    print_f(1, "SSE3: %s\n", (ecx & CPUID_FEAT_ECX_SSE3) == 0 ? "NO" : "YES");
-    print_f(1, "SSE41: %s\n",
+    __get_cpuid(STDOUT, &eax, &ebx, &ecx, &edx);
+    print_f(STDOUT, "MX: %s\n", (edx & CPUID_FEAT_EDX_MMX) == 0 ? "NO" : "YES");
+    print_f(STDOUT, "SSE: %s\n", (edx & CPUID_FEAT_EDX_SSE) == 0 ? "NO" : "YES");
+    print_f(STDOUT, "SSE2: %s\n", (edx & CPUID_FEAT_EDX_SSE2) == 0 ? "NO" : "YES");
+    print_f(STDOUT, "SSE3: %s\n", (ecx & CPUID_FEAT_ECX_SSE3) == 0 ? "NO" : "YES");
+    print_f(STDOUT, "SSE41: %s\n",
             (ecx & CPUID_FEAT_ECX_SSE4_1) == 0 ? "NO" : "YES");
-    print_f(1, "SSE42: %s\n",
+    print_f(STDOUT, "SSE42: %s\n",
             (ecx & CPUID_FEAT_ECX_SSE4_2) == 0 ? "NO" : "YES");
-    print_f(1, "AESNI: %s\n", (ecx & CPUID_FEAT_ECX_AES) == 0 ? "NO" : "YES");
-    print_f(1, "PCLMULQDQ: %s\n",
+    print_f(STDOUT, "AESNI: %s\n", (ecx & CPUID_FEAT_ECX_AES) == 0 ? "NO" : "YES");
+    print_f(STDOUT, "PCLMULQDQ: %s\n",
             (ecx & CPUID_FEAT_ECX_PCLMUL) == 0 ? "NO" : "YES");
-    print_f(1, "AVX: %s\n", (ecx & CPUID_FEAT_ECX_AVX) == 0 ? "NO" : "YES");
-    print_f(1, "VAESNI: %s\n", supports_vaesni() == 0 ? "NO" : "YES");
-    print_f(1, "VPCLMULQDQ: %s\n", supports_vpclmulqdq() == 0 ? "NO" : "YES");
-    print_f(1, "F16C: %s\n", supports_f16c() == 0 ? "NO" : "YES");
-    print_f(1, "FMA: %s\n", supports_fma() == 0 ? "NO" : "YES");
-    print_f(1, "AVX2: %s\n", supports_avx2() == 0 ? "NO" : "YES");
+    print_f(STDOUT, "AVX: %s\n", (ecx & CPUID_FEAT_ECX_AVX) == 0 ? "NO" : "YES");
+    print_f(STDOUT, "VAESNI: %s\n", supports_vaesni() == 0 ? "NO" : "YES");
+    print_f(STDOUT, "VPCLMULQDQ: %s\n", supports_vpclmulqdq() == 0 ? "NO" : "YES");
+    print_f(STDOUT, "F16C: %s\n", supports_f16c() == 0 ? "NO" : "YES");
+    print_f(STDOUT, "FMA: %s\n", supports_fma() == 0 ? "NO" : "YES");
+    print_f(STDOUT, "AVX2: %s\n", supports_avx2() == 0 ? "NO" : "YES");
   } else {
-    print_f(1, "CPUID: NO\n");
+    print_f(STDOUT, "CPUID: NO\n");
   }
 }
 
@@ -85,26 +85,26 @@ void printQuadraticRoots() {
   int ans;
 
   do {
-    print_f(1, "Ingresar coeficientes a, b y c: ");
+    print_f(STDOUT, "Ingresar coeficientes a, b y c: ");
     ans = get_s(buffer, 100);
   } while (ans == -1);
 
   sscan(buffer, "%g %g %g", &a, &b, &c);
 
-  put_char(1, '\n');
+  put_char(STDOUT, '\n');
 
-  print_f(1, "%c(x) = %gx%c%c%gx%c%g\n\n", 13, a, 14, b >= 0 ? '+' : 0, b,
+  print_f(STDOUT, "%c(x) = %gx%c%c%gx%c%g\n\n", 13, a, 14, b >= 0 ? '+' : 0, b,
           c >= 0 ? '+' : 0, c);
   ans = _quadratic(&a, &b, &c, &x1, &x2);
   switch (ans) {
   case 0:
-    print_f(1, "Sol = {x%c = %g, x%c = %g}\n", 11, x1, 12, x2);
+    print_f(STDOUT, "Sol = {x%c = %g, x%c = %g}\n", 11, x1, 12, x2);
     break;
   case 1:
-    print_f(1, "%c tiene raices complejas.\n", 13);
+    print_f(STDOUT, "%c tiene raices complejas.\n", 13);
     break;
   case 2:
-    print_f(1, "%c no es una funcion cuadratica.\n", 13);
+    print_f(STDOUT, "%c no es una funcion cuadratica.\n", 13);
     break;
   };
 }

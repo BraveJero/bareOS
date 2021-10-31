@@ -73,5 +73,5 @@ void checkModule(char *string) {
       return;
     }
   }
-  print_f(1, "Comando no valido\n");
+  print_f(STDOUT, "Comando no valido\n");
 }
