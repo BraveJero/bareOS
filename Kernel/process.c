@@ -34,7 +34,7 @@ static uint8_t isValidPid(pid_t pid) {
 }
 
 static uint8_t isBackground(uint8_t mode) {
-    return mode && MASK_BACKGROUND;
+    return mode & MASK_BACKGROUND;
 }
 
 pid_t createProcess(uint64_t rip, uint8_t priority, char *name, uint64_t argc, char *argv[], uint8_t mode) {
