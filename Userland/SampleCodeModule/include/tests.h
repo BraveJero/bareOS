@@ -5,7 +5,8 @@
 #include <stddef.h>
 #include <utils.h>
 #include <my_mem.h>
+#include <lib.h>
 
-void testMem(void);
+void testMM(void);
 
 #endif

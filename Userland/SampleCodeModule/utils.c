@@ -8,6 +8,8 @@
 #define ISHEXA(x)                                                              \
   (((x) >= 'a' && (x) <= 'f') || ((x) >= 'A' && (x) <= 'F') || ISDIGIT(x))
 
+#define TO_LOWER(c) ((c) >= 'a' && (c) <= 'z' ? (c) - ('a' - 'A') : (c))
+
 void printDate() {
   dateType currDate;
   fillDate(&currDate);
@@ -176,7 +178,7 @@ _Stoul(const char *s, char **endptr,
   char dig, sign;
   ptrdiff_t n;
   unsigned long x, y;
-
+  sc = s;
   sign = *sc == '-' || *sc == '+' ? *sc++ : '+';
   if (base < 0 || base == 1 || BASE_MAX < base) { /* silly base */
     if (endptr)
@@ -194,7 +196,7 @@ _Stoul(const char *s, char **endptr,
   for (s1 = sc; *sc == '0'; ++sc)
     ; /* skip leading zeros */
   x = 0;
-  for (s2 = sc; (sd = (char *)memchr(digits, tolower(*sc), base)) != NULL;
+  for (s2 = sc; (sd = (char *)memchr(digits, TO_LOWER(*sc), base)) != NULL;
        ++sc) {                /* accumulate digits */
     y = x, dig = sd - digits; /* for overflow checking */
     x = x * base + dig;
