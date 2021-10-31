@@ -1,6 +1,8 @@
 #ifndef __VIDEO_H__
 #define __VIDEO_H__
 
+#include <font.h>
+#include <lib.h>
 #include <stdint.h>
 
 #define VBEModeInfoBlockAddress 0x0000000000005C00

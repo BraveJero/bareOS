@@ -1,10 +1,12 @@
 #ifndef __QUEUE_H__
 #define __QUEUE_H__
 
-#include <stdint.h>
+#include <mmgr.h>
+#include <naiveConsole.h>
 #include <process.h>
+#include <stdint.h>
 
-typedef struct QueueCDT * Queue;
+typedef struct QueueCDT *Queue;
 typedef pid_t elemType;
 
 Queue newQueue(void);

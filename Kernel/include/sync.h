@@ -1,6 +1,13 @@
 #ifndef __SYNC_H__
 #define __SYNC_H__
 
+#include <assert.h>
+#include <lib.h>
+#include <mmgr.h>
+#include <naiveConsole.h>
+#include <process.h>
+#include <queue.h>
+#include <scheduler.h>
 #include <stddef.h>
 #include <stdint.h>
 

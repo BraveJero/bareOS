@@ -1,14 +1,4 @@
-#include <interrupts.h>
-#include <keyboard.h>
-#include <lib.h>
-#include <naiveConsole.h>
-#include <pipe.h>
-#include <process.h>
-#include <scheduler.h>
-#include <stdint.h>
-#include <sync.h>
 #include <syscalls.h>
-#include <video.h>
 
 typedef uint64_t (*PSysCall)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
 
@@ -23,7 +13,7 @@ uint64_t sys_date(dateType *pDate);
 uint64_t sys_mem(uint64_t rdi, uint64_t rsi, uint8_t rdx);
 void sys_ps(void);
 pid_t sys_createPs(uint64_t rip, char *name, int argc, char *argv[],
-uint8_t mode);
+                   uint8_t mode);
 int sys_block(pid_t pid);
 int sys_unblock(pid_t pid);
 int sys_kill(pid_t pid);
@@ -39,28 +29,28 @@ int sys_exec(pid_t pid);
 int sys_dup(pid_t pid, int old, int new);
 
 static PSysCall sysCalls[255] = {
-    (PSysCall)&sys_read,        // 0
-    (PSysCall)&sys_write,       // 1
-    (PSysCall)&sys_date,        // 2
-    (PSysCall)&sys_mem,         // 3
-    (PSysCall)&sys_ps,          // 4
-    (PSysCall)&sys_createPs,    // 5
-    (PSysCall)&sys_block,       // 6
-    (PSysCall)&sys_unblock,     // 7
-    (PSysCall)&sys_kill,        // 8
-    (PSysCall)&sys_getpid,      // 9
-    (PSysCall)&sys_nice,        // 10
-    (PSysCall)&sys_exit,        // 11
-    (PSysCall)&sys_yield,       // 12
-    (PSysCall)&sys_sem_open,    // 13
-    (PSysCall)&sys_sem_post,    // 14
-    (PSysCall)&sys_sem_wait,    // 15
-    (PSysCall)&sys_sem_close,   // 16
-    (PSysCall)&sys_exec,        // 17
-    (PSysCall)&alloc,           // 18
-    (PSysCall)&free,            // 19
-    (PSysCall)&sem_dump         // 20
-    };
+    (PSysCall)&sys_read,      // 0
+    (PSysCall)&sys_write,     // 1
+    (PSysCall)&sys_date,      // 2
+    (PSysCall)&sys_mem,       // 3
+    (PSysCall)&sys_ps,        // 4
+    (PSysCall)&sys_createPs,  // 5
+    (PSysCall)&sys_block,     // 6
+    (PSysCall)&sys_unblock,   // 7
+    (PSysCall)&sys_kill,      // 8
+    (PSysCall)&sys_getpid,    // 9
+    (PSysCall)&sys_nice,      // 10
+    (PSysCall)&sys_exit,      // 11
+    (PSysCall)&sys_yield,     // 12
+    (PSysCall)&sys_sem_open,  // 13
+    (PSysCall)&sys_sem_post,  // 14
+    (PSysCall)&sys_sem_wait,  // 15
+    (PSysCall)&sys_sem_close, // 16
+    (PSysCall)&sys_exec,      // 17
+    (PSysCall)&alloc,         // 18
+    (PSysCall)&free,          // 19
+    (PSysCall)&sem_dump       // 20
+};
 
 uint64_t sysCallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx,
                            uint64_t rcx, uint64_t r8, uint64_t rax) {

@@ -1,14 +1,4 @@
 #include <keyboard.h>
-#include <lib.h>
-#include <naiveConsole.h>
-
-#define LEFT_SHIFT 0x2A
-#define LEFT_SHIFT_FLAG 0b00000001
-#define RIGHT_SHIFT 0x36
-#define RIGHT_SHIFT_FLAG 0b00000010
-#define LEFT_ALT 0x38
-
-#define BUFFER_SIZE 256
 
 uint8_t flags = 0;
 

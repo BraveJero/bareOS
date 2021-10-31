@@ -1,11 +1,4 @@
 #include <keyboard.h>
-#include <naiveConsole.h>
-#include <userland.h>
-#include <video.h>
-
-#define EXCEPTION_COUNT 32
-#define ZERO_EXCEPTION_ID 0x00
-#define INVALID_OPCODE_ID 0x06
 
 static void zero_division();
 static void invalid_opcode();

@@ -1,11 +1,4 @@
-#include <assert.h>
-#include <lib.h>
-#include <mmgr.h>
-#include <process.h>
-#include <queue.h>
-#include <scheduler.h>
 #include <sync.h>
-#include <naiveConsole.h>
 
 typedef struct semaphore *sem_t;
 
