@@ -172,3 +172,20 @@ void addToFreeList(BlockLink *newBlock) {
 }
 
 uint64_t getfreeRemainingBytes(void) { return freeRemainingBytes; }
+
+void mem_dump(void) {
+  ncNewline();
+  ncPrint("---------------------------------------");
+  ncNewline();
+  ncPrint("Total heap size: ");
+  ncPrintDec(TOTAL_HEAP_SIZE);
+  ncNewline();
+  ncPrint("Free remaining bytes: ");
+  ncPrintDec(getfreeRemainingBytes());
+  ncNewline();
+  ncPrint("Allocated bytes: ");
+  ncPrintDec(TOTAL_HEAP_SIZE - getfreeRemainingBytes());
+  ncNewline();
+  ncPrint("---------------------------------------");
+  ncNewline();
+}
