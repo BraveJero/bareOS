@@ -32,6 +32,7 @@ int block(pid_t pid);
 int unblock(pid_t pid);
 void remove(pid_t pid);
 void setRsp(pid_t pid, uint64_t rsp);
+int setStatusToBlocked(pid_t pid);
 int setPriority(pid_t pid, uint8_t priority);
 uint64_t getRsp(pid_t pid);
 int getPriority(pid_t pid);

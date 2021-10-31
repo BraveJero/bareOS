@@ -19,7 +19,7 @@ static Process * processes[MAX_PROCESS_COUNT] = {NULL};
 static char *states[] = {"Ready", "Terminated", "Blocked"};
 
 static uint8_t isValidPid(pid_t pid) {
-    return pid >= 0 && pid < MAX_PROCESS_COUNT && processes[pid] != NULL && processes[pid]->status != TERMINATED;
+    return pid >= 0 && pid < MAX_PROCESS_COUNT && processes[pid] != NULL;
 }
 
 static uint8_t isBackground(uint8_t mode) {
@@ -68,7 +68,7 @@ pid_t createProcess(uint64_t rip, uint8_t priority, char *name, uint64_t argc, c
 }
 
 int exec(pid_t pid) {
-    if(!isValidPid(pid))
+    if(!isValidPid(pid) || isTerminated(pid))
         return -1;
 
     if(addToReady(processes[pid]->pid) < 0) {
@@ -83,7 +83,7 @@ int exec(pid_t pid) {
 }
 
 int kill(pid_t pid) {
-    if(!isValidPid(pid))
+    if(!isValidPid(pid) || isTerminated(pid))
         return -1;
     processes[pid]->status = TERMINATED;
     if(!isBackground(processes[pid]->mode)) {
@@ -97,7 +97,7 @@ int kill(pid_t pid) {
 }
 
 int block(pid_t pid){
-    if(!isValidPid(pid))
+    if(!isValidPid(pid) || isTerminated(pid))
         return -1;
     processes[pid]->status = BLOCKED;
     if(pid == getCurrentPid())
@@ -106,7 +106,7 @@ int block(pid_t pid){
 }
 
 int unblock(pid_t pid){
-    if(!isValidPid(pid))
+    if(!isValidPid(pid) || isTerminated(pid))
         return -1;
     processes[pid]->status = READY;
     return 0;
@@ -126,7 +126,7 @@ uint64_t getRsp(pid_t pid){
 }
 
 int getPriority(pid_t pid) {
-    if(!isValidPid(pid))
+    if(!isValidPid(pid) || isTerminated(pid))
         return -1; 
     return processes[pid]->priority;
 }
@@ -145,12 +145,19 @@ uint8_t isTerminated(pid_t pid) {
 
 
 void setRsp(pid_t pid, uint64_t rsp) {
-    if(isValidPid(pid))
+    if(isValidPid(pid) || isTerminated(pid))
         processes[pid]->rsp = rsp;
 }
 
+int setStatusToBlocked(pid_t pid) {
+    if(!isValidPid(pid) || isTerminated(pid))
+        return -1;
+    processes[pid]->status = BLOCKED;
+    return 0;
+}
+
 int setPriority(pid_t pid, uint8_t priority) {
-    if(!isValidPid(pid))
+    if(!isValidPid(pid) || isTerminated(pid))
         return -1;
     processes[pid]->priority = priority;
     return 0;
@@ -158,7 +165,7 @@ int setPriority(pid_t pid, uint8_t priority) {
 
 // changes the stdin/stdout for the given new fd of given process.
 int dup(pid_t pid, int old, int new) {
-    if((old != STDIN_FILENO && old != STDOUT_FILENO) || !isValidPid(pid))
+    if((old != STDIN_FILENO && old != STDOUT_FILENO) || !isValidPid(pid) || isTerminated(pid))
         return -1;
     processes[pid]->fds[old] = new;
     return 0;    
