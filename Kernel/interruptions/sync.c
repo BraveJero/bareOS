@@ -41,11 +41,13 @@ int sem_wait(uint16_t semID) {
   }
   pid_t currentPid = getCurrentPid();
   int ans = push(semaphores[semID]->blockedQueue, currentPid);
+  setStatusToBlocked(currentPid);
   release(&(semaphores[semID]->mutex));
   if (ans < 0) {
+    setStatusToReady(currentPid);
     return -1;
   }
-  block(currentPid);
+  yield_cpu();
   return 0;
 }
 
