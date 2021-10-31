@@ -16,7 +16,7 @@ void testMM() {
     total = 0;
 
     // Request as many blocks as we can
-    print(1, "Requesting blocks\n", 19);
+    print(1, "Requesting blocks.\n", 19);
     while (rq < MAX_BLOCKS && total < MAX_MEMORY) {
       mm_rqs[rq].size = GetUniform(MAX_MEMORY - total - 1) + 1;
       mm_rqs[rq].address =
@@ -25,7 +25,7 @@ void testMM() {
       rq++;
     }
     // Set
-    print(1, "Setting blocks\n", 16);
+    print(1, "Setting blocks.\n", 16);
     uint32_t i;
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address != NULL)
@@ -33,7 +33,7 @@ void testMM() {
                mm_rqs[i].size); // TODO: Port this call as required
 
     // Check
-    print(1, "Checking if blocks are valid\n", 30);
+    print(1, "Checking if blocks are valid.\n", 30);
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address != NULL)
         if (!memcheck(mm_rqs[i].address, i, mm_rqs[i].size))
@@ -44,7 +44,7 @@ void testMM() {
     put_char(1, '\n');
 
     // Free
-    print(1, "Freeing blocks\n", 16);
+    print(1, "Freeing blocks.\n", 16);
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address != NULL)
         free(mm_rqs[i].address); // TODO: Port this call as required
@@ -73,7 +73,9 @@ void testPrs(void) {
   uint8_t action;
 
   while (1) {
+    put_s(1, "Testing process manager module:\n");
 
+    put_s(1, "Creating processes.\n");
     // Create MAX_PROCESSES processes
     for (rq = 0; rq < MAX_PROCESSES; rq++) {
       p_rqs[rq].pid = createPs(&endless_loop, "endless_loop", 0, NULL,
@@ -91,6 +93,7 @@ void testPrs(void) {
 
     // Randomly kills, blocks or unblocks processes until every one has been
     // killed
+    put_s(1, "Randomply kill, block or unblock process.\n");
     while (alive > 0) {
 
       for (rq = 0; rq < MAX_PROCESSES; rq++) {
@@ -132,15 +135,16 @@ void testPrs(void) {
           }
           p_rqs[rq].state = RUNNING;
         }
-
-      print(1,
-            "Test complete. To stop testing press ENTER or TAB, to continue, "
-            "press any other key\n",
-            85);
-      int c = get_char();
-      if (c == '\n' || c == -1) {
-        return;
-      }
+      print(1, ". ", 2);
+    }
+    put_char(1, '\n');
+    print(1,
+          "Test complete. To stop testing press ENTER or TAB, to continue, "
+          "press any other key\n",
+          85);
+    int c = get_char();
+    if (c == '\n' || c == -1) {
+      return;
     }
   }
 }
