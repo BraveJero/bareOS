@@ -14,6 +14,7 @@
 #define WRITE 1
 
 #define MASK_BACKGROUND (0x1)
+#define MASK_FOREGROUND (0x0)
 
 typedef int16_t pid_t;
 
