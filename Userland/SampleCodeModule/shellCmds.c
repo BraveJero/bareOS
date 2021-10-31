@@ -70,6 +70,10 @@ void loop(int argc, char *argv[]) {
   exit();
 }
 
-void loopCmd(int argc, char *argv[], int mode) {
-  processManager((uint64_t) &loop, argc, argv, mode, STDIN_FILENO, STDOUT_FILENO);
+void loopCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout) {
+  processManager((uint64_t) &loop, argc, argv, mode, new_stdin, new_stdin);
+}
+
+void catCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout) {
+  processManager((uint64_t) &cat, argc, argv, mode, new_stdin, new_stdin);
 }

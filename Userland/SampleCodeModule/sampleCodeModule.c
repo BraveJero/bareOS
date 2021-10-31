@@ -7,8 +7,11 @@
 #include <my_process.h>
 #include <string.h>
 #include <tests.h>
+#include <input.h>
 
-typedef void (*commandType)(int argc, char *argv[], int mode);
+#define MODULES_SIZE 9
+
+typedef void (*commandType)(int argc, char *argv[], int mode, int new_stdin, int new_stdout);
 
 static char *commandStrings[MODULES_SIZE] = {
     "help",
@@ -17,6 +20,7 @@ static char *commandStrings[MODULES_SIZE] = {
     "block",
     "unblock",
     "loop",
+    "cat",
     "testMM", 
     "testPrs"
     };
@@ -27,6 +31,7 @@ static commandType commandFunctions[MODULES_SIZE] = {
     (commandType) blockCmd,
     (commandType) unblockCmd,
     (commandType) loopCmd,
+    (commandType) catCmd,
     (commandType) testMM,
     (commandType) testPrs
     };
@@ -59,7 +64,6 @@ int main() {
 void checkModule(char *string) {
   char *argv[MAX_ARGS] = {NULL};
   int argc = parser(string, argv);
-  print_f(1, "%d\n", argc);
   for (int i = 0; i < MODULES_SIZE; i++) {
     if (!strcmp(argv[0], commandStrings[i])) {
       int mode = strcmp(argv[argc - 1], "&") == 0;
@@ -67,7 +71,7 @@ void checkModule(char *string) {
         argc--;
         argv[argc] = NULL;
       }
-      commandFunctions[i](argc, argv, mode);
+      commandFunctions[i](argc, argv, mode, STDIN_FILENO, STDOUT_FILENO);
       return;
     }
   }

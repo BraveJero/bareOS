@@ -5,7 +5,6 @@
 
 #define MAX_COMMAND 256
 #define MAX_ARGS 10
-#define MODULES_SIZE 8
 
 int8_t strcmp(const char *p1, const char *p2);
 uint8_t strlen(const char *str);
