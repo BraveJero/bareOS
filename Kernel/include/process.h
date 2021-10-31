@@ -24,7 +24,7 @@ uint64_t init_process(uint64_t stack_base, uint64_t rip, uint64_t argc,
                       uint64_t argv);
 void _int20(void);
 
-pid_t createProcess(uint64_t rip, uint8_t priority, char *name, uint64_t argc,
+pid_t createProcess(uint64_t rip, uint8_t priority, int argc,
                     char *argv[], uint8_t mode);
 int exec(pid_t pid);
 int kill(pid_t pid);

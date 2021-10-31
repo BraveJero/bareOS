@@ -7,11 +7,11 @@
 
 typedef struct process {
     pid_t pid, parent;
-    char *name;
     uint8_t priority, mode;
     Status status;
     uint64_t rsp, rip, stack_base;
-    int fds[2]; // save the "stdin" and "stdout" for this process.
+    char **argv;
+    int fds[2], argc; // save the "stdin" and "stdout" for this process.
 } Process;
 
 static pid_t processCounter = 0;
@@ -26,41 +26,63 @@ static uint8_t isBackground(uint8_t mode) {
     return mode & MASK_BACKGROUND;
 }
 
-pid_t createProcess(uint64_t rip, uint8_t priority, char *name, uint64_t argc, char *argv[], uint8_t mode) {
+pid_t createProcess(uint64_t rip, uint8_t priority, int argc, char *argv[], uint8_t mode) {
     if (processCounter >= MAX_PROCESS_COUNT) {
         return -1;
     }
     
     Process *newProcess = alloc(sizeof(Process));
     
-    if(newProcess == NULL){
+    if(newProcess == NULL) {
         return -1;
     }
 
     newProcess->stack_base = (uint64_t) alloc(PROCESS_SIZE);
 
-    if(newProcess->stack_base == 0) {
+    if(newProcess->stack_base == NULL) {
+        free(newProcess);
         return -1;
+    }
+
+    if(argv == NULL) {
+        newProcess->argv = NULL;
+    } else {
+        newProcess->argv = alloc((argc + 1) * sizeof(char *));
+        if(newProcess->argv == NULL) {
+            free(newProcess);
+            return -1;
+        }
+        for(int i = 0; i < argc; i++) {
+            if(argv[i] == NULL) {
+                newProcess->argv[i] = NULL;
+            } else {
+                newProcess->argv[i] = alloc(strlen(argv[i]));
+                if(newProcess->argv[i] == NULL) {
+                    for (int j = 0; j < i; j++) {
+                        free(newProcess->argv[j]);
+                    }
+                    free(newProcess->stack_base);
+                    free(newProcess);
+                    return -1;
+                }
+                strcpy(newProcess->argv[i], argv[i]);
+            }
+        }
+        newProcess->argv[argc] = NULL;
     }
 
     uint64_t rsp = newProcess->stack_base + (PROCESS_SIZE - 1);
 
-    newProcess->rsp = init_process(rsp, rip, argc, (uint64_t) argv);
+    newProcess->rsp = init_process(rsp, rip, (uint64_t) argc, (uint64_t) newProcess->argv);
     newProcess->pid = processCounter;
     newProcess->parent = getCurrentPid();
     newProcess->status = READY;
     newProcess->rip = rip;
     newProcess->priority = priority;
     newProcess->mode = mode;
+    newProcess->argc = argc;
     newProcess->fds[READ] = STDIN_FILENO;
     newProcess->fds[WRITE] = STDOUT_FILENO;
-    newProcess->name = alloc(strlen(name) + 1);
-
-    if(newProcess->name == NULL) {
-        return -1;
-    }
-
-    strcpy(newProcess->name, name);
 
     processes[processCounter++] = newProcess;
 
@@ -115,8 +137,12 @@ int unblock(pid_t pid){
 void remove(pid_t pid) {
     if(isValidPid(pid)){
         free((void *) processes[pid]->stack_base);
-        free(processes[pid]->name);
         free(processes[pid]);
+        if(processes[pid]->argv != NULL) {
+            for(int i = 0; processes[pid]->argv[i] != NULL; i++)
+                free(processes[pid]->argv[i]);
+            free(processes[pid]->argv);
+        }
         processes[pid] = NULL;
     }
 }
@@ -195,7 +221,7 @@ void showAllPs() {
             }
             ncNewline();
             ncPrint("Name: ");
-            ncPrint(processes[i]->name);
+            ncPrint(processes[i]->argv[0]);
             ncNewline();
             ncPrint("Current rsp: ");
             ncPrintHex(processes[i]->rsp);
