@@ -77,7 +77,7 @@ void testPrs(void) {
     // Create MAX_PROCESSES processes
     for (rq = 0; rq < MAX_PROCESSES; rq++) {
       p_rqs[rq].pid = createPs(&endless_loop, "endless_loop", 0, NULL,
-                               0); // TODO: Port this call as required
+                               1); // TODO: Port this call as required
 
       if (p_rqs[rq].pid == -1) {              // TODO: Port this as required
         put_s(1, "Error creating process\n"); // TODO: Port this as required
