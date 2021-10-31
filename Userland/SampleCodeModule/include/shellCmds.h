@@ -11,7 +11,7 @@
 void helpCmd(void);
 void killCmd(int argc, char *argv[]);
 void blockCmd(int argc, char *argv[]);
-void unblockCmd(int argc, char * argv[]);
-void loopCmd(int argc, char *argv[]);
+void unblockCmd(int argc, char *argv[]);
+void loopCmd(int argc, char *argv[], int mode);
 
 #endif
