@@ -7,14 +7,15 @@
 #include <string.h>
 #include <tests.h>
 
-#define MAX_COMMAND 19 // Habria que achicarlo
+#define MAX_COMMAND 256 // Habria que achicarlo
+#define MAX_ARGS 5
 #define MODULES_SIZE 9
 
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
 
-typedef void (*commandType)(void);
+typedef void (*commandType)(int argc, char *argv[]);
 
 static char *commandStrings[MODULES_SIZE] = {
     "help",           "inforeg",       "printmem",      "printDate",
@@ -30,26 +31,11 @@ static commandType commandFunctions[MODULES_SIZE] = {
     printFeatures,
     printQuadraticRoots,
     testMM};
-  
-void my_proc(int argc, char *argv[]) {
-  print_f(1, "Soy el proceso %s\n", argv[0]);
-  print_f(1, "Tengo %d argumentos\n", argc);
-  print_f(1, "Mis argumentos son: \n");
-  for(int i = 0; i < argc; i++) {
-    print_f(1, "%s ", argv[i]);
-  }
-  put_char(1, '\n');
-  ps();
-  exit();
-}
 
 void checkModule(char *string);
 
 int main() {
   char buffer[MAX_COMMAND + 1];
-  char *argv[] = {"my_proc", "Juan", "Ignacio", "Garcia", "Matwieiszyn", NULL};
-  pid_t pid = createPs((uint64_t) &my_proc, "endless loop", 5, argv, 1);
-  exec(pid);
   print_f(1, "Ingrese help para ver todos los comandos.\n");
 
   while (1) {
@@ -63,9 +49,11 @@ int main() {
 }
 
 void checkModule(char *string) {
+  char *argv[MAX_ARGS] = {NULL};
+  int argc = parser(string, argv);
   for (int i = 0; i < MODULES_SIZE; i++) {
-    if (!strcmp(string, commandStrings[i])) {
-      commandFunctions[i]();
+    if (!strcmp(argv[0], commandStrings[i])) {
+      commandFunctions[i](argc, argv);
       return;
     }
   }
