@@ -1,10 +1,11 @@
-#include <string.h>
 #include <my_mem.h>
+#include <string.h>
 
 int8_t strcmp(const char *str1, const char *str2) {
-    while(*str1 || *str2)
-        if (*(str1++) ^ *(str2++)) return *(str2-1) - *(str1-1);
-    return 0;
+  while (*str1 || *str2)
+    if (*(str1++) ^ *(str2++))
+      return *(str2 - 1) - *(str1 - 1);
+  return 0;
 }
 
 uint8_t strlen(const char *str) {
@@ -17,13 +18,18 @@ uint8_t strlen(const char *str) {
 int parser(char *input, char *argv[]) {
   int len = 0, j = 0, i = 0;
   char *arg = input;
-  while(input[i] == ' ') {
-    i++; arg++;
+  while (input[i] == ' ') {
+    i++;
+    arg++;
   }
-  for(; input[i] && j < MAX_ARGS - 1; i++) {
+  for (; input[i] && j < MAX_ARGS - 1; i++) {
     if (input[i] != ' ')
       len++;
     else {
+      while (input[i] == ' ')
+        i++;
+      i--;
+
       argv[j] = arg;
       argv[j][len] = '\0';
       len = 0;
@@ -31,9 +37,11 @@ int parser(char *input, char *argv[]) {
       j++;
     }
   }
-  argv[j] = arg;
-  argv[j][len] = '\0';
-  j++;
+  if (input[i - 1] != '\0') {
+    argv[j] = arg;
+    argv[j][len] = '\0';
+    j++;
+  }
   argv[j] = NULL;
   return j;
 }
