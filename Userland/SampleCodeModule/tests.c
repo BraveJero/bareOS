@@ -8,12 +8,12 @@ typedef struct MM_rq{
   uint32_t size;
 }mm_rq;
 
-void test_mm(){
+void testMM(){
   mm_rq mm_rqs[MAX_BLOCKS];
   uint8_t rq;
   uint32_t total;
 
-  while (1){
+  while (1) {
     rq = 0;
     total = 0;
 
@@ -36,12 +36,19 @@ void test_mm(){
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address != NULL)
         if(!memcheck(mm_rqs[i].address, i, mm_rqs[i].size))
-          printf("ERROR!\n"); // TODO: Port this call as required
+          print(1, "ERROR!\n", 8); // TODO: Port this call as required
 
 
     // Free
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address != NULL)
         free(mm_rqs[i].address);  // TODO: Port this call as required
+
+    print(1, "To stop testing press ENTER or TAB, to continue, press any other key\n", 70);
+    int c = get_char();
+    if (c == '\n' || c == -1) {
+      put_char(1, '\n');
+      return;
+    }
   } 
 }

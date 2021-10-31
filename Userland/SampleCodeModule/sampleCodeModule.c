@@ -19,7 +19,7 @@ typedef void (*commandType)(void);
 static char *commandStrings[MODULES_SIZE] = {
     "help",           "inforeg",       "printmem",      "printDate",
     "divisionByZero", "invalidOpcode", "printFeatures", "printQuadraticRoots",
-    "test_mem"};
+    "testMM"};
 static commandType commandFunctions[MODULES_SIZE] = {
     help,
     inforeg,
@@ -29,7 +29,7 @@ static commandType commandFunctions[MODULES_SIZE] = {
     throwInvalidOpcodeException,
     printFeatures,
     printQuadraticRoots,
-    testMem};
+    testMM};
   
 void my_proc(int argc, char *argv[]) {
   print_f(1, "Soy el proceso %s\n", argv[0]);
