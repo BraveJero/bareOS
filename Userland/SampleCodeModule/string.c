@@ -37,7 +37,7 @@ int parser(char *input, char *argv[]) {
       j++;
     }
   }
-  if (input[i - 1] != '\0') {
+  if (input[i - 1] != '\0' &&  input[i - 1] != ' ') {
     argv[j] = arg;
     argv[j][len] = '\0';
     j++;

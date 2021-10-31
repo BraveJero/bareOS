@@ -132,17 +132,13 @@ int64_t get_s(char *buffer, uint64_t maxLength) {
       } else {
         buffer[counter++] = c;
       }
-      put_char(STDOUT_FILENO, c);
     } else {
       if (c == '\b')
         counter--;
       else
         counter++;
-      put_char(STDOUT_FILENO, c);
     }
   }
-
-  put_char(STDOUT_FILENO, '\n');
 
   if (counter > maxLength) {
     buffer[maxLength] = '\0';
