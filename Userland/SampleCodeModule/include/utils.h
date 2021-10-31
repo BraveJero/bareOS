@@ -15,6 +15,7 @@ uint32_t GetUint();
 uint32_t GetUniform(uint32_t max);
 uint8_t memcheck(void *start, uint8_t value, uint32_t size);
 void *memset(void *s, int c, size_t n);
+int atoi(const char *s);
 unsigned long _Stoul(const char *s, char **endptr, int base);
 
 #endif

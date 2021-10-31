@@ -34,13 +34,15 @@ void testMM() {
 
     // Check
     print(1, "Checking if blocks are valid.\n", 30);
-    for (i = 0; i < rq; i++)
-      if (mm_rqs[i].address != NULL)
-        if (!memcheck(mm_rqs[i].address, i, mm_rqs[i].size))
+    for (i = 0; i < rq; i++) {
+      if (mm_rqs[i].address != NULL) {
+        if (!memcheck(mm_rqs[i].address, i, mm_rqs[i].size)) {
           print(1, "ERROR!\n", 8); // TODO: Port this call as required
-        else
+        } else {
           print(1, ". ", 2);
-
+        }
+      }
+    }
     put_char(1, '\n');
 
     // Free
@@ -78,7 +80,7 @@ void testPrs(void) {
     put_s(1, "Creating processes.\n");
     // Create MAX_PROCESSES processes
     for (rq = 0; rq < MAX_PROCESSES; rq++) {
-      p_rqs[rq].pid = createPs(&endless_loop, "endless_loop", 0, NULL,
+      p_rqs[rq].pid = createPs((uint64_t) &endless_loop, "endless_loop", 0, NULL,
                                1); // TODO: Port this call as required
 
       if (p_rqs[rq].pid == -1) {              // TODO: Port this as required
@@ -159,7 +161,6 @@ void slowInc(int64_t *p, int64_t inc) {
 }
 
 void inc(int argc, char *argv[]) {
-  uint64_t sem = atoi(argv[0]);
   int64_t value = atoi(argv[1]);
   uint64_t N = atoi(argv[2]);
   // uint64_t sem, int64_t value, uint64_t N
@@ -192,7 +193,7 @@ void testSync() {
 
   global = 0;
 
-  put_s(1, "CREATING PROCESSES...(WITH SEM)\n");
+  put_s(1, "Testing sync module:\n");
   sem_open(SEM_ID2, 0);
   char *argv[4];
   argv[0] = "1";
@@ -203,9 +204,84 @@ void testSync() {
   argv2[1] = "-1";
   argv2[2] = "10";
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    exec(createPs(inc, "inc", 3, argv, 1));  // TODO: add macro foreground / background
-    exec(createPs(inc, "inc", 3, argv2, 1));
+    exec(createPs((uint64_t) &inc, "inc", 3, argv, 1));  // TODO: add macro foreground / background
+    exec(createPs((uint64_t) &inc, "inc", 3, argv2, 1));
   }
   sem_wait(SEM_ID2);
   sem_close(SEM_ID2);
+  put_s(1, "Test complete.\n");
+}
+
+
+void bussy_wait(uint64_t n){
+  uint64_t i;
+  for (i = 0; i < n; i++);
+}
+
+void looping(void) {
+  uint64_t pid = getpid();
+
+  while(1){
+    print_f(1, "%d ",pid);
+    bussy_wait(MINOR_WAIT);
+  }
+}
+
+void testPrio(void) {
+  uint64_t pids[TOTAL_PROCESSES];
+  uint64_t i;
+
+  for(i = 0; i < TOTAL_PROCESSES; i++) {
+    pids[i] = createPs((uint64_t) &looping, "looping", 0, NULL, 1);
+    exec(pids[i]);
+  }
+
+  bussy_wait(WAIT);
+  put_s(1, "\nCHANGING PRIORITIES...\n");
+
+  for(i = 0; i < TOTAL_PROCESSES; i++){
+    switch (i % 3){
+      case 0:
+        nice(pids[i], 0); //lowest priority 
+        break;
+      case 1:
+        nice(pids[i], 1); //medium priority
+        break;
+      case 2:
+        nice(pids[i], 2); //highest priority
+        break;
+    }
+  }
+
+  bussy_wait(WAIT);
+  put_s(1, "\nBLOCKING...\n");
+
+  for(i = 0; i < TOTAL_PROCESSES; i++)
+    block(pids[i]);
+
+  put_s(1, "CHANGING PRIORITIES WHILE BLOCKED...\n");
+  for(i = 0; i < TOTAL_PROCESSES; i++){
+    switch (i % 3){
+      case 0:
+        nice(pids[i], 0); //medium priority 
+        break;
+      case 1:
+        nice(pids[i], -1); //medium priority
+        break;
+      case 2:
+        nice(pids[i], -2); //medium priority
+        break;
+    }
+  }
+
+  put_s(1, "UNBLOCKING...\n");
+
+  for(i = 0; i < TOTAL_PROCESSES; i++)
+    unblock(pids[i]);
+
+  bussy_wait(WAIT);
+  put_s(1, "\nKILLING...\n");
+
+  for(i = 0; i < TOTAL_PROCESSES; i++)
+    kill(pids[i]);
 }
