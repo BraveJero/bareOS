@@ -2,11 +2,6 @@
 #define PROCESS_H
 
 #include <stdint.h>
-#include <scheduler.h>
-#include <mmgr.h>
-#include <interrupts.h>
-#include <kstring.h>
-#include <naiveConsole.h>
 
 #define MAX_PROCESS_COUNT 256
 #define PROCESS_SIZE 8 * 1024
@@ -21,18 +16,15 @@
 
 typedef int16_t pid_t;
 
-typedef enum Status {
-    READY = 0,
-    TERMINATED,
-    BLOCKED
-} Status;
+typedef enum Status { READY = 0, TERMINATED, BLOCKED } Status;
 
 // ASM
-uint64_t init_process(uint64_t stack_base, uint64_t rip, uint64_t argc, uint64_t argv);
+uint64_t init_process(uint64_t stack_base, uint64_t rip, uint64_t argc,
+                      uint64_t argv);
 void _int20(void);
 
-
-pid_t createProcess(uint64_t rip, uint8_t priority, char *name, uint64_t argc, char *argv[], uint8_t mode);
+pid_t createProcess(uint64_t rip, uint8_t priority, char *name, uint64_t argc,
+                    char *argv[], uint8_t mode);
 int exec(pid_t pid);
 int kill(pid_t pid);
 int block(pid_t pid);
