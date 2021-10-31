@@ -148,3 +148,64 @@ void testPrs(void) {
     }
   }
 }
+
+int64_t global; // shared memory
+
+void slowInc(int64_t *p, int64_t inc) {
+  int64_t aux = *p;
+  aux += inc;
+  yield();
+  *p = aux;
+}
+
+void inc(int argc, char *argv[]) {
+  uint64_t sem = atoi(argv[0]);
+  int64_t value = atoi(argv[1]);
+  uint64_t N = atoi(argv[2]);
+  // uint64_t sem, int64_t value, uint64_t N
+  uint64_t i;
+
+  if (!sem_open(SEM_ID, 1)) {
+    put_s(1, "ERROR OPENING SEM\n");
+    return;
+  }
+  if (!sem_open(SEM_ID2, 1)) {
+    put_s(1, "ERROR OPENING SEM2\n");
+    return;
+  }
+
+  for (i = 0; i < N; i++) {
+    sem_wait(SEM_ID);
+    slowInc(&global, value);
+    sem_post(SEM_ID);
+  }
+  if (sem_close(SEM_ID) == 0) {
+    sem_post(SEM_ID2);
+  }
+  sem_close(SEM_ID2);
+  print_f(1, "Final value: %d\n", global);
+  exit();
+}
+
+void testSync() {
+  uint64_t i;
+
+  global = 0;
+
+  put_s(1, "CREATING PROCESSES...(WITH SEM)\n");
+  sem_open(SEM_ID2, 0);
+  char *argv[4];
+  argv[0] = "1";
+  argv[1] = "1";
+  argv[2] = "10";
+  char *argv2[4];
+  argv2[0] = "1";
+  argv2[1] = "-1";
+  argv2[2] = "10";
+  for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
+    exec(createPs(inc, "inc", 3, argv, 1));  // TODO: add macro foreground / background
+    exec(createPs(inc, "inc", 3, argv2, 1));
+  }
+  sem_wait(SEM_ID2);
+  sem_close(SEM_ID2);
+}
