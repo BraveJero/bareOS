@@ -231,13 +231,15 @@ void testPrio(void) {
   uint64_t pids[TOTAL_PROCESSES];
   uint64_t i;
 
+  put_s(1, "Testing priorities module:\n");
+
   for(i = 0; i < TOTAL_PROCESSES; i++) {
     pids[i] = createPs((uint64_t) &looping, "looping", 0, NULL, 1);
     exec(pids[i]);
   }
 
   bussy_wait(WAIT);
-  put_s(1, "\nCHANGING PRIORITIES...\n");
+  put_s(1, "\nChanging priorities...\n");
 
   for(i = 0; i < TOTAL_PROCESSES; i++){
     switch (i % 3){
@@ -254,12 +256,12 @@ void testPrio(void) {
   }
 
   bussy_wait(WAIT);
-  put_s(1, "\nBLOCKING...\n");
+  put_s(1, "\nBlocking...\n");
 
   for(i = 0; i < TOTAL_PROCESSES; i++)
     block(pids[i]);
 
-  put_s(1, "CHANGING PRIORITIES WHILE BLOCKED...\n");
+  put_s(1, "Changing priorities while blocked...\n");
   for(i = 0; i < TOTAL_PROCESSES; i++){
     switch (i % 3){
       case 0:
@@ -274,14 +276,16 @@ void testPrio(void) {
     }
   }
 
-  put_s(1, "UNBLOCKING...\n");
+  put_s(1, "Unblocking...\n");
 
   for(i = 0; i < TOTAL_PROCESSES; i++)
     unblock(pids[i]);
 
   bussy_wait(WAIT);
-  put_s(1, "\nKILLING...\n");
+  put_s(1, "\nKilling...\n");
 
   for(i = 0; i < TOTAL_PROCESSES; i++)
     kill(pids[i]);
+
+  put_s(1, "Test complete.\n");
 }
