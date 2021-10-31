@@ -51,7 +51,7 @@ exec: ; int exec(pid_t pid);
     ret
 
 dup: ; int dup(pid_t pid, int old, int new);
-    mov rax, 18
+    mov rax, 23
     int 80h
     ret
 
