@@ -1,4 +1,4 @@
-GLOBAL ps, createPs, block, unblock, kill, getpid, nice, exit, yield, exec
+GLOBAL ps, createPs, block, unblock, kill, getpid, nice, exit, yield, exec, dup
 
 ps: ; void ps void(void);
     mov rax, 4

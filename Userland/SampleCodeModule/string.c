@@ -1,17 +1,10 @@
 #include <string.h>
 #include <my_mem.h>
 
-int8_t strcmp(const char *p1, const char *p2) {
-  const unsigned char *s1 = (const unsigned char *)p1;
-  const unsigned char *s2 = (const unsigned char *)p2;
-  unsigned char c1, c2;
-  do {
-    c1 = (unsigned char)*s1++;
-    c2 = (unsigned char)*s2++;
-    if (c1 == '\0')
-      return c1 - c2;
-  } while (c1 == c2);
-  return c1 - c2;
+int8_t strcmp(const char *str1, const char *str2) {
+    while(*str1 || *str2)
+        if (*(str1++) ^ *(str2++)) return *(str2-1) - *(str1-1);
+    return 0;
 }
 
 uint8_t strlen(const char *str) {
@@ -22,10 +15,13 @@ uint8_t strlen(const char *str) {
 }
 
 int parser(char *input, char *argv[]) {
-  int len = 0, j = 0;
+  int len = 0, j = 0, i = 0;
   char *arg = input;
-  for(int i = 0; input[i]; i++) {
-    if(input[i] != ' ')
+  while(input[i] == ' ') {
+    i++; arg++;
+  }
+  for(; input[i] && j < MAX_ARGS - 1; i++) {
+    if (input[i] != ' ')
       len++;
     else {
       argv[j] = arg;

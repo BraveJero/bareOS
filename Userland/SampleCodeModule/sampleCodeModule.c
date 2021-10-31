@@ -8,10 +8,6 @@
 #include <string.h>
 #include <tests.h>
 
-#define MAX_COMMAND 256 // Habria que achicarlo
-#define MAX_ARGS 5
-#define MODULES_SIZE 8
-
 typedef void (*commandType)(int argc, char *argv[], int mode);
 
 static char *commandStrings[MODULES_SIZE] = {
@@ -47,7 +43,7 @@ void endlessLoop(void) {
 
 int main() {
   char buffer[MAX_COMMAND + 1];
-  print_f(STDOUT_FILENO, "Ingrese help para ver todos los comandos.\n");
+  print_f(STDOUT_FILENO, "Welcome to bareOS!\n\nType 'help' to see a list of all available commands.\n");
   //exec(createPs((uint64_t) &endlessLoop, "endless loop", 0, NULL, BACKGROUND));
 
   while (1) {
@@ -56,13 +52,14 @@ int main() {
     if (ans != -1)
       checkModule(buffer);
     else
-      print_f(STDOUT_FILENO, "Comando no valido\n");
+      print_f(STDOUT_FILENO, "Invalid Command\n");
   }
 }
 
 void checkModule(char *string) {
   char *argv[MAX_ARGS] = {NULL};
   int argc = parser(string, argv);
+  print_f(1, "%d\n", argc);
   for (int i = 0; i < MODULES_SIZE; i++) {
     if (!strcmp(argv[0], commandStrings[i])) {
       int mode = strcmp(argv[argc - 1], "&") == 0;
@@ -74,5 +71,5 @@ void checkModule(char *string) {
       return;
     }
   }
-  print_f(STDOUT_FILENO, "Comando no valido\n");
+  print_f(STDOUT_FILENO, "Invalid Command\n");
 }

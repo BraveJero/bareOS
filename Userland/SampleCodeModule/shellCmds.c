@@ -1,15 +1,14 @@
 #include <shellCmds.h>
 
 void helpCmd(void) {
-  print_f(STDOUT_FILENO, "Los comandos disponibles son:\n");
-  print_f(STDOUT_FILENO, " - help: Muestra los comandos disponibles\n");
-  print_f(STDOUT_FILENO, " - inforeg: Muestra el estado de los registros\n");
-  print_f(STDOUT_FILENO, " - printmem: Imprime la memoria a partir de la direccion dada\n");
-  print_f(STDOUT_FILENO, " - printDate: Imprime informacion acerca del tiempo\n");
-  print_f(STDOUT_FILENO, " - printFeatures: Muestra caracteristicas del microprocesador\n");
-  print_f(STDOUT_FILENO, " - printQuadraticRoots: Resuelve una funcion cuadratica\n");
-  print_f(STDOUT_FILENO, " - invalidOpcode: Genera excepcion por operacion invalida\n");
-  print_f(STDOUT_FILENO, " - divisionByZero: Genera excepcion por division por 0\n");
+  print_f(STDOUT_FILENO, "Commands:\n");
+  print_f(STDOUT_FILENO, " - help: Displays a list of all available commands.\n");
+  print_f(STDOUT_FILENO, " - memDump: Displays information about the heap.\n");
+  print_f(STDOUT_FILENO, " - ps: Displays a list of all the current processes.\n");
+  print_f(STDOUT_FILENO, " - kill <pid>: Kills the process of pid <pid>.\n");
+  print_f(STDOUT_FILENO, " - nice <step>: Changes the priority of a process by <step> steps (it can be negative).\n");
+  print_f(STDOUT_FILENO, " - block <pid>: Blocks the process of pid <pid>.\n");
+  print_f(STDOUT_FILENO, " - sem: Displays a list of all available commands\n");
 }
 
 void killCmd(int argc, char *argv[]) {
@@ -72,5 +71,5 @@ void loop(int argc, char *argv[]) {
 }
 
 void loopCmd(int argc, char *argv[], int mode) {
-  
+  processManager((uint64_t) &loop, argc, argv, mode, STDIN_FILENO, STDOUT_FILENO);
 }
