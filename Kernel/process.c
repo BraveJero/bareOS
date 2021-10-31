@@ -156,6 +156,13 @@ int setStatusToBlocked(pid_t pid) {
     return 0;
 }
 
+int setStatusToReady(pid_t pid) {
+    if(!isValidPid(pid) || isTerminated(pid))
+        return -1;
+    processes[pid]->status = READY;
+    return 0;
+}
+
 int setPriority(pid_t pid, uint8_t priority) {
     if(!isValidPid(pid) || isTerminated(pid))
         return -1;
