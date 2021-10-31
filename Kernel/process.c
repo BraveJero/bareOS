@@ -1,20 +1,4 @@
 #include <process.h>
-#include <scheduler.h>
-#include <mmgr.h>
-#include <interrupts.h>
-#include <kstring.h>
-#include <naiveConsole.h>
-
-#define MAX_PROCESS_COUNT 256
-#define PROCESS_SIZE 8 * 1024
-
-#define STDIN_FILENO 0
-#define STDOUT_FILENO 1
-
-#define READ 0
-#define WRITE 1
-
-#define MASK_BACKGROUND (0x1)
 
 typedef struct process {
     pid_t pid, parent;

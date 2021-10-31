@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+#define FOREGROUND 0
+#define BACKGROUND 1
+
 typedef int16_t pid_t;
 
 void ps(void);

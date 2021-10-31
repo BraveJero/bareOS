@@ -52,7 +52,7 @@ void endlessLoop(void) {
 int main() {
   char buffer[MAX_COMMAND + 1];
   print_f(STDOUT_FILENO, "Ingrese help para ver todos los comandos.\n");
-  //exec(createPs((uint64_t) &endlessLoop, "endless loop", 0, NULL, 1));
+  //exec(createPs((uint64_t) &endlessLoop, "endless loop", 0, NULL, BACKGROUND));
 
   while (1) {
     print_f(STDERR_FILENO, "\nbareOS $ ");
