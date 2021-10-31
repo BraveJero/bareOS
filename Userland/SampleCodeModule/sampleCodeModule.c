@@ -3,13 +3,14 @@
 #include <lib.h>
 #include <stdint.h>
 #include <utils.h>
+#include <shellCmds.h>
 #include <my_process.h>
 #include <string.h>
 #include <tests.h>
 
 #define MAX_COMMAND 256 // Habria que achicarlo
 #define MAX_ARGS 5
-#define MODULES_SIZE 9
+#define MODULES_SIZE 8
 
 #define STDIN 0
 #define STDOUT 1
@@ -18,33 +19,48 @@
 typedef void (*commandType)(int argc, char *argv[]);
 
 static char *commandStrings[MODULES_SIZE] = {
-    "help",           "inforeg",       "printmem",      "printDate",
-    "divisionByZero", "invalidOpcode", "printFeatures", "printQuadraticRoots",
-    "testMM"};
+    "help",
+    "ps",
+    "kill",
+    "block",
+    "unblock",
+    "loop",
+    "testMM", 
+    "testPrs"
+    };
 static commandType commandFunctions[MODULES_SIZE] = {
-    help,
-    inforeg,
-    printmem,
-    printDate,
-    throwDivisionByZeroException,
-    throwInvalidOpcodeException,
-    printFeatures,
-    printQuadraticRoots,
-    testMM};
+    (commandType) helpCmd,
+    (commandType) ps,
+    (commandType) killCmd,
+    (commandType) blockCmd,
+    (commandType) unblockCmd,
+    (commandType) loopCmd,
+    (commandType) testMM,
+    (commandType) testPrs
+    };
 
 void checkModule(char *string);
 
+void endlessLoop(void) {
+  for(uint64_t i  = 0; 1; i++) {
+    if(i % 5000000 == 0) {
+      print_f(STDOUT_FILENO, "A");
+    }
+  }
+}
+
 int main() {
   char buffer[MAX_COMMAND + 1];
-  print_f(1, "Ingrese help para ver todos los comandos.\n");
+  print_f(STDOUT_FILENO, "Ingrese help para ver todos los comandos.\n");
+  //exec(createPs((uint64_t) &endlessLoop, "endless loop", 0, NULL, 1));
 
   while (1) {
-    print_f(2, "\nbareOS $> ");
+    print_f(STDERR_FILENO, "\nbareOS $ ");
     int64_t ans = get_s(buffer, MAX_COMMAND);
     if (ans != -1)
       checkModule(buffer);
     else
-      print_f(1, "Comando no valido\n");
+      print_f(STDOUT_FILENO, "Comando no valido\n");
   }
 }
 
