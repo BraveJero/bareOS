@@ -27,6 +27,10 @@ static uint8_t isBackground(uint8_t mode) {
 }
 
 pid_t createProcess(uint64_t rip, uint8_t priority, char *name, uint64_t argc, char *argv[], uint8_t mode) {
+    if (processCounter >= MAX_PROCESS_COUNT) {
+        return -1;
+    }
+    
     Process *newProcess = alloc(sizeof(Process));
     
     if(newProcess == NULL){
