@@ -18,18 +18,6 @@ void printDate() {
           currDate.second);
 }
 
-void help() {
-  print_f(1, "Los comandos disponibles son:\n");
-  print_f(1, " - help: Muestra los comandos disponibles\n");
-  print_f(1, " - inforeg: Muestra el estado de los registros\n");
-  print_f(1, " - printmem: Imprime la memoria a partir de la direccion dada\n");
-  print_f(1, " - printDate: Imprime informacion acerca del tiempo\n");
-  print_f(1, " - printFeatures: Muestra caracteristicas del microprocesador\n");
-  print_f(1, " - printQuadraticRoots: Resuelve una funcion cuadratica\n");
-  print_f(1, " - invalidOpcode: Genera excepcion por operacion invalida\n");
-  print_f(1, " - divisionByZero: Genera excepcion por division por 0\n");
-}
-
 void printmem() {
   uint8_t arr[BYTES_TO_READ] = {0};
   char buffer[BUFFER_SIZE + 1] = {0};
