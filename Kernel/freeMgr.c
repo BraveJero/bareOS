@@ -125,7 +125,6 @@ void free(void *ptr) {
     /* The block is being returned to the heap - it is no longer
        allocated. */
     pxLink->blockSize &= ~blockAllocatedBit;
-    // TODO: Pseudo manage these share memory issues.
     freeRemainingBytes += pxLink->blockSize;
     addToFreeList(pxLink);
   }

@@ -22,7 +22,7 @@ Queue newQueue(void) {
 
 int push(Queue queue, elemType elem) {
   if (queue == NULL) {
-    return -1; // TODO: Define errors
+    return -1;
   }
 
   Node *newNode = alloc(sizeof(Node));

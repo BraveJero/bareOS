@@ -51,7 +51,8 @@ static PSysCall sysCalls[255] = {
     (PSysCall)&free,          // 19
     (PSysCall)&sem_dump,      // 20
     (PSysCall)&pipe,          // 21
-    (PSysCall)&closePipe      // 22
+    (PSysCall)&closePipe,     // 22
+    (PSysCall)&sys_dup        // 23
 };
 
 uint64_t sysCallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx,
@@ -66,8 +67,8 @@ int64_t sys_write(uint8_t fd, char *buffer, uint64_t count) {
   if (buffer == NULL || count == 0)
     return -1;
 
-  // if (fd == STDIN_FILENO) // TODO: Check this.
-  //   return -1;
+  if (fd == STDIN_FILENO) // TODO: Check this.
+    return -1;
 
   if (fd > 3)
     return pipeWrite(fd, buffer, count);
@@ -81,8 +82,8 @@ int64_t sys_write(uint8_t fd, char *buffer, uint64_t count) {
 }
 
 int64_t sys_read(unsigned int fd, char *buf, size_t count) {
-  // if (fd == STDERR_FILENO || fd == STDOUT_FILENO) // TODO: Check this.
-  //   return -1;
+  if (fd == STDERR_FILENO || fd == STDOUT_FILENO) // TODO: Check this.
+    return -1;
 
   if (buf == NULL || count == 0)
     return -1;

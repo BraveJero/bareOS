@@ -11,12 +11,12 @@ void testMM() {
   uint32_t total;
 
   while (1) {
-    print(STDOUT, "Testing memory manager module:\n", 32);
+    print(STDOUT_FILENO, "Testing memory manager module:\n", 32);
     rq = 0;
     total = 0;
 
     // Request as many blocks as we can
-    print(STDOUT, "Requesting blocks.\n", 19);
+    print(STDOUT_FILENO, "Requesting blocks.\n", 19);
     while (rq < MAX_BLOCKS && total < MAX_MEMORY) {
       mm_rqs[rq].size = GetUniform(MAX_MEMORY - total - 1) + 1;
       mm_rqs[rq].address = alloc(mm_rqs[rq].size);
@@ -24,32 +24,32 @@ void testMM() {
       rq++;
     }
     // Set
-    print(STDOUT, "Setting blocks.\n", 16);
+    print(STDOUT_FILENO, "Setting blocks.\n", 16);
     uint32_t i;
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address != NULL)
         memset(mm_rqs[i].address, i, mm_rqs[i].size);
 
     // Check
-    print(STDOUT, "Checking if blocks are valid.\n", 30);
+    print(STDOUT_FILENO, "Checking if blocks are valid.\n", 30);
     for (i = 0; i < rq; i++) {
       if (mm_rqs[i].address != NULL) {
         if (!memcheck(mm_rqs[i].address, i, mm_rqs[i].size)) {
-          print(STDOUT, "ERROR!\n", 8);
+          print(STDOUT_FILENO, "ERROR!\n", 8);
         } else {
-          print(STDOUT, ". ", 2);
+          print(STDOUT_FILENO, ". ", 2);
         }
       }
     }
-    put_char(STDOUT, '\n');
+    put_char(STDOUT_FILENO, '\n');
 
     // Free
-    print(STDOUT, "Freeing blocks.\n", 16);
+    print(STDOUT_FILENO, "Freeing blocks.\n", 16);
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address != NULL)
         free(mm_rqs[i].address);
 
-    print(STDOUT,
+    print(STDOUT_FILENO,
           "Test complete. To stop testing press ENTER or TAB, to continue, "
           "press any other key\n",
           85);
@@ -73,30 +73,30 @@ void testPrs(void) {
   uint8_t action;
 
   while (1) {
-    put_s(STDOUT, "Testing process manager module:\n");
+    put_s(STDOUT_FILENO, "Testing process manager module:\n");
 
-    put_s(STDOUT, "Creating processes.\n");
+    put_s(STDOUT_FILENO, "Creating processes.\n");
     // Create MAX_PROCESSES processes
     for (rq = 0; rq < MAX_PROCESSES; rq++) {
       p_rqs[rq].pid =
           createPs((uint64_t)&endless_loop, "endless_loop", 0, NULL, BACKGROUND);
 
       if (p_rqs[rq].pid == -1) {
-        put_s(STDOUT, "Error creating process\n");
+        put_s(STDOUT_FILENO, "Error creating process\n");
         return;
       } else {
         p_rqs[rq].state = RUNNING;
         alive++;
       }
       if (exec(p_rqs[rq].pid) < 0) {
-        put_s(STDOUT, "Error creating process\n");
+        put_s(STDOUT_FILENO, "Error creating process\n");
         return;
       }
     }
 
     // Randomly kills, blocks or unblocks processes until every one has been
     // killed
-    put_s(STDOUT, "Randomply kill, block or unblock process.\n");
+    put_s(STDOUT_FILENO, "Randomply kill, block or unblock process.\n");
     while (alive > 0) {
 
       for (rq = 0; rq < MAX_PROCESSES; rq++) {
@@ -106,7 +106,7 @@ void testPrs(void) {
         case 0:
           if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
             if (kill(p_rqs[rq].pid) == -1) {
-              put_s(STDOUT, "Error killing process\n");
+              put_s(STDOUT_FILENO, "Error killing process\n");
               return;
             }
             p_rqs[rq].state = KILLED;
@@ -117,7 +117,7 @@ void testPrs(void) {
         case 1:
           if (p_rqs[rq].state == RUNNING) {
             if (block(p_rqs[rq].pid) == -1) {
-              put_s(STDOUT, "Error blocking process\n");
+              put_s(STDOUT_FILENO, "Error blocking process\n");
               return;
             }
             p_rqs[rq].state = BLOCKED;
@@ -130,15 +130,15 @@ void testPrs(void) {
       for (rq = 0; rq < MAX_PROCESSES; rq++)
         if (p_rqs[rq].state == BLOCKED && GetUniform(2) % 2) {
           if (unblock(p_rqs[rq].pid) == -1) {
-            put_s(STDOUT, "Error unblocking process\n");
+            put_s(STDOUT_FILENO, "Error unblocking process\n");
             return;
           }
           p_rqs[rq].state = RUNNING;
         }
-      print(STDOUT, ". ", 2);
+      print(STDOUT_FILENO, ". ", 2);
     }
-    put_char(STDOUT, '\n');
-    print(STDOUT,
+    put_char(STDOUT_FILENO, '\n');
+    print(STDOUT_FILENO,
           "Test complete. To stop testing press ENTER or TAB, to continue, "
           "press any other key\n",
           85);
@@ -165,33 +165,33 @@ void inc(int argc, char *argv[]) {
   uint64_t i;
 
   if (sem_open(SEM_ID, 1) < 0) {
-    put_s(STDOUT, "Error opening SEM_ID\n");
+    put_s(STDOUT_FILENO, "Error opening SEM_ID\n");
     return;
   }
   if (sem_open(SEM_ID2, 1) < 0) {
-    put_s(STDOUT, "Error opening SEM_ID2\n");
+    put_s(STDOUT_FILENO, "Error opening SEM_ID2\n");
     return;
   }
 
   for (i = 0; i < N; i++) {
     if (sem_wait(SEM_ID) < 0) {
-      put_s(STDOUT, "Error in wait SEM_ID\n");
+      put_s(STDOUT_FILENO, "Error in wait SEM_ID\n");
       return;
     }
     slowInc(&global, value);
     if (sem_post(SEM_ID) < 0) {
-      put_s(STDOUT, "Error in post SEM_ID\n");
+      put_s(STDOUT_FILENO, "Error in post SEM_ID\n");
       return;
     }
   }
   if (sem_close(SEM_ID) == 0) {
     if (sem_post(SEM_ID2) < 0) {
-      put_s(STDOUT, "Error in post SEM_ID2\n");
+      put_s(STDOUT_FILENO, "Error in post SEM_ID2\n");
       return;
     }
   }
   sem_close(SEM_ID2);
-  print_f(STDOUT, "Final value: %d\n", global);
+  print_f(STDOUT_FILENO, "Final value: %d\n", global);
   exit();
 }
 
@@ -200,9 +200,9 @@ void testSync() {
 
   global = 0;
 
-  put_s(STDOUT, "Testing sync module...\n");
+  put_s(STDOUT_FILENO, "Testing sync module...\n");
   if (sem_open(SEM_ID2, 0) < 0) {
-    put_s(STDOUT, "Error opening SEM_ID2\n");
+    put_s(STDOUT_FILENO, "Error opening SEM_ID2\n");
     return;
   }
   char *argv[4];
@@ -215,20 +215,20 @@ void testSync() {
   argv2[2] = "10";
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
     if (exec(createPs((uint64_t)&inc, "inc", 3, argv, BACKGROUND)) < 0) {
-      put_s(STDOUT, "Error when executing.\n");
+      put_s(STDOUT_FILENO, "Error when executing.\n");
       return;
     } // TODO: add macro foreground / background
     if (exec(createPs((uint64_t)&inc, "inc", 3, argv2, BACKGROUND)) < 0) {
-      put_s(STDOUT, "Error when executing.\n");
+      put_s(STDOUT_FILENO, "Error when executing.\n");
       return;
     }
   }
   if (sem_wait(SEM_ID2) < 0) {
-    put_s(STDOUT, "Error in wait SEM_ID2\n");
+    put_s(STDOUT_FILENO, "Error in wait SEM_ID2\n");
     return;
   }
   sem_close(SEM_ID2);
-  put_s(STDOUT, "Test complete.\n");
+  put_s(STDOUT_FILENO, "Test complete.\n");
 }
 
 void bussy_wait(uint64_t n) {
@@ -241,7 +241,7 @@ void looping(void) {
   uint64_t pid = getpid();
 
   while (1) {
-    print_f(STDOUT, "%d ", pid);
+    print_f(STDOUT_FILENO, "%d ", pid);
     bussy_wait(MINOR_WAIT);
   }
 }
@@ -250,18 +250,18 @@ void testPrio(void) {
   uint64_t pids[TOTAL_PROCESSES];
   uint64_t i;
 
-  put_s(STDOUT, "Testing priorities module...\n");
+  put_s(STDOUT_FILENO, "Testing priorities module...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++) {
     pids[i] = createPs((uint64_t)&looping, "looping", 0, NULL, BACKGROUND);
     if (exec(pids[i]) < 0) {
-      put_s(STDOUT, "Error creating process\n");
+      put_s(STDOUT_FILENO, "Error creating process\n");
       return;
     }
   }
 
   bussy_wait(WAIT);
-  put_s(STDOUT, "\nChanging priorities...\n");
+  put_s(STDOUT_FILENO, "\nChanging priorities...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++) {
     switch (i % 3) {
@@ -278,12 +278,12 @@ void testPrio(void) {
   }
 
   bussy_wait(WAIT);
-  put_s(STDOUT, "\nBlocking...\n");
+  put_s(STDOUT_FILENO, "\nBlocking...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
     block(pids[i]);
 
-  put_s(STDOUT, "Changing priorities while blocked...\n");
+  put_s(STDOUT_FILENO, "Changing priorities while blocked...\n");
   for (i = 0; i < TOTAL_PROCESSES; i++) {
     switch (i % 3) {
     case 0:
@@ -298,16 +298,16 @@ void testPrio(void) {
     }
   }
 
-  put_s(STDOUT, "Unblocking...\n");
+  put_s(STDOUT_FILENO, "Unblocking...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
     unblock(pids[i]);
 
   bussy_wait(WAIT);
-  put_s(STDOUT, "\nKilling...\n");
+  put_s(STDOUT_FILENO, "\nKilling...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
     kill(pids[i]);
 
-  put_s(STDOUT, "Test complete.\n");
+  put_s(STDOUT_FILENO, "Test complete.\n");
 }

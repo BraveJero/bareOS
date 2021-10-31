@@ -108,7 +108,7 @@ void put_char(uint8_t fd, const char character) { print(fd, &character, 1); }
 
 int get_char(void) {
   char c = 0;
-  read(STDIN, &c, 1);
+  read(STDIN_FILENO, &c, 1);
   return c;
 }
 
@@ -132,17 +132,17 @@ int64_t get_s(char *buffer, uint64_t maxLength) {
       } else {
         buffer[counter++] = c;
       }
-      put_char(STDOUT, c);
+      put_char(STDOUT_FILENO, c);
     } else {
       if (c == '\b')
         counter--;
       else
         counter++;
-      put_char(STDOUT, c);
+      put_char(STDOUT_FILENO, c);
     }
   }
 
-  put_char(STDOUT, '\n');
+  put_char(STDOUT_FILENO, '\n');
 
   if (counter > maxLength) {
     buffer[maxLength] = '\0';

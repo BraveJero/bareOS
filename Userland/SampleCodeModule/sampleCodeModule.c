@@ -12,11 +12,7 @@
 #define MAX_ARGS 5
 #define MODULES_SIZE 8
 
-#define STDIN 0
-#define STDOUT 1
-#define STDERR 2
-
-typedef void (*commandType)(int argc, char *argv[]);
+typedef void (*commandType)(int argc, char *argv[], int mode);
 
 static char *commandStrings[MODULES_SIZE] = {
     "help",
@@ -69,9 +65,14 @@ void checkModule(char *string) {
   int argc = parser(string, argv);
   for (int i = 0; i < MODULES_SIZE; i++) {
     if (!strcmp(argv[0], commandStrings[i])) {
-      commandFunctions[i](argc, argv);
+      int mode = strcmp(argv[argc - 1], "&") == 0;
+      if(mode) {
+        argc--;
+        argv[argc] = NULL;
+      }
+      commandFunctions[i](argc, argv, mode);
       return;
     }
   }
-  print_f(STDOUT, "Comando no valido\n");
+  print_f(STDOUT_FILENO, "Comando no valido\n");
 }

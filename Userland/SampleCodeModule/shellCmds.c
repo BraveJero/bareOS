@@ -71,15 +71,6 @@ void loop(int argc, char *argv[]) {
   exit();
 }
 
-void loopCmd(int argc, char *argv[]) {
-  int mode = strcmp(argv[argc - 1], "&")? 0 : 1;
-  pid_t pid = createPs((uint64_t) &loop, argv[0], argc, argv, mode);
-  if(pid < 0){
-    print_f(STDOUT_FILENO, "Error creating process\n");
-    return;
-  }
-  if(exec(pid) < 0) {
-    print_f(STDOUT_FILENO, "Error running process %d\n", pid);
-  }
-
+void loopCmd(int argc, char *argv[], int mode) {
+  
 }
