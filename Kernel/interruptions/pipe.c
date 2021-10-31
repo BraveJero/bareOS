@@ -159,3 +159,22 @@ int closePipe(uint8_t pipeID) {
   pipes[pipeID] = NULL;
   return 0;
 }
+
+void pipe_dump(void) {
+  ncNewline();
+  ncPrint("---------------------------------------");
+  for(int i = 0; i < MAX_PIPES; i++) {
+    if(pipes[i] != NULL) {
+      ncNewline();
+      ncPrint("Pipe ID: ");
+      ncPrintDec(i);
+      ncNewline();
+      ncPrint("Processes using this pipe: ");
+      ncPrintDec(pipes[i]->userCount);
+      ncNewline();
+      printBlockedProcesses(pipes[i]->write);
+      ncPrint("---------------------------------------");
+    }
+  }
+  ncNewline();
+}

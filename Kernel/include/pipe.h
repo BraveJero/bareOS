@@ -19,4 +19,6 @@ int pipeWrite(int fd, const char *buf, size_t count);
 
 int closePipe(uint8_t pipeID);
 
+void pipe_dump(void);
+
 #endif
