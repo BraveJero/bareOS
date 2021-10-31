@@ -97,7 +97,7 @@ void printBlockedProcesses(uint16_t semId) {
 void sem_dump(void) {
   ncNewline();
   ncPrint("---------------------------------------");
-  for(int i = 0; i < MAX_SEMS; i++) {
+  for(uint16_t i = 0; i < MAX_SEMS; i++) {
     if(semaphores[i] != NULL) {
       ncNewline();
       ncPrint("Semaphore ID: ");
@@ -112,7 +112,7 @@ void sem_dump(void) {
       ncPrint("Amount of processes blocked: ");
       ncPrintDec(queueSize(semaphores[i]->blockedQueue));
       ncNewline();
-      printBlockedProcesses(semaphores[i]->blockedQueue);
+      printBlockedProcesses(i);
       ncNewline();
       ncPrint("---------------------------------------");
     }

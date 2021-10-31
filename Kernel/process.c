@@ -11,7 +11,7 @@ typedef struct process {
     uint8_t priority, mode;
     Status status;
     uint64_t rsp, rip, stack_base;
-    int fds[2] // save the "stdin" and "stdout" for this process.
+    int fds[2]; // save the "stdin" and "stdout" for this process.
 } Process;
 
 static pid_t processCounter = 0;

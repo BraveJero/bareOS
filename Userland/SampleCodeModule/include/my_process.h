@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <utils.h>
+#include <lib.h>
 
 #define FOREGROUND 0
 #define BACKGROUND 1

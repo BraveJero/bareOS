@@ -162,10 +162,9 @@ unsigned long
 _Stoul(const char *s, char **endptr,
        int base) { /* convert string to unsigned long, with checking */
   const char *sc, *sd;
-  const char *s1, *s2;
+  const char *s1;
   char dig, sign;
-  ptrdiff_t n;
-  unsigned long x, y;
+  unsigned long x;
   sc = s;
   sign = *sc == '-' || *sc == '+' ? *sc++ : '+';
   if (base < 0 || base == 1 || BASE_MAX < base) { /* silly base */
@@ -184,9 +183,9 @@ _Stoul(const char *s, char **endptr,
   for (s1 = sc; *sc == '0'; ++sc)
     ; /* skip leading zeros */
   x = 0;
-  for (s2 = sc; (sd = (char *)memchr(digits, TO_LOWER(*sc), base)) != NULL;
+  for ( ; (sd = (char *)memchr(digits, TO_LOWER(*sc), base)) != NULL;
        ++sc) {                /* accumulate digits */
-    y = x, dig = sd - digits; /* for overflow checking */
+    dig = sd - digits; /* for overflow checking */
     x = x * base + dig;
   }
   if (s1 == sc) { /* check string validity */
@@ -194,12 +193,11 @@ _Stoul(const char *s, char **endptr,
       *endptr = (char *)s;
     return (0);
   }
-  n = sc - s2 - ndigs[base];
   if (sign == '-') /* get final value */
     x = -x;
   if (endptr)
     *endptr = (char *)sc;
-  return (x);
+  return x;
 }
 
 void *memset(void *s, int c,

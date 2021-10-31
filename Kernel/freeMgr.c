@@ -1,6 +1,6 @@
 #include <mmgr.h>
 
-static char *to_alloc = TOTAL_MEMORY - TOTAL_HEAP_SIZE;
+static char *to_alloc = (char *) (TOTAL_MEMORY - TOTAL_HEAP_SIZE);
 
 typedef struct BlockLink {
   struct BlockLink *nextFreeBlock;

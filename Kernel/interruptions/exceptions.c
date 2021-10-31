@@ -38,7 +38,7 @@ void exceptionDispatcher(int exception) {
   // while(1) hlt; readBuffer != -1
   // Esperar tecla
   ncPrint("Presione enter para continuar\n");
-  uint8_t sc;
+  char sc = 0;
   do {
     stdRead(&sc, 1);
   } while (sc != '\n');
