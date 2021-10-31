@@ -14,14 +14,26 @@ uint8_t flags = 0;
 
 typedef uint8_t BufferPtr;
 
-static uint8_t buffer[BUFFER_SIZE] = {0};
+static int8_t buffer[BUFFER_SIZE] = {0};
 static BufferPtr w_pointer = 0, r_pointer = 0;
+static uint16_t write, lock;
+static uint16_t readers = 0;
+
+int initKeyboard(void) {
+  write = sem_open(KEYBOARD_WRITE_SEM, 0);
+  if (write == -1)
+    return -1;
+  lock = sem_open(KEYBOARD_BLOCK_SEM, 1);
+  if (lock == -1)
+    return -1;
+  return 0;
+}
 
 // https://stanislavs.org/helppc/make_codes.html
-unsigned char lowerScancodeToAscii[128] = {
+int8_t lowerScancodeToAscii[128] = {
 
     0,   27,   '1',  '2', '3',  '4', '5', '6', '7', '8', '9', '0', '-',
-    '=', '\b', '\t', 'q', 'w',  'e', 'r', 't', 'y', 'u', 'i', 'o', 'p',
+    '=', '\b', -1,   'q', 'w',  'e', 'r', 't', 'y', 'u', 'i', 'o', 'p',
     '[', ']',  '\n', 0,   'a',  's', 'd', 'f', 'g', 'h', 'j', 'k', 'l',
     ';', '\'', '`',  0,   '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',',
     '.', '/',  0,    '*', 0,    ' ', 0,   0,   0,   0,   0,   0,   0,
@@ -30,10 +42,10 @@ unsigned char lowerScancodeToAscii[128] = {
 
 };
 
-unsigned char upperScancodeToAscii[128] = {
+int8_t upperScancodeToAscii[128] = {
 
     0,   27,   '!',  '@', '#', '$', '%', '^', '&', '*', '(', ')', '_',
-    '+', '\b', 1,    'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
+    '+', '\b', -1,   'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
     '{', '}',  '\n', 0,   'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L',
     ':', '"',  '~',  0,   '|', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<',
     '>', '?',  0,    '*', 0,   ' ', 0,   0,   0,   0,   0,   0,   0,
@@ -42,8 +54,21 @@ unsigned char upperScancodeToAscii[128] = {
 
 };
 
-static void appendBuffer(char c) {
+static void appendBuffer(int8_t c) {
+  if (sem_wait(lock) < 0)
+    return;
+
   buffer[w_pointer++] = c;
+
+  while (readers){
+    readers--;
+    if (sem_post(write) < 0){
+      return;
+    }
+  }
+
+  if (sem_post(lock) < 0)
+    return;
   return;
 }
 
@@ -82,18 +107,34 @@ void keyboard_handler() {
 //   return -1;
 // }
 
-long copy_from_buffer(char *buf, size_t count) {
-  if (r_pointer == w_pointer)
-    return -1; // TODO: Check what we can do if the buffer "pega la vuelta".
-
+long stdRead(char *buf, size_t count) {
   if (count > BUFFER_SIZE) {
-  } // TODO: what do we do.
+    return 0;
+  }
 
   long i = 0;
 
-  while (i < count &&
-         r_pointer != w_pointer) // TODO: Check if we keep the last \n
+  if (sem_wait(lock) < 0)
+    return -1;
+
+  while (r_pointer == w_pointer) {
+    readers++;
+    if (sem_post(lock) < 0)
+      return -1;
+    if (sem_wait(write) < 0)
+      return -1;
+    if (sem_wait(lock) < 0)
+      return -1;
+  }
+
+  while (i < count && r_pointer != w_pointer)
     buf[i++] = buffer[r_pointer++];
+
+  if (sem_post(lock) < 0)
+    return -1;
+
+  if (i < count)
+    buf[i] = '\0';
 
   return i;
 }

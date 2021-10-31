@@ -47,8 +47,7 @@ void exceptionDispatcher(int exception) {
   ncPrint("Presione enter para continuar\n");
   uint8_t sc;
   do {
-    if (copy_from_buffer(&sc, 1) == -1)
-      _hlt();
+    stdRead(&sc, 1);
   } while (sc != '\n');
 
   // Clear window

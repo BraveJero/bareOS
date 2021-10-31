@@ -2,40 +2,80 @@
 #include <keyboard.h>
 #include <lib.h>
 #include <naiveConsole.h>
+#include <pipe.h>
+#include <process.h>
+#include <scheduler.h>
 #include <stdint.h>
+#include <sync.h>
 #include <syscalls.h>
 #include <video.h>
 
-
-typedef uint64_t (*PSysCall)(uint64_t, uint64_t, uint64_t);
+typedef uint64_t (*PSysCall)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
 
 typedef struct dateType {
   uint8_t year, month, day;
   uint8_t hour, minute, second;
 } dateType;
 
-uint64_t sys_write(uint8_t fd, char *buffer, uint64_t count);
 int64_t sys_read(unsigned int fd, char *buf, size_t count);
+int64_t sys_write(uint8_t fd, char *buffer, uint64_t count);
 uint64_t sys_date(dateType *pDate);
 uint64_t sys_mem(uint64_t rdi, uint64_t rsi, uint8_t rdx);
+void sys_ps(void);
+pid_t sys_createPs(uint64_t rip, char *name, int argc, char *argv[],
+uint8_t mode);
+int sys_block(pid_t pid);
+int sys_unblock(pid_t pid);
+int sys_kill(pid_t pid);
+pid_t sys_getpid(void);
+int sys_nice(pid_t pid, int priority);
+void sys_exit(void);
+void sys_yield(void);
+int sys_sem_open(uint8_t id, uint64_t value);
+int sys_sem_wait(uint8_t semID);
+int sys_sem_post(uint8_t semID);
+int sys_sem_close(uint8_t semID);
+int sys_exec(pid_t pid);
+int sys_dup(pid_t pid, int old, int new);
 
-static PSysCall sysCalls[255] = {(PSysCall)&sys_read, (PSysCall)&sys_write,
-                                 (PSysCall)&sys_date};
+static PSysCall sysCalls[255] = {
+    (PSysCall)&sys_read,     
+    (PSysCall)&sys_write,    
+    (PSysCall)&sys_date,
+    (PSysCall)&sys_mem,      
+    (PSysCall)&sys_ps,       
+    (PSysCall)&sys_createPs,
+    (PSysCall)&sys_block,    
+    (PSysCall)&sys_unblock,  
+    (PSysCall)&sys_kill,
+    (PSysCall)&sys_getpid,   
+    (PSysCall)&sys_nice,     
+    (PSysCall)&sys_exit,
+    (PSysCall)&sys_yield,    
+    (PSysCall)&sys_sem_open, 
+    (PSysCall)&sys_sem_post,
+    (PSysCall)&sys_sem_wait, 
+    (PSysCall)&sys_sem_close,
+    (PSysCall)&sys_exec
+    };
 
 uint64_t sysCallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx,
-                           uint64_t rax) {
+                           uint64_t rcx, uint64_t r8, uint64_t rax) {
   PSysCall sysCall = sysCalls[rax];
   if (sysCall != 0)
-    return sysCall(rdi, rsi, rdx);
+    return sysCall(rdi, rsi, rdx, rcx, r8);
   return 0;
 }
 
-uint64_t sys_write(uint8_t fd, char *buffer, uint64_t count) {
+int64_t sys_write(uint8_t fd, char *buffer, uint64_t count) {
   if (buffer == NULL || count == 0)
     return -1;
 
-  if (fd > 2)
-    return -1;
+  // if (fd == STDIN_FILENO) // TODO: Check this.
+  //   return -1;
+
+  if (fd > 3)
+    return pipeWrite(fd, buffer, count);
 
   Color *fontColor = (fd == STD_ERR) ? &RED : &WHITE;
 
@@ -46,12 +86,16 @@ uint64_t sys_write(uint8_t fd, char *buffer, uint64_t count) {
 }
 
 int64_t sys_read(unsigned int fd, char *buf, size_t count) {
-  long read_count = -1;
-  while (read_count == -1) {
-    if ((read_count = copy_from_buffer(buf, count)) == -1)
-      _hlt();
-  }
-  return read_count;
+  // if (fd == STDERR_FILENO || fd == STDOUT_FILENO) // TODO: Check this.
+  //   return -1;
+
+  if (buf == NULL || count == 0)
+    return -1;
+
+  if (fd > 3)
+    return pipeRead(fd, buf, count);
+
+  return stdRead(buf, count);
 }
 
 uint8_t BCDToDec(uint8_t bcd) {
@@ -86,3 +130,42 @@ uint64_t sys_mem(uint64_t rdi, uint64_t rsi, uint8_t rdx) {
 
   return i;
 }
+
+void sys_ps(void) { showAllPs(); }
+
+pid_t sys_createPs(uint64_t rip, char *name, int argc, char *argv[],
+                   uint8_t mode) {
+  return createProcess(rip, 0, name, argc, argv, mode);
+}
+
+int sys_block(pid_t pid) { return block(pid); }
+
+int sys_unblock(pid_t pid) { return unblock(pid); }
+
+int sys_kill(pid_t pid) { return kill(pid); }
+
+pid_t sys_getpid(void) { return getCurrentPid(); }
+
+int sys_nice(pid_t pid, int adjustment) {
+  int8_t old = getPriority(pid);
+  int8_t new = old + adjustment;
+  if (new < 0)
+    new = 0;
+  return setPriority(pid, new);
+}
+
+void sys_exit(void) { kill(getCurrentPid()); }
+
+void sys_yield(void) { yield_cpu(); }
+
+int sys_sem_open(uint8_t id, uint64_t value) { return sem_open(id, value); }
+
+int sys_sem_wait(uint8_t semID) { return sem_wait(semID); }
+
+int sys_sem_post(uint8_t semID) { return sem_post(semID); }
+
+int sys_sem_close(uint8_t semID) { return sem_close(semID); }
+
+int sys_exec(pid_t pid) { return exec(pid); }
+
+int sys_dup(pid_t pid, int old, int new) { return dup(pid, old, new); }
