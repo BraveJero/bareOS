@@ -1,4 +1,5 @@
 #include <string.h>
+#include <my_mem.h>
 
 int8_t strcmp(const char *p1, const char *p2) {
   const unsigned char *s1 = (const unsigned char *)p1;
@@ -18,4 +19,25 @@ uint8_t strlen(const char *str) {
   for (s = str; *s; ++s)
     ;
   return (s - str);
+}
+
+int parser(char *input, char *argv[]) {
+  int len = 0, j = 0;
+  char *arg = input;
+  for(int i = 0; input[i]; i++) {
+    if(input[i] != ' ')
+      len++;
+    else {
+      argv[j] = arg;
+      argv[j][len] = '\0';
+      len = 0;
+      arg = input + i + 1;
+      j++;
+    }
+  }
+  argv[j] = arg;
+  argv[j][len] = '\0';
+  j++;
+  argv[j] = NULL;
+  return j;
 }
