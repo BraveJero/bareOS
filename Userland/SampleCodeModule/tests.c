@@ -79,7 +79,7 @@ void testPrs(void) {
     // Create MAX_PROCESSES processes
     for (rq = 0; rq < MAX_PROCESSES; rq++) {
       p_rqs[rq].pid =
-          createPs((uint64_t)&endless_loop, "endless_loop", 0, NULL, BACKGROUND);
+          createPs((uint64_t)&endless_loop, 0, NULL, BACKGROUND);
 
       if (p_rqs[rq].pid == -1) {
         put_s(STDOUT_FILENO, "Error creating process\n");
@@ -214,11 +214,11 @@ void testSync() {
   argv2[1] = "-1";
   argv2[2] = "10";
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    if (exec(createPs((uint64_t)&inc, "inc", 3, argv, BACKGROUND)) < 0) {
+    if (exec(createPs((uint64_t)&inc, 3, argv, BACKGROUND)) < 0) {
       put_s(STDOUT_FILENO, "Error when executing.\n");
       return;
     }
-    if (exec(createPs((uint64_t)&inc, "inc", 3, argv2, BACKGROUND)) < 0) {
+    if (exec(createPs((uint64_t)&inc,  3, argv2, BACKGROUND)) < 0) {
       put_s(STDOUT_FILENO, "Error when executing.\n");
       return;
     }
@@ -253,7 +253,7 @@ void testPrio(void) {
   put_s(STDOUT_FILENO, "Testing priorities module...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++) {
-    pids[i] = createPs((uint64_t)&looping, "looping", 0, NULL, BACKGROUND);
+    pids[i] = createPs((uint64_t)&looping, 0, NULL, BACKGROUND);
     if (exec(pids[i]) < 0) {
       put_s(STDOUT_FILENO, "Error creating process\n");
       return;

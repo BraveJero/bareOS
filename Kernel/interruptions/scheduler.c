@@ -14,7 +14,8 @@ int8_t initScheduler() {
   if (ready == NULL) {
     return -1;
   }
-  haltProcessPid = createProcess((uint64_t)&haltProcess, 0, "halt", 0, NULL,
+  char *argv[2] = {"halt", NULL};
+  haltProcessPid = createProcess((uint64_t)&haltProcess, 0, 1, argv,
                                  MASK_BACKGROUND);
   pop(ready);
   return 0;

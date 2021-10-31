@@ -10,7 +10,7 @@ typedef struct process {
     uint8_t priority, mode;
     Status status;
     uint64_t rsp, rip, stack_base;
-    char **argv;
+    char **argv, *name;
     int fds[2], argc; // save the "stdin" and "stdout" for this process.
 } Process;
 
@@ -39,7 +39,7 @@ pid_t createProcess(uint64_t rip, uint8_t priority, int argc, char *argv[], uint
 
     newProcess->stack_base = (uint64_t) alloc(PROCESS_SIZE);
 
-    if(newProcess->stack_base == NULL) {
+    if(newProcess->stack_base == 0) {
         free(newProcess);
         return -1;
     }
@@ -61,7 +61,7 @@ pid_t createProcess(uint64_t rip, uint8_t priority, int argc, char *argv[], uint
                     for (int j = 0; j < i; j++) {
                         free(newProcess->argv[j]);
                     }
-                    free(newProcess->stack_base);
+                    free((void *) newProcess->stack_base);
                     free(newProcess);
                     return -1;
                 }
@@ -69,6 +69,12 @@ pid_t createProcess(uint64_t rip, uint8_t priority, int argc, char *argv[], uint
             }
         }
         newProcess->argv[argc] = NULL;
+    }
+
+    if (argc > 0 && newProcess->argv[0] != NULL) {
+        newProcess->name = newProcess->argv[0];
+    } else {
+        newProcess->name = "";
     }
 
     uint64_t rsp = newProcess->stack_base + (PROCESS_SIZE - 1);
@@ -221,7 +227,7 @@ void showAllPs() {
             }
             ncNewline();
             ncPrint("Name: ");
-            ncPrint(processes[i]->argv[0]);
+            ncPrint(processes[i]->name);
             ncNewline();
             ncPrint("Current rsp: ");
             ncPrintHex(processes[i]->rsp);

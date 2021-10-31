@@ -12,7 +12,7 @@ typedef int16_t pid_t;
 
 // ASM
 void ps(void);
-pid_t createPs(uint64_t rip, char *name, int argc, char *argv[], uint8_t mode);
+pid_t createPs(uint64_t rip, int argc, char *argv[], uint8_t mode);
 int block(pid_t pid);
 int unblock(pid_t pid);
 int kill(pid_t pid);
