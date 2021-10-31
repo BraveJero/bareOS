@@ -58,7 +58,8 @@ static PSysCall sysCalls[255] = {
     (PSysCall)&sys_sem_close,   // 16
     (PSysCall)&sys_exec,        // 17
     (PSysCall)&alloc,           // 18
-    (PSysCall)&free             // 19
+    (PSysCall)&free,            // 19
+    (PSysCall)&sem_dump         // 20
     };
 
 uint64_t sysCallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx,

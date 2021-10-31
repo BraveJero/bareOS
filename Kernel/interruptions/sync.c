@@ -83,7 +83,7 @@ int sem_close(uint16_t semID) {
   semaphores[semID]->activeCount--;
   if (semaphores[semID]->activeCount > 0) {
     release(&(semaphores[semID]->mutex));
-    return 0;
+    return semaphores[semID]->activeCount;
   }
   free(semaphores[semID]);
   semaphores[semID] = NULL;
