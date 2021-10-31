@@ -12,6 +12,7 @@
 #include <stdint.h>
 #include <sync.h>
 #include <video.h>
+#include <mmgr.h>
 
 #define STD_OUT 1
 #define STD_ERR 2
