@@ -5,9 +5,10 @@
 #include <utils.h>
 #include <my_process.h>
 #include <string.h>
+#include <tests.h>
 
 #define MAX_COMMAND 19 // Habria que achicarlo
-#define MODULES_SIZE 8
+#define MODULES_SIZE 9
 
 #define STDIN 0
 #define STDOUT 1
@@ -17,7 +18,8 @@ typedef void (*commandType)(void);
 
 static char *commandStrings[MODULES_SIZE] = {
     "help",           "inforeg",       "printmem",      "printDate",
-    "divisionByZero", "invalidOpcode", "printFeatures", "printQuadraticRoots"};
+    "divisionByZero", "invalidOpcode", "printFeatures", "printQuadraticRoots",
+    "test_mem"};
 static commandType commandFunctions[MODULES_SIZE] = {
     help,
     inforeg,
@@ -26,7 +28,8 @@ static commandType commandFunctions[MODULES_SIZE] = {
     throwDivisionByZeroException,
     throwInvalidOpcodeException,
     printFeatures,
-    printQuadraticRoots};
+    printQuadraticRoots,
+    testMem};
   
 void my_proc(int argc, char *argv[]) {
   print_f(1, "Soy el proceso %s\n", argv[0]);

@@ -118,3 +118,106 @@ void printQuadraticRoots() {
     break;
   };
 }
+
+static uint32_t m_z = 362436069;
+static uint32_t m_w = 521288629;
+
+uint32_t GetUint() {
+  m_z = 36969 * (m_z & 65535) + (m_z >> 16);
+  m_w = 18000 * (m_w & 65535) + (m_w >> 16);
+  return (m_z << 16) + m_w;
+}
+
+uint32_t GetUniform(uint32_t max) {
+  uint32_t u = GetUint();
+  return (u + 1.0) * 2.328306435454494e-10 * max;
+}
+
+uint8_t memcheck(void *start, uint8_t value, uint32_t size) {
+  uint8_t *p = (uint8_t *)start;
+  uint32_t i;
+
+  for (i = 0; i < size; i++, p++)
+    if (*p != value)
+      return 0;
+
+  return 1;
+}
+
+int atoi(const char *s) { return ((int)_Stoul(s, NULL, 10)); }
+
+/* macros */
+#define BASE_MAX 36 /* largest valid base */
+/* static data */
+static const char digits[] = {/* valid digits */
+                              "0123456789abcdefghijklmnopqrstuvwxyz"};
+static const char ndigs[BASE_MAX + 1] = {
+    /* 32-bits! */
+    0, 0, 33, 21, 17, 14, 13, 12, 11, 11, 10, 10, 9, 9, 9, 9, 9, 8, 8,
+    8, 8, 8,  8,  8,  7,  7,  7,  7,  7,  7,  7,  7, 7, 7, 7, 7, 7,
+};
+
+void *memchr(const void *s, int c,
+             size_t n) { /* find first occurrence of c in s[n] */
+  const unsigned char uc = c;
+  const unsigned char *su = (const unsigned char *)s;
+
+  for (; 0 < n; ++su, --n)
+    if (*su == uc)
+      return ((void *)su);
+  return (NULL);
+}
+
+unsigned long
+_Stoul(const char *s, char **endptr,
+       int base) { /* convert string to unsigned long, with checking */
+  const char *sc, *sd;
+  const char *s1, *s2;
+  char dig, sign;
+  ptrdiff_t n;
+  unsigned long x, y;
+
+  sign = *sc == '-' || *sc == '+' ? *sc++ : '+';
+  if (base < 0 || base == 1 || BASE_MAX < base) { /* silly base */
+    if (endptr)
+      *endptr = (char *)s;
+    return (0);
+  } else if (0 < base) { /* strip 0x or 0X */
+    if (base == 16 && *sc == '0' && (sc[1] == 'x' || sc[1] == 'X'))
+      sc += 2;
+  } else if (*sc != '0')
+    base = 10;
+  else if (sc[1] == 'x' || sc[1] == 'X')
+    base = 16, sc += 2;
+  else
+    base = 8;
+  for (s1 = sc; *sc == '0'; ++sc)
+    ; /* skip leading zeros */
+  x = 0;
+  for (s2 = sc; (sd = (char *)memchr(digits, tolower(*sc), base)) != NULL;
+       ++sc) {                /* accumulate digits */
+    y = x, dig = sd - digits; /* for overflow checking */
+    x = x * base + dig;
+  }
+  if (s1 == sc) { /* check string validity */
+    if (endptr)
+      *endptr = (char *)s;
+    return (0);
+  }
+  n = sc - s2 - ndigs[base];
+  if (sign == '-') /* get final value */
+    x = -x;
+  if (endptr)
+    *endptr = (char *)sc;
+  return (x);
+}
+
+void *memset(void *s, int c,
+             size_t n) { /* store c throughout unsigned char s[n] */
+  const unsigned char uc = c;
+  unsigned char *su = (unsigned char *)s;
+
+  for (; 0 < n; ++su, --n)
+    *su = uc;
+  return (s);
+}

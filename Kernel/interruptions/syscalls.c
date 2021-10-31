@@ -39,24 +39,26 @@ int sys_exec(pid_t pid);
 int sys_dup(pid_t pid, int old, int new);
 
 static PSysCall sysCalls[255] = {
-    (PSysCall)&sys_read,     
-    (PSysCall)&sys_write,    
-    (PSysCall)&sys_date,
-    (PSysCall)&sys_mem,      
-    (PSysCall)&sys_ps,       
-    (PSysCall)&sys_createPs,
-    (PSysCall)&sys_block,    
-    (PSysCall)&sys_unblock,  
-    (PSysCall)&sys_kill,
-    (PSysCall)&sys_getpid,   
-    (PSysCall)&sys_nice,     
-    (PSysCall)&sys_exit,
-    (PSysCall)&sys_yield,    
-    (PSysCall)&sys_sem_open, 
-    (PSysCall)&sys_sem_post,
-    (PSysCall)&sys_sem_wait, 
-    (PSysCall)&sys_sem_close,
-    (PSysCall)&sys_exec
+    (PSysCall)&sys_read,        // 0
+    (PSysCall)&sys_write,       // 1
+    (PSysCall)&sys_date,        // 2
+    (PSysCall)&sys_mem,         // 3
+    (PSysCall)&sys_ps,          // 4
+    (PSysCall)&sys_createPs,    // 5
+    (PSysCall)&sys_block,       // 6
+    (PSysCall)&sys_unblock,     // 7
+    (PSysCall)&sys_kill,        // 8
+    (PSysCall)&sys_getpid,      // 9
+    (PSysCall)&sys_nice,        // 10
+    (PSysCall)&sys_exit,        // 11
+    (PSysCall)&sys_yield,       // 12
+    (PSysCall)&sys_sem_open,    // 13
+    (PSysCall)&sys_sem_post,    // 14
+    (PSysCall)&sys_sem_wait,    // 15
+    (PSysCall)&sys_sem_close,   // 16
+    (PSysCall)&sys_exec,        // 17
+    (PSysCall)&alloc,           // 18
+    (PSysCall)&free             // 19
     };
 
 uint64_t sysCallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx,
