@@ -9,5 +9,7 @@
 #define MAX_BUF_SIZE 256
 
 void cat(void);
+void filter(void);
+void wc(void);
 
 #endif
