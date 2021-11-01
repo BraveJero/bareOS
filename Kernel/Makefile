@@ -14,6 +14,8 @@ LOADERSRC=loader.asm
 LOADEROBJECT=$(LOADERSRC:.asm=.o)
 STATICLIBS=
 
+MM = -D FREE_MALLOC
+
 ALL_OBJECTS= $(LOADEROBJECT) $(OBJECTS) $(OBJECTS_ASM) $(OBJECTS_INTERRUPTIONS) $(OBJECTS_INTERRUPTIONS_ASM)
 
 all: $(KERNEL)
@@ -23,7 +25,7 @@ $(KERNEL): $(STATICLIBS) $(ALL_OBJECTS)
 	$(LD) $(LDFLAGS) -T kernel.ld --oformat=elf64-x86-64 -o kernel.elf $^
 
 %.o: %.c
-	$(GCC) $(GCCFLAGS) -I./include -I./interruptions -c $< -o $@
+	$(GCC) $(GCCFLAGS) -I./include -I./interruptions ${MM} -c $< -o $@
 
 %.o : %.asm
 	$(ASM) $(ASMFLAGS) $< -o $@

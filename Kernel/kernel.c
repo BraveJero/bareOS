@@ -6,6 +6,7 @@
 #include <string.h>
 #include <userland.h>
 #include <video.h>
+#include "mmgr.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -75,6 +76,7 @@ void *initializeKernelBinary() {
 
 int main() {
   load_idt();
+  initMgr();
   // ncPrint("  IDT loaded");
   // ncNewline();
   // ncPrint("[Kernel Main]");
@@ -93,6 +95,12 @@ int main() {
 
   (((EntryPoint)sampleCodeModuleAddress)());
 
+  void * aiuda = alloc(20);
+  mem_dump();
+  ncPrint("-------------------------");
+  ncNewline();
+  free(aiuda);
+  mem_dump();
   ncNewline();
   ncNewline();
 
