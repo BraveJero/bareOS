@@ -27,6 +27,8 @@ int sys_sem_post(uint8_t semID);
 int sys_sem_close(uint8_t semID);
 int sys_exec(pid_t pid);
 int sys_dup(pid_t pid, int old, int new);
+uint64_t sys_getticks();
+uint64_t sys_getseconds();
 
 static PSysCall sysCalls[255] = {
     (PSysCall)&sys_read,          // 0
@@ -57,7 +59,9 @@ static PSysCall sysCalls[255] = {
     (PSysCall)&mem_dump,          // 25
     (PSysCall)&sys_prt_in_screen, // 26
     (PSysCall)&plugPipe,          // 27
-    (PSysCall)&ncClearScreen      // 28
+    (PSysCall)&ncClearScreen,     // 28
+    (PSysCall)&sys_getticks,      // 29
+    (PSysCall)&sys_getseconds     // 30
 };
 
 uint64_t sysCallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx,
@@ -193,3 +197,7 @@ int sys_sem_close(uint8_t semID) { return sem_close(semID); }
 int sys_exec(pid_t pid) { return exec(pid); }
 
 int sys_dup(pid_t pid, int old, int new) { return dup(pid, old, new); }
+
+uint64_t sys_getticks() { return ticks_elapsed(); }
+
+uint64_t sys_getseconds() { return seconds_elapsed(); }
