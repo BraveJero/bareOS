@@ -1,11 +1,4 @@
-#include <assert.h>
-#include <lib.h>
-#include <mmgr.h>
-#include <process.h>
-#include <queue.h>
-#include <scheduler.h>
 #include <sync.h>
-#include <naiveConsole.h>
 
 typedef struct semaphore *sem_t;
 
@@ -48,11 +41,13 @@ int sem_wait(uint16_t semID) {
   }
   pid_t currentPid = getCurrentPid();
   int ans = push(semaphores[semID]->blockedQueue, currentPid);
+  setStatusToBlocked(currentPid);
   release(&(semaphores[semID]->mutex));
   if (ans < 0) {
+    setStatusToReady(currentPid);
     return -1;
   }
-  block(currentPid);
+  yield_cpu();
   return 0;
 }
 
@@ -83,7 +78,7 @@ int sem_close(uint16_t semID) {
   semaphores[semID]->activeCount--;
   if (semaphores[semID]->activeCount > 0) {
     release(&(semaphores[semID]->mutex));
-    return 0;
+    return semaphores[semID]->activeCount;
   }
   free(semaphores[semID]);
   semaphores[semID] = NULL;
@@ -91,10 +86,18 @@ int sem_close(uint16_t semID) {
   return 0;
 }
 
+void printBlockedProcesses(uint16_t semId) {
+  if(semId > MAX_SEMS || semaphores[semId] == NULL)
+    return;
+    
+  ncPrint("Blocked processes: ");
+  printQueue(semaphores[semId]->blockedQueue);
+}
+
 void sem_dump(void) {
   ncNewline();
   ncPrint("---------------------------------------");
-  for(int i = 0; i < MAX_SEMS; i++) {
+  for(uint16_t i = 0; i < MAX_SEMS; i++) {
     if(semaphores[i] != NULL) {
       ncNewline();
       ncPrint("Semaphore ID: ");
@@ -109,8 +112,7 @@ void sem_dump(void) {
       ncPrint("Amount of processes blocked: ");
       ncPrintDec(queueSize(semaphores[i]->blockedQueue));
       ncNewline();
-      ncPrint("Blocked processes: ");
-      printQueue(semaphores[i]->blockedQueue);
+      printBlockedProcesses(i);
       ncNewline();
       ncPrint("---------------------------------------");
     }

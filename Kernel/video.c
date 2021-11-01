@@ -1,5 +1,3 @@
-#include <font.h>
-#include <lib.h>
 #include <video.h>
 
 static vbe_mode_info *vbeInfo;

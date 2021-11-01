@@ -123,7 +123,7 @@ SECTION .text
 %macro sysCallHandlerMaster 1
 	pushStateWithoutAX
 
-	mov r9, rax  ;; TODO: Check this, there has to be a better way of doing it.
+	mov r9, rax
 	call sysCallDispatcher
 
 	push rax

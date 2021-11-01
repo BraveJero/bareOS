@@ -1,11 +1,4 @@
 #include <keyboard.h>
-#include <naiveConsole.h>
-#include <userland.h>
-#include <video.h>
-
-#define EXCEPTION_COUNT 32
-#define ZERO_EXCEPTION_ID 0x00
-#define INVALID_OPCODE_ID 0x06
 
 static void zero_division();
 static void invalid_opcode();
@@ -45,7 +38,7 @@ void exceptionDispatcher(int exception) {
   // while(1) hlt; readBuffer != -1
   // Esperar tecla
   ncPrint("Presione enter para continuar\n");
-  uint8_t sc;
+  char sc = 0;
   do {
     stdRead(&sc, 1);
   } while (sc != '\n');

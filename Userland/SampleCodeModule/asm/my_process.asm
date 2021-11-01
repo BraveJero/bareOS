@@ -1,26 +1,26 @@
-GLOBAL ps, createPs, blockPs, unblockPs, killPs, getpid, nice, exit, yield, exec
+GLOBAL ps, createPs, block, unblock, kill, getpid, nice, exit, yield, exec, dup
 
 ps: ; void ps void(void);
     mov rax, 4
     int 80h
     ret
 
-createPs: ; pid_t createPs(uint64_t rip, char *name, int argc, char *argv[], uint8_t mode);
+createPs: ; pid_t createPs(uint64_t rip, int argc, char *argv[], uint8_t mode);
     mov rax, 5
     int 80h
     ret
 
-blockPs: ;int blockPs(pid_t pid);
+block: ;int blockPs(pid_t pid);
     mov rax, 6
     int 80h
     ret
 
-unblockPs: ; int unblockPs(pid_t pid);
+unblock: ; int unblockPs(pid_t pid);
     mov rax, 7
     int 80h
     ret
 
-killPs: ; int unblockPs(pid_t pid);
+kill: ; int unblockPs(pid_t pid);
     mov rax, 8
     int 80h
     ret
@@ -51,8 +51,6 @@ exec: ; int exec(pid_t pid);
     ret
 
 dup: ; int dup(pid_t pid, int old, int new);
-    mov rax, 18
+    mov rax, 23
     int 80h
     ret
-
-; TODO: check if syscalls could be handled in a better way
