@@ -25,8 +25,8 @@ uint64_t init_process(uint64_t stack_base, uint64_t rip, uint64_t argc,
                       uint64_t argv);
 void _int20(void);
 
-pid_t createProcess(uint64_t rip, uint8_t priority, int argc,
-                    char *argv[], uint8_t mode);
+pid_t createProcess(uint64_t rip, uint8_t priority, int argc, char *argv[],
+                    uint8_t mode);
 int exec(pid_t pid);
 int kill(pid_t pid);
 int block(pid_t pid);
@@ -43,5 +43,6 @@ uint8_t isBlocked(pid_t pid);
 uint8_t isTerminated(pid_t pid);
 int dup(pid_t pid, int old, int new);
 void showAllPs(void);
+int getFd(pid_t pid, uint8_t fd);
 
 #endif
