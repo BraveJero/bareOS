@@ -71,8 +71,11 @@ void endlessLoop(void) {
 
 int main() {
   char buffer[MAX_COMMAND + 1];
-  print_f(STDOUT_FILENO, "Welcome to bareOS!\n\nType 'help' to see a list of "
-                         "all available commands.\n");
+  print_f(STDOUT_FILENO, "Welcome to...\n\n");
+  
+  put_s(STDOUT_FILENO, "'########:::::'###::::'########::'########::'#######:::'######::'####:\n##.... ##:::'## ##::: ##.... ##: ##.....::'##.... ##:'##... ##: ####:\n##:::: ##::'##:. ##:: ##:::: ##: ##::::::: ##:::: ##: ##:::..:: ####:\n########::'##:::. ##: ########:: ######::: ##:::: ##:. ######::: ##::\n##.... ##: #########: ##.. ##::: ##...:::: ##:::: ##::..... ##::..:::\n##:::: ##: ##.... ##: ##::. ##:: ##::::::: ##:::: ##:'##::: ##:'####:\n########:: ##:::: ##: ##:::. ##: ########:. #######::. ######:: ####:\n.......:::..:::::..::..:::::..::........:::.......::::......:::....::");
+  
+  print_f(STDOUT_FILENO, "\n\nType 'help' to see a list of all available commands.\n");
   // exec(createPs((uint64_t) &endlessLoop, 0, NULL, BACKGROUND));
 
   while (1) {
