@@ -119,33 +119,7 @@ void put_s(uint8_t fd, const char *s) {
 
 // maxLength = Letras a leer sin contar el \0 al final
 int64_t get_s(char *buffer, uint64_t maxLength) {
-  int32_t counter = 0;
-  int64_t c;
-  while ((c = get_char()) != '\n') {
-    if (c == -1)
-      break;
-    if (counter < maxLength - 1) {
-      if (c == '\b') { // Backspace
-        if (counter == 0)
-          continue;
-        counter--;
-      } else {
-        buffer[counter++] = c;
-      }
-    } else {
-      if (c == '\b')
-        counter--;
-      else
-        break;
-    }
-  }
-
-  buffer[counter] = '\0';
-  if (counter == maxLength - 1) {
-    return -1;
-  }
-
-  return counter;
+  return read(STDIN_FILENO, buffer, maxLength);
 }
 
 // https://iq.opengenus.org/how-printf-and-scanf-function-works-in-c-internally/
