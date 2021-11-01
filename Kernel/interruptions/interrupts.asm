@@ -21,7 +21,7 @@ EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN sysCallDispatcher
 EXTERN printRegs
-EXTERN setCurrentRSP, getCurrentRSP
+EXTERN scheduler
 SECTION .text
 
 %macro pushState 0
@@ -122,9 +122,8 @@ SECTION .text
 
 %macro sysCallHandlerMaster 1
 	pushStateWithoutAX
-	sti
 
-	mov rcx, rax  ;; TODO: Check this, there has to be a better way of doing it.
+	mov r9, rax
 	call sysCallDispatcher
 
 	push rax
@@ -133,7 +132,6 @@ SECTION .text
 	out 20h, al
 	pop rax
 
-	cli
 	popStateWithoutAX
 	iretq
 %endmacro
@@ -172,7 +170,21 @@ picSlaveMask:
 
 ;8254 Timer (Timer Tick)
 _irq00Handler:
-	irqHandlerMaster 0
+	pushState ; <-- Save rsp
+
+	mov rdi, 0; pasaje de parametro
+	call irqDispatcher
+
+	mov rdi, rsp
+	call scheduler
+	mov rsp, rax
+
+	; signal pic EOI (End of Interrupt)
+	mov al, 20h
+	out 20h, al
+
+	popState
+	iretq
 
 ;Keyboard
 _irq01Handler:

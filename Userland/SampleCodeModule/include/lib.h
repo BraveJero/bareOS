@@ -4,16 +4,13 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <utils.h>
 
 #define IN_RANGE(x, a, b) ((x) >= (a) && (x) <= (b))
 #define ISUPPER(x) IN_RANGE(x, 'A', 'Z')
 #define ISLOWER(x) IN_RANGE(x, 'a', 'z')
 #define ISALPHA(x) (ISUPPER(x) || ISLOWER(x))
 #define ISDIGIT(x) IN_RANGE(x, '0', '9')
-
-#define STDIN 0
-#define STDOUT 1
-#define STDERR 2
 
 typedef struct dateType {
   uint8_t year, month, day;

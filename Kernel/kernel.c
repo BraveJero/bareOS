@@ -6,7 +6,11 @@
 #include <string.h>
 #include <userland.h>
 #include <video.h>
-#include "mmgr.h"
+#include <scheduler.h>
+#include <process.h>
+#include <time.h>
+#include <mmgr.h>
+#include <interrupts.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -27,6 +31,64 @@ void *getStackBase() {
                   - sizeof(uint64_t) // Begin at the top of the stack
   );
 }
+
+// void printArgs(int argc, char *argv[]){
+//   ncPrint("Cantidad de argumentos: ");
+//   ncPrintDec(argc);
+  
+//   for(int i = 0; i < argc; i++){
+//     ncNewline();
+//     ncPrint(argv[i]);
+//     ncNewline();
+//   }
+  
+//   kill(getCurrentPid());
+// }
+
+// void printA(){
+//   int blocked = 0;
+//   while(1) {
+//     ncPrint("A");
+//     _hlt();
+//   }
+// }
+
+// void printB(){
+//   while(1) {
+//     ncPrint("B");
+//     _hlt();
+//   }
+// }
+
+// void printC(){
+//   while(1) {
+//     ncPrint("C");
+//     _hlt();
+//   }
+// }
+
+// void processControl() {
+//   while(seconds_elapsed() < 1);
+//   block(1);
+//   while(seconds_elapsed() < 2);
+//   block(2);
+// 	unblock(1);
+// 	while(seconds_elapsed() < 3);
+// 	unblock(2);
+// 	setPriority(1, 3);
+// 	setPriority(2, 2);
+// 	setPriority(3, 1);
+// 	while(seconds_elapsed() < 4);
+// 	block(1);
+// 	block(2);
+// 	block(3);
+// 	while(seconds_elapsed() < 6);
+// 	unblock(1);
+// 	unblock(2);
+// 	unblock(3);
+// 	kill(4);
+// }
+
 
 void *initializeKernelBinary() {
   // char buffer[10];
@@ -69,22 +131,13 @@ void *initializeKernelBinary() {
   // ncNewline();
   // ncNewline();
 
-  init_screen();
+  //init_screen();
 
   return getStackBase();
 }
 
 int main() {
-  load_idt();
-  initMgr();
-  // ncPrint("  IDT loaded");
-  // ncNewline();
-  // ncPrint("[Kernel Main]");
-  // ncNewline();
-  // ncPrint("  Sample code module at 0x");
-  // ncPrintHex((uint64_t)sampleCodeModuleAddress);
-  // ncNewline();
-  // ncPrint("  Calling the sample code module returned: ");
+  init_screen();
   prompt_info prompt = {.x = 0,
                         .y = 0,
                         .baseX = 0,
@@ -93,7 +146,27 @@ int main() {
                         .windowHeight = getScreenHeight()};
   declarePrompt(&prompt);
 
-  (((EntryPoint)sampleCodeModuleAddress)());
+  initMgr();
+  initKeyboard();
+  initScheduler();
+
+	// createProcess((uint64_t) &printA, 0, "printA", 0, NULL);
+	// createProcess((uint64_t) &printB, 0, "printB", 0, NULL);
+	// createProcess((uint64_t) &printC, 0, "printC", 0, NULL);
+	// createProcess((uint64_t) &processControl, 0, "control", 0, NULL);
+  // char *argv[] = {"printargs", "Hola Mundo", "Juan Garcia", NULL};
+  // createProcess((uint64_t) &printArgs, 0, "printargs", 3, argv);
+  char *argv[2] = {"shell", NULL};
+  pid_t pid = createProcess((uint64_t)sampleCodeModuleAddress, 10, 1, argv, MASK_FOREGROUND);
+  exec(pid);
+
+
+  //showAllPs();
+
+  load_idt();
+  while(1) { _hlt(); }
+  
+  //(((EntryPoint)sampleCodeModuleAddress)());
 
   void * aiuda = alloc(20);
   mem_dump();

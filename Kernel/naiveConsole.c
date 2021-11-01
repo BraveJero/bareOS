@@ -98,3 +98,5 @@ void ncNewline() {
   prompt_info *pPrompt = getCurrentPrompt();
   newLine(pPrompt, &BLACK);
 }
+
+void ncClearScreen(void) { clearWindow(getCurrentPrompt(), &BLACK); }

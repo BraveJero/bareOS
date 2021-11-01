@@ -2,15 +2,7 @@
 #include <mmgr.h>
 #include <stdint.h>
 
-#define TOTAL_MEMORY 0x20000000
-#define TOTAL_HEAP_SIZE 0x10000000
-
-#define MINIMUM_ALLOCABLE_SIZE ((size_t)(blockLinkSize << 1))
-
-#define BYTE_ALIGNMENT 8
-#define BYTE_ALIGNMENT_MASK 0x0007
-
-static char *to_alloc = TOTAL_MEMORY - TOTAL_HEAP_SIZE;
+static char *to_alloc = (char *) (TOTAL_MEMORY - TOTAL_HEAP_SIZE);
 
 typedef struct BlockLink {
   struct BlockLink *nextFreeBlock;
@@ -30,7 +22,7 @@ static BlockLink startBlock, *endBlock = NULL;
 member of an BlockLink_t structure is set then the block belongs to the
 application.  When the bit is free the block is still part of the free heap
 space. */
-static size_t blockAllocatedBit = 0; // TODO: Ask why is this needed.
+static size_t blockAllocatedBit = 0;
 
 int initMgr() {
   BlockLink *firstFreeBlock;
@@ -51,7 +43,7 @@ int initMgr() {
 
   hAddress = ((size_t)alignedHeap) + totalHeapSize;
   hAddress -= blockLinkSize;
-  hAddress &= ~((size_t)BYTE_ALIGNMENT_MASK); // TODO: Ask why this is needed.
+  hAddress &= ~((size_t)BYTE_ALIGNMENT_MASK);
 
   endBlock = (void *)hAddress;
   endBlock->blockSize = 0;
@@ -135,7 +127,6 @@ void free(void *ptr) {
     /* The block is being returned to the heap - it is no longer
        allocated. */
     pxLink->blockSize &= ~blockAllocatedBit;
-    // TODO: Pseudo manage these share memory issues.
     freeRemainingBytes += pxLink->blockSize;
     addToFreeList(pxLink);
   }
@@ -183,4 +174,21 @@ void addToFreeList(BlockLink *newBlock) {
 }
 
 uint64_t getfreeRemainingBytes(void) { return freeRemainingBytes; }
+
+void mem_dump(void) {
+  ncNewline();
+  ncPrint("---------------------------------------");
+  ncNewline();
+  ncPrint("Total heap size: ");
+  ncPrintDec(TOTAL_HEAP_SIZE);
+  ncNewline();
+  ncPrint("Free remaining bytes: ");
+  ncPrintDec(getfreeRemainingBytes());
+  ncNewline();
+  ncPrint("Allocated bytes: ");
+  ncPrintDec(TOTAL_HEAP_SIZE - getfreeRemainingBytes());
+  ncNewline();
+  ncPrint("---------------------------------------");
+  ncNewline();
+}
 #endif

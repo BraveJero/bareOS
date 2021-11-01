@@ -23,8 +23,7 @@ void _irq05Handler(void);
 void _exception0Handler(void);
 void _exception6Handler(void);
 
-// TODO: Chequear voids
-void _sysCall80Handler(uint64_t rdi, uint64_t rsi, uint64_t rdx);
+void _sysCall80Handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
 
 void _cli(void);
 

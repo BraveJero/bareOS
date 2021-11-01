@@ -1,6 +1,8 @@
 #ifndef __VIDEO_H__
 #define __VIDEO_H__
 
+#include <font.h>
+#include <lib.h>
 #include <stdint.h>
 
 #define VBEModeInfoBlockAddress 0x0000000000005C00
@@ -60,6 +62,7 @@ void drawShellBorder(Color *color);
 void drawChar(prompt_info *p, char c, Color *fontColor, Color *backgroundColor);
 void newLine(prompt_info *p, Color *backgronudColor);
 void clearWindow(prompt_info *p, Color *backgroundColor);
+void eraseChar(prompt_info *p, Color *backgroundColor);
 
 // FUNCIONES AUXILIARES
 void init_screen(void);

@@ -1,10 +1,4 @@
-GLOBAL print
-GLOBAL setReg
-GLOBAL fillDate
-GLOBAL inforeg
-GLOBAL fillMem
-GLOBAL _quadratic
-GLOBAL read
+GLOBAL print, setReg, fillDate, inforeg, fillMem, _quadratic, read
 
 EXTERN print_f
 
@@ -91,14 +85,16 @@ read:
     ret
 
 fillDate:
-    mov rax, 3
+    mov rax, 2
     int 80h
     ret
 
 fillMem:
-    mov rax, 4
+    mov rax, 3
     int 80h
     ret
+
+
 
 setReg:
     mov rax, 0xFFFF
