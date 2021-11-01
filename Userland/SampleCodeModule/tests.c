@@ -78,8 +78,7 @@ void testPrs(void) {
     put_s(STDOUT_FILENO, "Creating processes.\n");
     // Create MAX_PROCESSES processes
     for (rq = 0; rq < MAX_PROCESSES; rq++) {
-      p_rqs[rq].pid =
-          createPs((uint64_t)&endless_loop, 0, NULL, BACKGROUND);
+      p_rqs[rq].pid = createPs((uint64_t)&endless_loop, 0, NULL, BACKGROUND);
 
       if (p_rqs[rq].pid == -1) {
         put_s(STDOUT_FILENO, "Error creating process\n");
@@ -218,7 +217,7 @@ void testSync() {
       put_s(STDOUT_FILENO, "Error when executing.\n");
       return;
     }
-    if (exec(createPs((uint64_t)&inc,  3, argv2, BACKGROUND)) < 0) {
+    if (exec(createPs((uint64_t)&inc, 3, argv2, BACKGROUND)) < 0) {
       put_s(STDOUT_FILENO, "Error when executing.\n");
       return;
     }
@@ -260,6 +259,8 @@ void testPrio(void) {
     }
   }
 
+  yield();
+
   bussy_wait(WAIT);
   put_s(STDOUT_FILENO, "\nChanging priorities...\n");
 
@@ -276,6 +277,8 @@ void testPrio(void) {
       break;
     }
   }
+
+  yield();
 
   bussy_wait(WAIT);
   put_s(STDOUT_FILENO, "\nBlocking...\n");
@@ -298,11 +301,14 @@ void testPrio(void) {
     }
   }
 
+
   put_s(STDOUT_FILENO, "Unblocking...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
     unblock(pids[i]);
 
+  yield();
+  
   bussy_wait(WAIT);
   put_s(STDOUT_FILENO, "\nKilling...\n");
 
