@@ -8,7 +8,12 @@ void helpCmd(void) {
   print_f(STDOUT_FILENO, " - kill <pid>: Kills the process of pid <pid>.\n");
   print_f(STDOUT_FILENO, " - nice <step>: Changes the priority of a process by <step> steps (it can be negative).\n");
   print_f(STDOUT_FILENO, " - block <pid>: Blocks the process of pid <pid>.\n");
-  print_f(STDOUT_FILENO, " - sem: Displays a list of all available commands\n");
+  print_f(STDOUT_FILENO, " - sem: Displays a list of all open Semaphores.\n");
+  print_f(STDOUT_FILENO, " - cat: Print on the standar output\n");
+  print_f(STDOUT_FILENO, " - wc: Print newline counts for standar input\n");
+  print_f(STDOUT_FILENO, " - filter: Filters the vocals out of the standar input\n");
+  print_f(STDOUT_FILENO, " - pipe: Displays a list of all open pipes\n");
+  print_f(STDOUT_FILENO, " - phylo: Implements the Dining Philosophers \n");
 }
 
 void killCmd(int argc, char *argv[]) {

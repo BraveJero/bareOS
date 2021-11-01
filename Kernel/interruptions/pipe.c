@@ -99,11 +99,8 @@ int pipeRead(int fd, char *buf, size_t count) {
   while (i < count && pipes[fd]->r_pointer != pipes[fd]->w_pointer)
     buf[i++] = pipes[fd]->buf[pipes[fd]->r_pointer++];
 
-
-
   if (sem_post(pipes[fd]->lock) < 0)
     return -1;
-  
 
   if (i < count) {
     buf[i] = '\0';

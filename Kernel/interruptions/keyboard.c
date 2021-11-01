@@ -23,7 +23,7 @@ int initKeyboard(void) {
 int8_t lowerScancodeToAscii[128] = {
 
     0,   27,   '1',  '2', '3',  '4', '5', '6', '7', '8', '9', '0', '-',
-    '=', '\b', -1,   'q', 'w',  'e', 'r', 't', 'y', 'u', 'i', 'o', 'p',
+    '=', '\b', EOF,   'q', 'w',  'e', 'r', 't', 'y', 'u', 'i', 'o', 'p',
     '[', ']',  '\n', 0,   'a',  's', 'd', 'f', 'g', 'h', 'j', 'k', 'l',
     ';', '\'', '`',  0,   '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',',
     '.', '/',  0,    '*', 0,    ' ', 0,   0,   0,   0,   0,   0,   0,
@@ -35,7 +35,7 @@ int8_t lowerScancodeToAscii[128] = {
 int8_t upperScancodeToAscii[128] = {
 
     0,   27,   '!',  '@', '#', '$', '%', '^', '&', '*', '(', ')', '_',
-    '+', '\b', -1,   'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
+    '+', '\b', EOF,   'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
     '{', '}',  '\n', 0,   'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L',
     ':', '"',  '~',  0,   '|', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<',
     '>', '?',  0,    '*', 0,   ' ', 0,   0,   0,   0,   0,   0,   0,
@@ -117,8 +117,10 @@ long stdRead(char *buf, size_t count) {
       return -1;
   }
 
-  while (i < count && r_pointer != w_pointer)
+  while (i < count && r_pointer != w_pointer) {
     buf[i++] = buffer[r_pointer++];
+    if (buf[i-1] != EOF) ncPrintCharAtt(buf[i-1], &WHITE, &BLACK);
+  }
 
   if (sem_post(lock) < 0)
     return -1;

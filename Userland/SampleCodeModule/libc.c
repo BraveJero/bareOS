@@ -138,11 +138,7 @@ int64_t get_s(char *buffer, uint64_t maxLength) {
       else
         break;
     }
-    print_to_screen((char *)&c, 1);
   }
-
-  c = '\n';
-  print_to_screen((char *)&c, 1);
 
   buffer[counter] = '\0';
   if (counter == maxLength - 1) {

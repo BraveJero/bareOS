@@ -8,7 +8,6 @@ void cat(void) {
   while ((c = get_char()) != -1) {
     if (c == '\n') {
       buffer[counter++] = c;
-      print_to_screen((char *)&c, 1);
       for (int32_t i = 0; i < counter; i++) {
         put_char(STDOUT_FILENO, buffer[i]);
       }
@@ -28,15 +27,17 @@ void cat(void) {
         else
           break;
       }
-      print_to_screen((char *)&c, 1);
     }
   }
   if (counter != 0) {
     c = '\n';
-    print_to_screen((char *)&c, 1);
     for (int32_t i = 0; i < counter; i++) {
       put_char(STDOUT_FILENO, buffer[i]);
     }
   }
   exit();
+}
+
+void filter(void) {
+  
 }
