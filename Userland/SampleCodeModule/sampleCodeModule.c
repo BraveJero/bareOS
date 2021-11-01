@@ -74,6 +74,7 @@ int main() {
     int64_t ans = get_s(buffer, MAX_COMMAND);
     if (ans != -1) {
       if (buffer[ans-1] == '\n') buffer[ans-1] = 0;
+      else put_char(STDOUT_FILENO, '\n');
       getCommand(buffer);
     } else
       print_f(STDOUT_FILENO, "Invalid Command\n");
