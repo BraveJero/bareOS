@@ -109,7 +109,6 @@ void put_char(uint8_t fd, const char character) { print(fd, &character, 1); }
 int get_char(void) {
   char c = 0;
   read(STDIN_FILENO, &c, 1);
-  print_to_screen((char *)&c, 1);
   return c;
 }
 
