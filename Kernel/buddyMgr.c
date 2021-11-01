@@ -165,9 +165,9 @@ void mem_dump() {
                         sum++;
                   }
                   //printf("\tLevel: %d - N° of blocks: %d\n", i, sum);
-                  ncPrint("    Level: ");
+                  ncPrint("     Level: ");
                   ncPrintDec(i);
-                  ncPrint(" - N° of blocks: ");
+                  ncPrint(" - No. of blocks: ");
                   ncPrintDec(sum);
                   ncNewline();
 
