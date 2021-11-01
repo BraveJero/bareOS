@@ -50,9 +50,9 @@ static void appendBuffer(int8_t c) {
 
   buffer[w_pointer++] = c;
 
-  while (readers) {
+  while (readers){
     readers--;
-    if (sem_post(write) < 0) {
+    if (sem_post(write) < 0){
       return;
     }
   }
@@ -117,10 +117,8 @@ long stdRead(char *buf, size_t count) {
       return -1;
   }
 
-  while (i < count && r_pointer != w_pointer) {
-    buf[i] = buffer[r_pointer++];
-    ncPrintCharAtt(buf[i++], &WHITE, &BLACK);
-  }
+  while (i < count && r_pointer != w_pointer)
+    buf[i++] = buffer[r_pointer++];
 
   if (sem_post(lock) < 0)
     return -1;

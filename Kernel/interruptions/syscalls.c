@@ -9,11 +9,11 @@ typedef struct dateType {
 
 int64_t sys_read(unsigned int fd, char *buf, size_t count);
 int64_t sys_write(uint8_t fd, char *buffer, uint64_t count);
+int64_t sys_prt_in_screen(char *buffer, uint64_t count);
 uint64_t sys_date(dateType *pDate);
 uint64_t sys_mem(uint64_t rdi, uint64_t rsi, uint8_t rdx);
 void sys_ps(void);
-pid_t sys_createPs(uint64_t rip, int argc, char *argv[],
-                   uint8_t mode);
+pid_t sys_createPs(uint64_t rip, int argc, char *argv[], uint8_t mode);
 int sys_block(pid_t pid);
 int sys_unblock(pid_t pid);
 int sys_kill(pid_t pid);
@@ -29,32 +29,33 @@ int sys_exec(pid_t pid);
 int sys_dup(pid_t pid, int old, int new);
 
 static PSysCall sysCalls[255] = {
-    (PSysCall)&sys_read,      // 0
-    (PSysCall)&sys_write,     // 1
-    (PSysCall)&sys_date,      // 2
-    (PSysCall)&sys_mem,       // 3
-    (PSysCall)&sys_ps,        // 4
-    (PSysCall)&sys_createPs,  // 5
-    (PSysCall)&sys_block,     // 6
-    (PSysCall)&sys_unblock,   // 7
-    (PSysCall)&sys_kill,      // 8
-    (PSysCall)&sys_getpid,    // 9
-    (PSysCall)&sys_nice,      // 10
-    (PSysCall)&sys_exit,      // 11
-    (PSysCall)&sys_yield,     // 12
-    (PSysCall)&sys_sem_open,  // 13
-    (PSysCall)&sys_sem_post,  // 14
-    (PSysCall)&sys_sem_wait,  // 15
-    (PSysCall)&sys_sem_close, // 16
-    (PSysCall)&sys_exec,      // 17
-    (PSysCall)&alloc,         // 18
-    (PSysCall)&free,          // 19
-    (PSysCall)&sem_dump,      // 20
-    (PSysCall)&pipe,          // 21
-    (PSysCall)&closePipe,     // 22
-    (PSysCall)&sys_dup,       // 23
-    (PSysCall)&pipe_dump,     // 24
-    (PSysCall)&mem_dump       // 25
+    (PSysCall)&sys_read,         // 0
+    (PSysCall)&sys_write,        // 1
+    (PSysCall)&sys_date,         // 2
+    (PSysCall)&sys_mem,          // 3
+    (PSysCall)&sys_ps,           // 4
+    (PSysCall)&sys_createPs,     // 5
+    (PSysCall)&sys_block,        // 6
+    (PSysCall)&sys_unblock,      // 7
+    (PSysCall)&sys_kill,         // 8
+    (PSysCall)&sys_getpid,       // 9
+    (PSysCall)&sys_nice,         // 10
+    (PSysCall)&sys_exit,         // 11
+    (PSysCall)&sys_yield,        // 12
+    (PSysCall)&sys_sem_open,     // 13
+    (PSysCall)&sys_sem_post,     // 14
+    (PSysCall)&sys_sem_wait,     // 15
+    (PSysCall)&sys_sem_close,    // 16
+    (PSysCall)&sys_exec,         // 17
+    (PSysCall)&alloc,            // 18
+    (PSysCall)&free,             // 19
+    (PSysCall)&sem_dump,         // 20
+    (PSysCall)&pipe,             // 21
+    (PSysCall)&closePipe,        // 22
+    (PSysCall)&sys_dup,          // 23
+    (PSysCall)&pipe_dump,        // 24
+    (PSysCall)&mem_dump,         // 25
+    (PSysCall)&sys_prt_in_screen // 26
 };
 
 uint64_t sysCallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx,
@@ -75,12 +76,28 @@ int64_t sys_write(uint8_t fd, char *buffer, uint64_t count) {
   if (fd > 3)
     return pipeWrite(fd, buffer, count);
 
-  Color *fontColor = (fd == STD_ERR) ? &RED : &WHITE;
+  Color *fontColor = (fd == STDERR_FILENO) ? &RED : &WHITE;
 
-  for (int i = 0; i < count && buffer[i]; i++)
+  int i;
+  for (i = 0; i < count && buffer[i]; i++)
     ncPrintCharAtt(buffer[i], fontColor, &BLACK);
 
-  return count;
+  return i;
+}
+
+int64_t sys_prt_in_screen(char *buffer, uint64_t count) {
+  if (buffer == NULL || count == 0)
+    return -1;
+
+  if (getFd(getCurrentPid(), STDOUT_FILENO) != STDOUT_FILENO) {
+    return 0;
+  }
+
+  int i;
+  for (i = 0; i < count && buffer[i]; i++)
+    ncPrintCharAtt(buffer[i], &WHITE, &BLACK);
+
+  return i;
 }
 
 int64_t sys_read(unsigned int fd, char *buf, size_t count) {
@@ -131,8 +148,7 @@ uint64_t sys_mem(uint64_t rdi, uint64_t rsi, uint8_t rdx) {
 
 void sys_ps(void) { showAllPs(); }
 
-pid_t sys_createPs(uint64_t rip, int argc, char *argv[],
-                   uint8_t mode) {
+pid_t sys_createPs(uint64_t rip, int argc, char *argv[], uint8_t mode) {
   return createProcess(rip, 0, argc, argv, mode);
 }
 
