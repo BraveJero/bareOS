@@ -207,6 +207,10 @@ int setStatusToReady(pid_t pid) {
 int setPriority(pid_t pid, uint8_t priority) {
   if (!isValidPid(pid) || isTerminated(pid))
     return -1;
+  
+  priority = priority < MIN_PRIORITY? MIN_PRIORITY : priority;
+  priority = priority > MAX_PRIORITY? MAX_PRIORITY : priority;
+
   processes[pid]->priority = priority;
   return 0;
 }
@@ -216,8 +220,6 @@ int dup(pid_t pid, int old, int new) {
   if ((old != STDIN_FILENO && old != STDOUT_FILENO) || !isValidPid(pid) ||
       isTerminated(pid))
     return -1;
-  new = new < MIN_PRIORITY? MIN_PRIORITY : new;
-  new = new > MAX_PRIORITY? MAX_PRIORITY : new;
   processes[pid]->fds[old] = new;
   return 0;
 }
