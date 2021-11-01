@@ -6,15 +6,15 @@ void helpCmd(void) {
   print_f(STDOUT_FILENO, " - memDump: Displays information about the heap.\n");
   print_f(STDOUT_FILENO, " - ps: Displays a list of all the current processes.\n");
   print_f(STDOUT_FILENO, " - kill <pid>: Kills the process of pid <pid>.\n");
-  print_f(STDOUT_FILENO, " - nice <step>: Changes the priority of a process by <step> steps (it can be negative).\n");
+  print_f(STDOUT_FILENO, " - nice <pid> <step>: Changes the priority of process <pid> by <step> steps (it can be negative).\n");
   print_f(STDOUT_FILENO, " - block <pid>: Blocks the process of pid <pid>.\n");
   print_f(STDOUT_FILENO, " - sem: Displays a list of all open Semaphores.\n");
   print_f(STDOUT_FILENO, " - cat: Print on the standar output.\n");
-  print_f(STDOUT_FILENO, " - wc: Print newline counts for standar input.\n");
+  print_f(STDOUT_FILENO, " - wc: Print byte and newline counts for standar input.\n");
   print_f(STDOUT_FILENO, " - filter: Filters the vowels out of the standar input.\n");
   print_f(STDOUT_FILENO, " - pipe: Displays a list of all open pipes.\n");
   print_f(STDOUT_FILENO, " - phylo: Implements the Dining Philosophers.\n");
-  print_f(STDOUT_FILENO, " - loop: Prints pid after a given amount of time.\n");
+  print_f(STDOUT_FILENO, " - loop: Prints pid, argc and argv after a given amount of time.\n");
   print_f(STDOUT_FILENO, " - testPrio: Tests priority.\n");
   print_f(STDOUT_FILENO, " - testSync: Tests synchronization.\n");
   print_f(STDOUT_FILENO, " - testMM: Tests memory manager.\n");
@@ -66,6 +66,24 @@ void unblockCmd(int argc, char *argv[]){
   }
 
   if(unblock(pid) < 0) {
+    print_f(STDOUT_FILENO, "Error unblocking process %d\n", pid);
+  }
+}
+
+void niceCmd(int argc, char *argv[]){
+  if(argc != 3) {
+    print_f(STDOUT_FILENO, "Invalid amount of arguments\n");
+    return;
+  }
+  pid_t pid = atoi(argv[1]);
+  if(pid == 0) {
+    print_f(STDOUT_FILENO, "Invalid pid\n");
+    return;
+  }
+
+  int adj = atoi(argv[2]);
+
+  if(nice(pid, adj) < 0) {
     print_f(STDOUT_FILENO, "Error unblocking process %d\n", pid);
   }
 }

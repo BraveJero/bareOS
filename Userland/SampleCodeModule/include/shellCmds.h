@@ -13,6 +13,7 @@ void helpCmd(void);
 void killCmd(int argc, char *argv[]);
 void blockCmd(int argc, char *argv[]);
 void unblockCmd(int argc, char *argv[]);
+void niceCmd(int argc, char *argv[]);
 void loopCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout);
 void catCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout);
 void filterCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout);
