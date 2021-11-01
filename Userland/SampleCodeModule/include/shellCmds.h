@@ -18,5 +18,5 @@ void loopCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout);
 void catCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout);
 void filterCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout);
 void wcCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout);
-
+void broombroom(void);
 #endif
