@@ -56,7 +56,8 @@ static PSysCall sysCalls[255] = {
     (PSysCall)&pipe_dump,         // 24
     (PSysCall)&mem_dump,          // 25
     (PSysCall)&sys_prt_in_screen, // 26
-    (PSysCall)&plugPipe           // 27
+    (PSysCall)&plugPipe,          // 27
+    (PSysCall)&ncClearScreen      // 28
 };
 
 uint64_t sysCallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx,
