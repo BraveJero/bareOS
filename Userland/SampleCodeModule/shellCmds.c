@@ -20,7 +20,7 @@ void helpCmd(void) {
   print_f(STDOUT_FILENO, " - testMM: Tests memory manager.\n");
   print_f(STDOUT_FILENO, " - testPrs: Tests process creation.\n");
   print_f(STDOUT_FILENO, " - clear: Clears the screen.\n");
-
+  print_f(STDOUT_FILENO, "EOF is signaled by TAB.\n");
 }
 
 void killCmd(int argc, char *argv[]) {
