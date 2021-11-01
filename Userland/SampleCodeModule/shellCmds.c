@@ -102,6 +102,20 @@ void loopCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
   processManager((uint64_t) &loop, argc, argv, mode, new_in, new_out);
 }
 
+void printArgs(int argc, char *argv[]) {
+  print_f(STDOUT_FILENO, "I'm process with pid %d.\n");
+  print_f(STDOUT_FILENO, "I have %d arguments.\n", argc);
+  print_f(STDOUT_FILENO, "My arguments are: ");
+  for(int i = 0; i < argc && argv[i] != NULL; i++)
+    print_f(STDOUT_FILENO, "%s ", argv[i]);
+  put_char(STDOUT_FILENO, '\n');
+  exit();
+}
+
+void printArgsCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
+  processManager((uint64_t) &printArgs, argc, argv, mode, new_in, new_out);
+}
+
 void catCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
   processManager((uint64_t) &cat, argc, argv, mode, new_in, new_out);
 }

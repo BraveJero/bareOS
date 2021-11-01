@@ -13,7 +13,7 @@
 #include <tests.h>
 #include <utils.h>
 
-#define MODULES_SIZE 19
+#define MODULES_SIZE 20
 
 typedef void (*commandType)(int argc, char *argv[], int mode, int, int);
 
@@ -25,6 +25,7 @@ static char *commandStrings[MODULES_SIZE] = {
     "unblock",
     "nice",
     "loop",
+    "printArgs",
     "cat",
     "filter",
     "wc",
@@ -46,6 +47,7 @@ static commandType commandFunctions[MODULES_SIZE] = {
     (commandType) unblockCmd,
     (commandType) niceCmd,
     (commandType) loopCmd,
+    (commandType) printArgsCmd,
     (commandType) catCmd,
     (commandType) filterCmd,
     (commandType) wcCmd,
