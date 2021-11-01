@@ -29,6 +29,7 @@ int sys_exec(pid_t pid);
 int sys_dup(pid_t pid, int old, int new);
 uint64_t sys_getticks();
 uint64_t sys_getseconds();
+int sys_wait(void);
 
 static PSysCall sysCalls[255] = {
     (PSysCall)&sys_read,          // 0
@@ -61,7 +62,8 @@ static PSysCall sysCalls[255] = {
     (PSysCall)&plugPipe,          // 27
     (PSysCall)&ncClearScreen,     // 28
     (PSysCall)&sys_getticks,      // 29
-    (PSysCall)&sys_getseconds     // 30
+    (PSysCall)&sys_getseconds ,    // 30
+    (PSysCall)&sys_wait           // 31
 };
 
 uint64_t sysCallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx,
@@ -201,3 +203,5 @@ int sys_dup(pid_t pid, int old, int new) { return dup(pid, old, new); }
 uint64_t sys_getticks() { return ticks_elapsed(); }
 
 uint64_t sys_getseconds() { return seconds_elapsed(); }
+
+int sys_wait(void) { return wait(); }

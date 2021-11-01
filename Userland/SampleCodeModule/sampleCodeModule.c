@@ -134,5 +134,7 @@ void getCommand(char *str) {
   checkModule(cmd1, STDIN_FILENO, fds[1], 0);
   plugPipe(id); // signal EOF to right process.
 
+  //wait();
+
   closePipe(id);
 }

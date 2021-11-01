@@ -1,4 +1,4 @@
-GLOBAL ps, createPs, block, unblock, kill, getpid, nice, exit, yield, exec, dup
+GLOBAL ps, createPs, block, unblock, kill, getpid, nice, exit, yield, exec, dup, waitChild
 
 ps: ; void ps void(void);
     mov rax, 4
@@ -52,5 +52,10 @@ exec: ; int exec(pid_t pid);
 
 dup: ; int dup(pid_t pid, int old, int new);
     mov rax, 23
+    int 80h
+    ret
+
+waitChild: ; int wait(void);
+    mov rax, 31
     int 80h
     ret

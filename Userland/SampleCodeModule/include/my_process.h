@@ -22,6 +22,7 @@ void exit();
 void yield(void);
 int dup(pid_t pid, int old, int new);
 int exec(pid_t pid);
+int waitChild(void);
 
 // C
 void processManager(uint64_t rip, int argc, char *argv[], uint8_t mode, int new_in, int new_out);
