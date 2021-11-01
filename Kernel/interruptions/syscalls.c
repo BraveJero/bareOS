@@ -89,7 +89,7 @@ int64_t sys_prt_in_screen(char *buffer, uint64_t count) {
   if (buffer == NULL || count == 0)
     return -1;
 
-  if (getFd(getCurrentPid(), STDOUT_FILENO) != STDOUT_FILENO) {
+  if (getFd(getCurrentPid(), STDIN_FILENO) != STDIN_FILENO) {
     return 0;
   }
 
