@@ -90,13 +90,11 @@ void niceCmd(int argc, char *argv[]){
 }
 
 void loop(int argc, char *argv[]) {
-  print_f(STDOUT_FILENO, "I'm process with pid %d\n", getpid());
-  print_f(STDOUT_FILENO, "I have %d arguments \n", argc);
-  print_f(STDOUT_FILENO, "My arguments are: ");
-  for(int i = 0; i < argc; i++) {
-    print_f(STDOUT_FILENO, "%s ", argv[i]);
+  while(1) {
+    uint64_t ticks = getticks();
+    print_f(STDOUT_FILENO, " %d ", getpid());
+    while(ticks == getticks()); // Print once for every timer tick;
   }
-  put_char(STDOUT_FILENO, '\n');
   exit();
 }
 
