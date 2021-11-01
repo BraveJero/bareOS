@@ -24,6 +24,6 @@ int dup(pid_t pid, int old, int new);
 int exec(pid_t pid);
 
 // C
-void processManager(uint64_t rip, int argc, char *argv[], uint8_t mode);
+void processManager(uint64_t rip, int argc, char *argv[], uint8_t mode, int new_in, int new_out);
 
 #endif

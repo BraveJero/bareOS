@@ -14,7 +14,7 @@
 
 #define MODULES_SIZE 16
 
-typedef void (*commandType)(int argc, char *argv[], int mode);
+typedef void (*commandType)(int argc, char *argv[], int mode, int, int);
 
 static char *commandStrings[MODULES_SIZE] = {
     "help",
@@ -54,6 +54,7 @@ static commandType commandFunctions[MODULES_SIZE] = {
     };
 
 void checkModule(char *string, int, int);
+void getCommand(char *str);
 
 void endlessLoop(void) {
   for(uint64_t i  = 0; 1; i++) {
@@ -73,7 +74,7 @@ int main() {
     int64_t ans = get_s(buffer, MAX_COMMAND);
     if (ans != -1) {
       if (buffer[ans-1] == '\n') buffer[ans-1] = 0;
-      checkModule(buffer, STDIN_FILENO, STDOUT_FILENO);
+      getCommand(buffer);
     } else
       print_f(STDOUT_FILENO, "Invalid Command\n");
   }
@@ -91,6 +92,21 @@ void checkModule(char *string, int new_in, int new_out) {
       mode = BACKGROUND;
     else 
       mode = FOREGROUND;
-    commandFunctions[idx](argc, argv, mode);
+    commandFunctions[idx](argc, argv, mode, new_in, new_out);
   }
+}
+
+void getCommand(char *str) {
+  char *p = strchr(str, '|');
+  if(p == NULL)
+    return checkModule(str, STDIN_FILENO, STDOUT_FILENO);
+  int fds[2];
+  if(pipe(-1, fds) < 0) { // First available pipe.
+    print_f(STDOUT_FILENO, "Error opening pipe \n");
+    return;
+  }
+  *p = '\0';
+  char *cmd1 = str, *cmd2 = p + 1;
+  checkModule(cmd1, STDIN_FILENO, fds[1]);
+  checkModule(cmd2, STDOUT_FILENO, fds[0]);
 }

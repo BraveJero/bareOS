@@ -81,18 +81,18 @@ void loop(int argc, char *argv[]) {
   exit();
 }
 
-void loopCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout) {
-  processManager((uint64_t) &loop, argc, argv, mode);
+void loopCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
+  processManager((uint64_t) &loop, argc, argv, mode, new_in, new_out);
 }
 
-void catCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout) {
-  processManager((uint64_t) &cat, argc, argv, mode);
+void catCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
+  processManager((uint64_t) &cat, argc, argv, mode, new_in, new_out);
 }
 
-void filterCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout) {
-  processManager((uint64_t) &filter, argc, argv, mode);
+void filterCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
+  processManager((uint64_t) &filter, argc, argv, mode, new_in, new_out);
 }
 
-void wcCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout) {
-  processManager((uint64_t) &wc, argc, argv, mode);
+void wcCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
+  processManager((uint64_t) &wc, argc, argv, mode, new_in, new_out);
 }
