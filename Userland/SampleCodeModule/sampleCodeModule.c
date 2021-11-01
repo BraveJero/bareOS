@@ -5,11 +5,14 @@
 #include <utils.h>
 #include <shellCmds.h>
 #include <my_process.h>
+#include <my_pipes.h>
+#include <my_mem.h>
+#include <my_sync.h>
 #include <string.h>
 #include <tests.h>
 #include <input.h>
 
-#define MODULES_SIZE 9
+#define MODULES_SIZE 15
 
 typedef void (*commandType)(int argc, char *argv[], int mode, int new_stdin, int new_stdout);
 
@@ -22,7 +25,12 @@ static char *commandStrings[MODULES_SIZE] = {
     "loop",
     "cat",
     "testMM", 
-    "testPrs"
+    "testPrs",
+    "testPrio",
+    "testSync",
+    "pipe",
+    "sem",
+    "memDump"
     };
 static commandType commandFunctions[MODULES_SIZE] = {
     (commandType) helpCmd,
@@ -33,7 +41,12 @@ static commandType commandFunctions[MODULES_SIZE] = {
     (commandType) loopCmd,
     (commandType) catCmd,
     (commandType) testMM,
-    (commandType) testPrs
+    (commandType) testPrs,
+    (commandType) testPrio,
+    (commandType) testSync,
+    (commandType) pipe_dump,
+    (commandType) sem_dump,
+    (commandType) mem_dump
     };
 
 void checkModule(char *string);
