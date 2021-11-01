@@ -11,7 +11,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define MAX_SEMS 767
+#define MAX_SEMS 1027 // First 256 are Userland sems, the folowing 771 are used by the Kernel. 
 #define MAX_USER_SEMS 256
 
 int sem_open(uint16_t id, uint64_t value);
