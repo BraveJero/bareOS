@@ -75,5 +75,5 @@ void loopCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout) {
 }
 
 void catCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout) {
-  processManager((uint64_t) &cat, argc, argv, mode, new_stdin, new_stdin);
+  processManager((uint64_t) &cat, argc, argv, mode, new_stdin, new_stdout);
 }

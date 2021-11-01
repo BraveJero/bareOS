@@ -6,6 +6,8 @@
 #include <utils.h>
 #include <lib.h>
 
+#define MAX_BUF_SIZE 256
+
 void cat(void);
 
 #endif
