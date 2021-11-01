@@ -1,5 +1,6 @@
 #include <my_mem.h>
 #include <string.h>
+#include <lib.h>
 
 int8_t strcmp(const char *str1, const char *str2) {
   while (*str1 || *str2)
@@ -13,6 +14,15 @@ uint8_t strlen(const char *str) {
   for (s = str; *s; ++s)
     ;
   return (s - str);
+}
+
+char *strchr(const char *s, char c) {
+  while(*s) {
+    if(*s == c)
+      return s;
+    s++;
+  }
+  return NULL;
 }
 
 int parser(char *input, char *argv[]) {
@@ -44,4 +54,12 @@ int parser(char *input, char *argv[]) {
   }
   argv[j] = NULL;
   return j;
+}
+
+int findCmd(char *in, char *cmds[], int dim) {
+  for(int i = 0; i < dim; i++) {
+    if(strcmp(in, cmds[i]) == 0)
+      return i;
+  }
+  return -1;
 }

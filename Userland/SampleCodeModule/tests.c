@@ -51,7 +51,7 @@ void testMM() {
 
     print(STDOUT_FILENO,
           "Test complete. To stop testing press ENTER or TAB, to continue, "
-          "press any other key\n",
+          "press any other key\n\n",
           85);
     int c = get_char();
     if (c == '\n' || c == -1) {
@@ -140,7 +140,7 @@ void testPrs(void) {
     put_char(STDOUT_FILENO, '\n');
     print(STDOUT_FILENO,
           "Test complete. To stop testing press ENTER or TAB, to continue, "
-          "press any other key\n",
+          "press any other key\n\n",
           85);
     int c = get_char();
     if (c == '\n' || c == -1) {

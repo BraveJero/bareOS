@@ -12,9 +12,9 @@
 #include <tests.h>
 #include <input.h>
 
-#define MODULES_SIZE 15
+#define MODULES_SIZE 16
 
-typedef void (*commandType)(int argc, char *argv[], int mode, int new_stdin, int new_stdout);
+typedef void (*commandType)(int argc, char *argv[], int mode);
 
 static char *commandStrings[MODULES_SIZE] = {
     "help",
@@ -24,6 +24,8 @@ static char *commandStrings[MODULES_SIZE] = {
     "unblock",
     "loop",
     "cat",
+    "filter",
+    "wc",
     "testMM", 
     "testPrs",
     "testPrio",
@@ -40,6 +42,8 @@ static commandType commandFunctions[MODULES_SIZE] = {
     (commandType) unblockCmd,
     (commandType) loopCmd,
     (commandType) catCmd,
+    (commandType) filterCmd,
+    (commandType) wcCmd,
     (commandType) testMM,
     (commandType) testPrs,
     (commandType) testPrio,
@@ -49,7 +53,7 @@ static commandType commandFunctions[MODULES_SIZE] = {
     (commandType) mem_dump
     };
 
-void checkModule(char *string);
+void checkModule(char *string, int, int);
 
 void endlessLoop(void) {
   for(uint64_t i  = 0; 1; i++) {
@@ -67,26 +71,26 @@ int main() {
   while (1) {
     print_f(STDERR_FILENO, "\nbareOS $ ");
     int64_t ans = get_s(buffer, MAX_COMMAND);
-    if (ans != -1)
-      checkModule(buffer);
-    else
+    if (ans != -1) {
+      if (buffer[ans-1] == '\n') buffer[ans-1] = 0;
+      checkModule(buffer, STDIN_FILENO, STDOUT_FILENO);
+    } else
       print_f(STDOUT_FILENO, "Invalid Command\n");
   }
 }
 
-void checkModule(char *string) {
+void checkModule(char *string, int new_in, int new_out) {
   char *argv[MAX_ARGS] = {NULL};
   int argc = parser(string, argv);
-  for (int i = 0; i < MODULES_SIZE; i++) {
-    if (!strcmp(argv[0], commandStrings[i])) {
-      int mode = strcmp(argv[argc - 1], "&") == 0;
-      if(mode) {
-        argc--;
-        argv[argc] = NULL;
-      }
-      commandFunctions[i](argc, argv, mode, STDIN_FILENO, STDOUT_FILENO);
-      return;
-    }
+  int idx = findCmd(argv[0], commandStrings, MODULES_SIZE);
+  if(idx < 0)
+    print_f(STDOUT_FILENO, "%s: Command not found \n", string);
+  else {
+    int mode;
+    if(argv[argc - 1][0] == '&') 
+      mode = BACKGROUND;
+    else 
+      mode = FOREGROUND;
+    commandFunctions[idx](argc, argv, mode);
   }
-  print_f(STDOUT_FILENO, "Invalid Command\n");
 }

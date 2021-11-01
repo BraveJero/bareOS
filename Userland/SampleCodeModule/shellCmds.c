@@ -11,7 +11,7 @@ void helpCmd(void) {
   print_f(STDOUT_FILENO, " - sem: Displays a list of all open Semaphores.\n");
   print_f(STDOUT_FILENO, " - cat: Print on the standar output.\n");
   print_f(STDOUT_FILENO, " - wc: Print newline counts for standar input.\n");
-  print_f(STDOUT_FILENO, " - filter: Filters the vocals out of the standar input.\n");
+  print_f(STDOUT_FILENO, " - filter: Filters the vowels out of the standar input.\n");
   print_f(STDOUT_FILENO, " - pipe: Displays a list of all open pipes.\n");
   print_f(STDOUT_FILENO, " - phylo: Implements the Dining Philosophers.\n");
   print_f(STDOUT_FILENO, " - loop: Prints pid after a given amount of time.\n");
@@ -82,9 +82,17 @@ void loop(int argc, char *argv[]) {
 }
 
 void loopCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout) {
-  processManager((uint64_t) &loop, argc, argv, mode, new_stdin, new_stdin);
+  processManager((uint64_t) &loop, argc, argv, mode);
 }
 
 void catCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout) {
-  processManager((uint64_t) &cat, argc, argv, mode, new_stdin, new_stdout);
+  processManager((uint64_t) &cat, argc, argv, mode);
+}
+
+void filterCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout) {
+  processManager((uint64_t) &filter, argc, argv, mode);
+}
+
+void wcCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout) {
+  processManager((uint64_t) &wc, argc, argv, mode);
 }
