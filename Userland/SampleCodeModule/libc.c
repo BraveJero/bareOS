@@ -109,6 +109,7 @@ void put_char(uint8_t fd, const char character) { print(fd, &character, 1); }
 int get_char(void) {
   char c = 0;
   read(STDIN_FILENO, &c, 1);
+  print_to_screen((char *)&c, 1);
   return c;
 }
 
@@ -124,7 +125,7 @@ int64_t get_s(char *buffer, uint64_t maxLength) {
   while ((c = get_char()) != '\n') {
     if (c == -1)
       break;
-    if (counter < maxLength) {
+    if (counter < maxLength - 1) {
       if (c == '\b') { // Backspace
         if (counter == 0)
           continue;
@@ -136,16 +137,19 @@ int64_t get_s(char *buffer, uint64_t maxLength) {
       if (c == '\b')
         counter--;
       else
-        counter++;
+        break;
     }
+    print_to_screen((char *)&c, 1);
   }
 
-  if (counter > maxLength) {
-    buffer[maxLength] = '\0';
+  c = '\n';
+  print_to_screen((char *)&c, 1);
+
+  buffer[counter] = '\0';
+  if (counter == maxLength - 1) {
     return -1;
   }
 
-  buffer[counter] = '\0';
   return counter;
 }
 
