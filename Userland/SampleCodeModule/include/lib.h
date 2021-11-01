@@ -29,6 +29,7 @@ int get_char(void);
 
 // ASM
 void print(uint8_t fd, const char *s, uint64_t count);
+int64_t print_to_screen(char *buffer, uint64_t count);
 void setReg(void);
 uint64_t fillDate(dateType *pDate);
 void inforeg(void);

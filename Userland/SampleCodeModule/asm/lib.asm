@@ -1,4 +1,4 @@
-GLOBAL print, setReg, fillDate, inforeg, fillMem, _quadratic, read
+GLOBAL print, setReg, fillDate, inforeg, fillMem, _quadratic, read, print_to_screen
 
 EXTERN print_f
 
@@ -70,6 +70,11 @@ _quadratic:
 
 print:
     mov rax, 1
+    int 80h
+    ret
+
+print_to_screen:  ;; int64_t print_to_screen(char *buffer, uint64_t count);
+    mov rax, 26 
     int 80h
     ret
 
