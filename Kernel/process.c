@@ -10,7 +10,7 @@
 
 typedef struct process {
   pid_t pid, parent;
-  uint8_t priority, mode;
+  uint8_t priority, mode, waiting;
   Status status;
   uint64_t rsp, rip, stack_base;
   char **argv, *name;
@@ -93,6 +93,7 @@ pid_t createProcess(uint64_t rip, uint8_t priority, int argc, char *argv[],
   newProcess->priority = priority;
   newProcess->mode = mode;
   newProcess->argc = argc;
+  newProcess->waiting = 0;
   newProcess->fds[READ] = STDIN_FILENO;
   newProcess->fds[WRITE] = STDOUT_FILENO;
 
@@ -121,6 +122,10 @@ int kill(pid_t pid) {
     return -1;
   processes[pid]->status = TERMINATED;
   if (!isBackground(processes[pid]->mode)) {
+    unblock(processes[pid]->parent);
+  }
+
+  if(isWaiting(processes[pid]->parent)){
     unblock(processes[pid]->parent);
   }
 
@@ -185,6 +190,10 @@ uint8_t isTerminated(pid_t pid) {
   return isValidPid(pid) ? processes[pid]->status == TERMINATED : 1;
 }
 
+uint8_t isWaiting(pid_t pid) {
+  return !isValidPid(pid) || isTerminated(pid)? processes[pid]->waiting : 0;
+}
+
 void setRsp(pid_t pid, uint64_t rsp) {
   if (isValidPid(pid) || isTerminated(pid))
     processes[pid]->rsp = rsp;
@@ -222,6 +231,14 @@ int dup(pid_t pid, int old, int new) {
     return -1;
   processes[pid]->fds[old] = new;
   return 0;
+}
+
+int wait(void) {
+  pid_t pid = getCurrentPid();
+  if(pid < 0)
+    return -1;
+  processes[pid]->waiting = 1;
+  return block(pid);
 }
 
 void showAllPs() {
