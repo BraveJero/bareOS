@@ -5,6 +5,9 @@
 #include <process.h>
 #include <scheduler.h>
 
+#define MIN_PRIORITY 0
+#define MAX_PRIORITY 9
+
 typedef struct process {
   pid_t pid, parent;
   uint8_t priority, mode;
@@ -75,6 +78,9 @@ pid_t createProcess(uint64_t rip, uint8_t priority, int argc, char *argv[],
   } else {
     newProcess->name = "";
   }
+
+  priority = priority < MIN_PRIORITY? MIN_PRIORITY : priority;
+  priority = priority > MAX_PRIORITY? MAX_PRIORITY : priority;
 
   uint64_t rsp = newProcess->stack_base + (PROCESS_SIZE - 1);
 
@@ -210,6 +216,8 @@ int dup(pid_t pid, int old, int new) {
   if ((old != STDIN_FILENO && old != STDOUT_FILENO) || !isValidPid(pid) ||
       isTerminated(pid))
     return -1;
+  new = new < MIN_PRIORITY? MIN_PRIORITY : new;
+  new = new > MAX_PRIORITY? MAX_PRIORITY : new;
   processes[pid]->fds[old] = new;
   return 0;
 }
