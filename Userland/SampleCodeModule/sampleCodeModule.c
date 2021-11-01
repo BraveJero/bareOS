@@ -6,27 +6,57 @@
 #include <my_pipes.h>
 #include <my_process.h>
 #include <my_sync.h>
+#include <my_video.h>
 #include <shellCmds.h>
 #include <stdint.h>
 #include <string.h>
 #include <tests.h>
 #include <utils.h>
 
-#define MODULES_SIZE 16
+#define MODULES_SIZE 18
 
 typedef void (*commandType)(int argc, char *argv[], int mode, int, int);
 
 static char *commandStrings[MODULES_SIZE] = {
-    "help",     "ps",     "kill", "block",  "unblock", "loop",
-    "cat",      "filter", "wc",   "testMM", "testPrs", "testPrio",
-    "testSync", "pipe",   "sem",  "memDump"};
+    "help",
+    "ps",
+    "kill",
+    "block",
+    "unblock",
+    "nice",
+    "loop",
+    "cat",
+    "filter",
+    "wc",
+    "testMM", 
+    "testPrs",
+    "testPrio",
+    "testSync",
+    "pipe",
+    "sem",
+    "memDump",
+    "clear"
+    };
 static commandType commandFunctions[MODULES_SIZE] = {
-    (commandType)helpCmd,  (commandType)ps,         (commandType)killCmd,
-    (commandType)blockCmd, (commandType)unblockCmd, (commandType)loopCmd,
-    (commandType)catCmd,   (commandType)filterCmd,  (commandType)wcCmd,
-    (commandType)testMM,   (commandType)testPrs,    (commandType)testPrio,
-    (commandType)testSync, (commandType)pipe_dump,  (commandType)sem_dump,
-    (commandType)mem_dump};
+    (commandType) helpCmd,
+    (commandType) ps,
+    (commandType) killCmd,
+    (commandType) blockCmd,
+    (commandType) unblockCmd,
+    (commandType) niceCmd,
+    (commandType) loopCmd,
+    (commandType) catCmd,
+    (commandType) filterCmd,
+    (commandType) wcCmd,
+    (commandType) testMM,
+    (commandType) testPrs,
+    (commandType) testPrio,
+    (commandType) testSync,
+    (commandType) pipe_dump,
+    (commandType) sem_dump,
+    (commandType) mem_dump,
+    (commandType) clear
+    };
 
 void checkModule(char *string, int, int);
 void getCommand(char *str);

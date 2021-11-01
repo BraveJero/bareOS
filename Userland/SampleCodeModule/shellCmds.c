@@ -14,11 +14,12 @@ void helpCmd(void) {
   print_f(STDOUT_FILENO, " - filter: Filters the vowels out of the standar input.\n");
   print_f(STDOUT_FILENO, " - pipe: Displays a list of all open pipes.\n");
   print_f(STDOUT_FILENO, " - phylo: Implements the Dining Philosophers.\n");
-  print_f(STDOUT_FILENO, " - loop: Prints pid, argc and argv after a given amount of time.\n");
+  print_f(STDOUT_FILENO, " - loop <argv>: Prints pid, argc and argv after a given amount of time.\n");
   print_f(STDOUT_FILENO, " - testPrio: Tests priority.\n");
   print_f(STDOUT_FILENO, " - testSync: Tests synchronization.\n");
   print_f(STDOUT_FILENO, " - testMM: Tests memory manager.\n");
-  print_f(STDOUT_FILENO, " - testPrs: tests process creation.\n");
+  print_f(STDOUT_FILENO, " - testPrs: Tests process creation.\n");
+  print_f(STDOUT_FILENO, " - clear: Clears the screen.\n");
 
 }
 
