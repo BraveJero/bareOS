@@ -119,7 +119,14 @@ void put_s(uint8_t fd, const char *s) {
 
 // maxLength = Letras a leer sin contar el \0 al final
 int64_t get_s(char *buffer, uint64_t maxLength) {
-  return read(STDIN_FILENO, buffer, maxLength);
+  int ans = read(STDIN_FILENO, buffer, maxLength);
+  if (ans <= 0) {
+    return ans;
+  }
+  if (ans < maxLength - 1) {
+    buffer[ans] = '\0'; 
+  }
+  return ans;
 }
 
 // https://iq.opengenus.org/how-printf-and-scanf-function-works-in-c-internally/
