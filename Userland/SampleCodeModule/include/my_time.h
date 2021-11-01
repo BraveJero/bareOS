@@ -1,8 +1,8 @@
 #ifndef __MY_TIME_H__
 #define __MY_TIME_H__
 
-void getticks(void);
+uint64_t getticks(void);
 
-void getticks(void);
+uint64_t getseconds(void);
 
 #endif

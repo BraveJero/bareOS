@@ -1,11 +1,11 @@
 GLOBAL getticks, getseconds
 
-getticks: ; void getticks(void)
+getticks: ; uint64_t getticks(void)
     mov rax, 29
     int 80h
     ret
 
-getticks: ; void getticks(void)
+getseconds: ; uint64_t getseconds(void)
     mov rax, 29
     int 80h
     ret
