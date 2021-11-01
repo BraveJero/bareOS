@@ -5,7 +5,7 @@
 typedef struct pipe {
   char buf[BUFFER_SIZE];
   uint8_t r_pointer, w_pointer;
-  uint16_t write, lock;
+  uint16_t write, lock, reading;
   uint8_t userCount;
 } Pipe;
 
@@ -37,9 +37,17 @@ int pipe(int16_t pipeID, int fds[2]) {
       return -1;
     }
 
-    pipes[pipeID]->lock = sem_open((MAX_USER_SEMS * 2) + pipeID, 1);
+    pipes[pipeID]->lock = sem_open((MAX_USER_SEMS + MAX_PIPES) + pipeID, 1);
     if (pipes[pipeID]->lock == -1) {
       sem_close(pipes[pipeID]->write);
+      return -1;
+    }
+
+    pipes[pipeID]->reading =
+        sem_open((MAX_USER_SEMS + (MAX_PIPES * 2)) + pipeID, 1);
+    if (pipes[pipeID]->reading == -1) {
+      sem_close(pipes[pipeID]->write);
+      sem_close(pipes[pipeID]->lock);
       return -1;
     }
 
@@ -62,8 +70,16 @@ int pipe(int16_t pipeID, int fds[2]) {
     return -1;
   }
 
+  pipes[pipeID]->reading =
+      sem_open((MAX_USER_SEMS + (MAX_PIPES * 2)) + pipeID, 1);
+  if (pipes[pipeID]->reading == -1) {
+    sem_close(pipes[pipeID]->write);
+    sem_close(pipes[pipeID]->lock);
+    return -1;
+  }
+
   pipes[pipeID]->userCount++;
-  fds[0] = 2 * pipeID + 3; // Avoid 0, 1 and 2 since they belong to 
+  fds[0] = 2 * pipeID + 3; // Avoid 0, 1 and 2 since they belong to
   fds[1] = 2 * pipeID + 4; // STDIN, STDOUT and STDERR respectively.
   return pipes[pipeID]->userCount;
 }
@@ -83,23 +99,33 @@ int pipeRead(int fd, char *buf, size_t count) {
 
   long i = 0;
 
-  if (sem_wait(pipes[fd]->lock) < 0)
+  if (sem_wait(pipes[fd]->reading) < 0)
     return -1;
 
-  while (pipes[fd]->r_pointer == pipes[fd]->w_pointer) {
-    waiting++;
-    if (sem_post(pipes[fd]->lock) < 0)
-      return -1;
+  while (i < count) {
     if (sem_wait(pipes[fd]->write) < 0)
       return -1;
-    if (sem_wait(pipes[fd]->lock) < 0)
-      return -1;
+
+    if (pipes[fd]->buf[pipes[fd]->r_pointer] == EOF) {
+      pipes[fd]->r_pointer++;
+      break;
+    }
+
+    if (pipes[fd]->buf[pipes[fd]->r_pointer] == '\b') {
+      if (i > 0) {
+        i--;
+      }
+    } else {
+      buf[i++] = pipes[fd]->buf[pipes[fd]->r_pointer];
+      if (buf[i - 1] == '\n') {
+        pipes[fd]->r_pointer++;
+        break;
+      }
+    }
+    pipes[fd]->r_pointer++;
   }
 
-  while (i < count && pipes[fd]->r_pointer != pipes[fd]->w_pointer)
-    buf[i++] = pipes[fd]->buf[pipes[fd]->r_pointer++];
-
-  if (sem_post(pipes[fd]->lock) < 0)
+  if (sem_post(pipes[fd]->reading) < 0)
     return -1;
 
   if (i < count) {
@@ -122,20 +148,16 @@ int pipeWrite(int fd, const char *buf, size_t count) {
 
   if (sem_wait(pipes[fd]->lock) < 0)
     return -1;
-  
+
   while (i < count && buf[i])
     pipes[fd]->buf[pipes[fd]->w_pointer++] = buf[i++];
 
-  while (waiting){
-    waiting--;
-    if (sem_post(pipes[fd]->write) < 0){
-      return -1;
-    }
+  if (sem_post(pipes[fd]->write) < 0) {
+    return -1;
   }
 
   if (sem_post(pipes[fd]->lock) < 0)
     return -1;
-  
 
   return i;
 }
@@ -152,6 +174,7 @@ int closePipe(uint8_t pipeID) {
   }
   sem_close(pipes[pipeID]->lock);
   sem_close(pipes[pipeID]->write);
+  sem_close(pipes[pipeID]->reading);
   free(pipes[pipeID]);
   pipes[pipeID] = NULL;
   return 0;
@@ -160,8 +183,8 @@ int closePipe(uint8_t pipeID) {
 void pipe_dump(void) {
   ncNewline();
   ncPrint("---------------------------------------");
-  for(int i = 0; i < MAX_PIPES; i++) {
-    if(pipes[i] != NULL) {
+  for (int i = 0; i < MAX_PIPES; i++) {
+    if (pipes[i] != NULL) {
       ncNewline();
       ncPrint("Pipe ID: ");
       ncPrintDec(i);
