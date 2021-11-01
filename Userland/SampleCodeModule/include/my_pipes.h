@@ -9,4 +9,6 @@ int closePipe(uint8_t pipeID);
 
 void pipe_dump(void);
 
+void plugPipe(uint8_t pipeID);
+
 #endif

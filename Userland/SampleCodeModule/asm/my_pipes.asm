@@ -1,4 +1,4 @@
-GLOBAL pipe, closePipe, pipe_dump
+GLOBAL pipe, closePipe, pipe_dump, plugPipe
 
 pipe: ;; int pipe(int16_t pipeID, int fds[2]);
   mov rax, 21
@@ -13,5 +13,10 @@ closePipe: ;; int closePipe(uint8_t pipeID);
 
 pipe_dump: ;; void pipe_dump(void);
   mov rax, 24
+  int 80h
+  ret
+
+plugPipe: ;; void plugPipe(uint8_t pipeID);
+  mov rax, 27
   int 80h
   ret
