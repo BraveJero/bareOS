@@ -168,6 +168,12 @@ int main() {
   
   //(((EntryPoint)sampleCodeModuleAddress)());
 
+  void * aiuda = alloc(20);
+  mem_dump();
+  ncPrint("-------------------------");
+  ncNewline();
+  free(aiuda);
+  mem_dump();
   ncNewline();
   ncNewline();
 

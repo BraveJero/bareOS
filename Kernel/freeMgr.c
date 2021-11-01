@@ -1,4 +1,6 @@
+#ifndef BUDDY
 #include <mmgr.h>
+#include <stdint.h>
 
 static char *to_alloc = (char *) (TOTAL_MEMORY - TOTAL_HEAP_SIZE);
 
@@ -189,3 +191,4 @@ void mem_dump(void) {
   ncPrint("---------------------------------------");
   ncNewline();
 }
+#endif
