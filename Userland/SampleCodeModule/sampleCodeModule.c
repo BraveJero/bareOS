@@ -67,7 +67,7 @@ void endlessLoop(void) {
 int main() {
   char buffer[MAX_COMMAND + 1];
   print_f(STDOUT_FILENO, "Welcome to bareOS!\n\nType 'help' to see a list of all available commands.\n");
-  //exec(createPs((uint64_t) &endlessLoop, "endless loop", 0, NULL, BACKGROUND));
+  //exec(createPs((uint64_t) &endlessLoop, 0, NULL, BACKGROUND));
 
   while (1) {
     print_f(STDERR_FILENO, "\nbareOS $ ");
@@ -100,13 +100,18 @@ void getCommand(char *str) {
   char *p = strchr(str, '|');
   if(p == NULL)
     return checkModule(str, STDIN_FILENO, STDOUT_FILENO);
-  int fds[2];
-  if(pipe(-1, fds) < 0) { // First available pipe.
+  int fds[2], id;
+  if((id = pipe(-1, fds)) < 0) { // First available pipe.
     print_f(STDOUT_FILENO, "Error opening pipe \n");
     return;
   }
   *p = '\0';
   char *cmd1 = str, *cmd2 = p + 1;
+
+
   checkModule(cmd1, STDIN_FILENO, fds[1]);
-  checkModule(cmd2, STDOUT_FILENO, fds[0]);
+  plugPipe(id);
+  checkModule(cmd2, fds[0], STDOUT_FILENO);
+  
+  closePipe(id);
 }

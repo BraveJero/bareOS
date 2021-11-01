@@ -11,7 +11,6 @@ void cat(void) {
       exit();
     print(STDOUT_FILENO, buffer, read);
   } while (read != 0 && buffer[read-1] == '\n');
-  put_char(STDOUT_FILENO, '\n');
   exit();
 }
 

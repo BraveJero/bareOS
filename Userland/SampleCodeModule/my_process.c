@@ -6,8 +6,15 @@ void processManager(uint64_t rip, int argc, char *argv[], uint8_t mode, int new_
     print_f(STDOUT_FILENO, "Error creating process\n");
     return;
   }
-  dup(pid, STDIN_FILENO, new_in);
-  dup(pid, STDOUT_FILENO, new_out);
+  
+  if(dup(pid, STDIN_FILENO, new_in) < 0) {
+    print_f(STDOUT_FILENO, "Error dupping fd %d\n", STDIN_FILENO);
+  }
+
+  if(dup(pid, STDOUT_FILENO, new_out) < 0) {
+    print_f(STDOUT_FILENO, "Error dupping fd %d\n", STDOUT_FILENO);
+  }
+
   if(exec(pid) < 0) {
     print_f(STDOUT_FILENO, "Error running process %d\n", pid);
   }
