@@ -73,6 +73,10 @@ int64_t sys_write(uint8_t fd, char *buffer, uint64_t count) {
   if (fd == STDIN_FILENO)
     return -1;
 
+  if (fd == STDOUT_FILENO) {
+    fd = getFd(getCurrentPid(), STDOUT_FILENO);
+  }
+
   if (fd > 3)
     return pipeWrite(fd, buffer, count);
 
@@ -106,6 +110,10 @@ int64_t sys_read(unsigned int fd, char *buf, size_t count) {
 
   if (buf == NULL || count == 0)
     return -1;
+
+  if (fd == STDIN_FILENO) {
+    fd = getFd(getCurrentPid(), STDIN_FILENO);
+  }
 
   if (fd > 3)
     return pipeRead(fd, buf, count);
