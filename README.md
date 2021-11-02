@@ -31,4 +31,4 @@ From the x64BareBones project directory run:
   user@linux:$ ./run.sh
 ```
 
-This project's report is in this repository's wiki.
+This project's report is in [this repository's wiki](https://github.com/BraveJero/bareOS/wiki/Practical-Work-N%C2%B02---Operative-Systems-(72.11)).
