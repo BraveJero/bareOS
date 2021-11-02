@@ -13,7 +13,7 @@
 #include <tests.h>
 #include <utils.h>
 
-#define MODULES_SIZE 20
+#define MODULES_SIZE 21
 
 typedef void (*commandType)(int argc, char *argv[], int mode, int, int);
 
@@ -33,6 +33,7 @@ static char *commandStrings[MODULES_SIZE] = {
     "testPrs",
     "testPrio",
     "testSync",
+    "testNoSync",
     "pipe",
     "sem",
     "memDump",
@@ -55,6 +56,7 @@ static commandType commandFunctions[MODULES_SIZE] = {
     (commandType) testPrs,
     (commandType) testPrio,
     (commandType) testSync,
+    (commandType) testNoSync,
     (commandType) pipe_dump,
     (commandType) sem_dump,
     (commandType) mem_dump,

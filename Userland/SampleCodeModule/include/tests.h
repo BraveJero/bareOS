@@ -33,6 +33,7 @@ typedef struct P_rq {
 void testMM(void);
 void testPrs(void);
 void testSync(void);
+void testNoSync(void);
 void testPrio(void);
 
 #endif

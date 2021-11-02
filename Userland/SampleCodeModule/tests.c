@@ -158,38 +158,42 @@ void slowInc(int64_t *p, int64_t inc) {
 }
 
 void inc(int argc, char *argv[]) {
+  uint64_t sem = atoi(argv[0]);
   int64_t value = atoi(argv[1]);
   uint64_t N = atoi(argv[2]);
   // uint64_t sem, int64_t value, uint64_t N
   uint64_t i;
 
-  if (sem_open(SEM_ID, 1) < 0) {
-    put_s(STDOUT_FILENO, "Error opening SEM_ID\n");
+  if (sem && sem_open(SEM_ID, 1) < 0) {
+    put_s(STDERR_FILENO, "Error opening SEM_ID\n");
     return;
   }
-  if (sem_open(SEM_ID2, 1) < 0) {
-    put_s(STDOUT_FILENO, "Error opening SEM_ID2\n");
+  if (sem && sem_open(SEM_ID2, 1) < 0) {
+    put_s(STDERR_FILENO, "Error opening SEM_ID2\n");
     return;
   }
 
   for (i = 0; i < N; i++) {
-    if (sem_wait(SEM_ID) < 0) {
-      put_s(STDOUT_FILENO, "Error in wait SEM_ID\n");
+    if (sem && sem_wait(SEM_ID) < 0) {
+      put_s(STDERR_FILENO, "Error in wait SEM_ID\n");
       return;
     }
     slowInc(&global, value);
-    if (sem_post(SEM_ID) < 0) {
-      put_s(STDOUT_FILENO, "Error in post SEM_ID\n");
+    if (sem && sem_post(SEM_ID) < 0) {
+      put_s(STDERR_FILENO, "Error in post SEM_ID\n");
       return;
     }
   }
-  if (sem_close(SEM_ID) == 0) {
+  if (sem && sem_close(SEM_ID) == 0) {
     if (sem_post(SEM_ID2) < 0) {
-      put_s(STDOUT_FILENO, "Error in post SEM_ID2\n");
+      put_s(STDERR_FILENO, "Error in post SEM_ID2\n");
       return;
     }
   }
-  sem_close(SEM_ID2);
+  if (sem && sem_close(SEM_ID2) < 0) {
+    put_s(STDERR_FILENO, "Error in post SEM_ID\n");
+    return;
+  }
   print_f(STDOUT_FILENO, "Final value: %d\n", global);
   exit();
 }
@@ -201,7 +205,7 @@ void testSync() {
 
   put_s(STDOUT_FILENO, "Testing sync module...\n");
   if (sem_open(SEM_ID2, 0) < 0) {
-    put_s(STDOUT_FILENO, "Error opening SEM_ID2\n");
+    put_s(STDERR_FILENO, "Error opening SEM_ID2\n");
     return;
   }
   char *argv[4];
@@ -214,19 +218,47 @@ void testSync() {
   argv2[2] = "10";
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
     if (exec(createPs((uint64_t)&inc, 3, argv, BACKGROUND)) < 0) {
-      put_s(STDOUT_FILENO, "Error when executing.\n");
+      put_s(STDERR_FILENO, "Error when executing.\n");
       return;
     }
     if (exec(createPs((uint64_t)&inc, 3, argv2, BACKGROUND)) < 0) {
-      put_s(STDOUT_FILENO, "Error when executing.\n");
+      put_s(STDERR_FILENO, "Error when executing.\n");
       return;
     }
   }
   if (sem_wait(SEM_ID2) < 0) {
-    put_s(STDOUT_FILENO, "Error in wait SEM_ID2\n");
+    put_s(STDERR_FILENO, "Error in wait SEM_ID2\n");
     return;
   }
   sem_close(SEM_ID2);
+  put_s(STDOUT_FILENO, "Test complete.\n");
+}
+
+void testNoSync() {
+  uint64_t i;
+
+  global = 0;
+
+  put_s(STDOUT_FILENO, "Testing no-sync module...\n");
+  
+  char *argv[4];
+  argv[0] = "0";
+  argv[1] = "1";
+  argv[2] = "10";
+  char *argv2[4];
+  argv2[0] = "0";
+  argv2[1] = "-1";
+  argv2[2] = "10";
+  for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
+    if (exec(createPs((uint64_t)&inc, 3, argv, BACKGROUND)) < 0) {
+      put_s(STDERR_FILENO, "Error when executing.\n");
+      return;
+    }
+    if (exec(createPs((uint64_t)&inc, 3, argv2, FOREGROUND)) < 0) {
+      put_s(STDERR_FILENO, "Error when executing.\n");
+      return;
+    }
+  }
   put_s(STDOUT_FILENO, "Test complete.\n");
 }
 
@@ -301,14 +333,13 @@ void testPrio(void) {
     }
   }
 
-
   put_s(STDOUT_FILENO, "Unblocking...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
     unblock(pids[i]);
 
   yield();
-  
+
   bussy_wait(WAIT);
   put_s(STDOUT_FILENO, "\nKilling...\n");
 
