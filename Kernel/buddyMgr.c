@@ -37,7 +37,7 @@ static uint32_t maxMemSize = TOTAL_MEMORY;
 static list_t allLists[MAX_LEVELS];
 static uint8_t levels;
 #define HEAP_SIZE TOTAL_HEAP_SIZE
-static uint8_t * mem_base = (uint8_t*) TOTAL_MEMORY - (uint8_t *) TOTAL_HEAP_SIZE;
+static uint8_t * mem_base = (uint8_t*) (TOTAL_MEMORY - TOTAL_HEAP_SIZE);
 
 int initMgr() {
       levels = (int)log_2(maxMemSize) - MIN_ALLOC + 1;
