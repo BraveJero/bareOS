@@ -215,6 +215,7 @@ int setWaitingPid(pid_t waitFor, pid_t waitOn) {
   if (!isValidPid(waitFor) || isTerminated(waitFor) || !isValidPid(waitOn) || isTerminated(waitOn))
     return -1;
   processes[waitOn]->wait = waitFor;
+  return 0;
 }
 
 int setPriority(pid_t pid, uint8_t priority) {
