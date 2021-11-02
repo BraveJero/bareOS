@@ -6,7 +6,7 @@ getticks: ; uint64_t getticks(void)
     ret
 
 getseconds: ; uint64_t getseconds(void)
-    mov rax, 29
+    mov rax, 30
     int 80h
     ret
 
