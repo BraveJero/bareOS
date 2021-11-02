@@ -16,11 +16,12 @@ void helpCmd(void) {
   print_f(STDOUT_FILENO, " - phylo: Implements the Dining Philosophers.\n");
   print_f(STDOUT_FILENO, " - loop: Prints pid once every timer tick.\n");
   print_f(STDOUT_FILENO, " - printArgs <argv>: Prints argc and argv.\n");
-  print_f(STDOUT_FILENO, " - testPrio: Tests priority.\n");
+  print_f(STDOUT_FILENO, " - clear: Clears the screen.\n\n");
+  print_f(STDOUT_FILENO, "TESTS:\n - testPrio: Tests priority.\n");
   print_f(STDOUT_FILENO, " - testSync: Tests synchronization.\n");
+  print_f(STDOUT_FILENO, " - testNoSync: Tests without synchronization.\n");
   print_f(STDOUT_FILENO, " - testMM: Tests memory manager.\n");
-  print_f(STDOUT_FILENO, " - testPrs: Tests process creation.\n");
-  print_f(STDOUT_FILENO, " - clear: Clears the screen.\n");
+  print_f(STDOUT_FILENO, " - testPrs: Tests process creation.\n\n");
   print_f(STDOUT_FILENO, "EOF is signaled by TAB.\n");
 }
 

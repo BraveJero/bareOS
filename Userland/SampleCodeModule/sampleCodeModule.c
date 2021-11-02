@@ -76,7 +76,7 @@ int main() {
   put_s(STDERR_FILENO, "\n\nPress enter to load into bareOS.\n");
   get_char();
 
-  print_f(STDOUT_FILENO, "\n\nType 'help' to see a list of all available commands.\n");
+  print_f(STDOUT_FILENO, "\nType 'help' to see a list of all available commands.\n");
 
   while (1) {
     print_f(STDERR_FILENO, "\nbareOS $ ");
