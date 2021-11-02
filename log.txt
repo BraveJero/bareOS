@@ -1,0 +1,41 @@
+[Bootloader/BMFS/bmfs.c:236]: (warning) %d in format string (no. 2) requires 'int' but the argument type is 'unsigned int'.
+[Bootloader/BMFS/bmfs.c:252]: (warning) %lld in format string (no. 2) requires 'long long' but the argument type is 'unsigned long long'.
+[Bootloader/BMFS/bmfs.c:687]: (warning) %lld in format string (no. 1) requires 'long long' but the argument type is 'unsigned long long'.
+[Bootloader/BMFS/bmfs.c:260] -> [Bootloader/BMFS/bmfs.c:262]: (performance) Buffer 'DiskInfo' is being written before its old content has been used.
+[Bootloader/BMFS/bmfs.c:274]: (style) The scope of the variable 'writeSize' can be reduced.
+[Bootloader/BMFS/bmfs.c:449]: (style) The scope of the variable 'percent' can be reduced.
+[Bootloader/BMFS/bmfs.c:723]: (style) The scope of the variable 'tfile' can be reduced.
+[Bootloader/BMFS/bmfs.c:724]: (style) The scope of the variable 'tint' can be reduced.
+[Bootloader/BMFS/bmfs.c:755]: (style) The scope of the variable 'tfile' can be reduced.
+[Bootloader/BMFS/bmfs.c:756]: (style) The scope of the variable 'tint' can be reduced.
+[Kernel/buddyMgr.c:58]: (style) The scope of the variable 'left' can be reduced.
+[Kernel/buddyMgr.c:58]: (style) The scope of the variable 'right' can be reduced.
+[Kernel/buddyMgr.c:69]: (portability) 'node' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined.
+[Kernel/buddyMgr.c:80]: (portability) 'ans' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined.
+[Kernel/buddyMgr.c:88]: (portability) 'address' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined.
+[Kernel/buddyMgr.c:100]: (portability) 'address' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined.
+[Kernel/buddyMgr.c:102]: (portability) 'address' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined.
+[Toolchain/ModulePacker/main.c:111]: (style) The scope of the variable 'read' can be reduced.
+[Userland/SampleCodeModule/phylo.c:103]: (style) Variable 'c' is assigned a value that is never used.
+[Userland/SampleCodeModule/tests.c:10]: (style) The scope of the variable 'rq' can be reduced.
+[Userland/SampleCodeModule/tests.c:11]: (style) The scope of the variable 'total' can be reduced.
+[Userland/SampleCodeModule/utils.c:166]: (style) The scope of the variable 'dig' can be reduced.
+[Userland/SampleCodeModule/_loader.c:10]: (style) The function '_start' is never used.
+[Kernel/video.c:34]: (style) The function 'drawShellBorder' is never used.
+[Userland/SampleCodeModule/sampleCodeModule.c:70]: (style) The function 'endlessLoop' is never used.
+[Kernel/interruptions/exceptions.c:17]: (style) The function 'exceptionDispatcher' is never used.
+[Kernel/video.c:40]: (style) The function 'fillScreen' is never used.
+[Userland/SampleCodeModule/phylo.c:10]: (style) The function 'getRight' is never used.
+[Kernel/kernel.c:93]: (style) The function 'initializeKernelBinary' is never used.
+[Kernel/interruptions/irqDispatcher.c:10]: (style) The function 'irqDispatcher' is never used.
+[Kernel/process.c:185]: (style) The function 'isBlocked' is never used.
+[Kernel/naiveConsole.c:52]: (style) The function 'ncPrintBCD' is never used.
+[Kernel/naiveConsole.c:61]: (style) The function 'ncPrintBin' is never used.
+[Userland/SampleCodeModule/phylo.c:56]: (style) The function 'phylo' is never used.
+[Userland/SampleCodeModule/utils.c:13]: (style) The function 'printDate' is never used.
+[Userland/SampleCodeModule/utils.c:52]: (style) The function 'printFeatures' is never used.
+[Userland/SampleCodeModule/utils.c:82]: (style) The function 'printQuadraticRoots' is never used.
+[Userland/SampleCodeModule/utils.c:21]: (style) The function 'printmem' is never used.
+[Kernel/interruptions/scheduler.c:34]: (style) The function 'scheduler' is never used.
+[Kernel/interruptions/syscalls.c:69]: (style) The function 'sysCallDispatcher' is never used.
+(information) Cppcheck cannot find all the include files (use --check-config for details)

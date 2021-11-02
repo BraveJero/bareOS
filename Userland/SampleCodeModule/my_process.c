@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <my_process.h>
 
 pid_t processManager(uint64_t rip, int argc, char *argv[], uint8_t mode, int new_in, int new_out) {
