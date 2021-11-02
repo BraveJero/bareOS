@@ -15,7 +15,7 @@
 
 #define MODULES_SIZE 20
 
-typedef void (*commandType)(int argc, char *argv[], int mode, int, int);
+typedef pid_t (*commandType)(int argc, char *argv[], int mode, int, int);
 
 static char *commandStrings[MODULES_SIZE] = {
     "help",
@@ -62,16 +62,8 @@ static commandType commandFunctions[MODULES_SIZE] = {
     (commandType) broombroom,
     };
 
-void checkModule(char *string, int, int, int);
+pid_t checkModule(char *string, int, int, int);
 void getCommand(char *str);
-
-void endlessLoop(void) {
-  for (uint64_t i = 0; 1; i++) {
-    if (i % 5000000 == 0) {
-      print_f(STDOUT_FILENO, "A");
-    }
-  }
-}
 
 int main() {
   char buffer[MAX_COMMAND + 1];
@@ -98,12 +90,15 @@ int main() {
   }
 }
 
-void checkModule(char *string, int new_in, int new_out, int foreceBG) {
+pid_t checkModule(char *string, int new_in, int new_out, int foreceBG) {
   char *argv[MAX_ARGS] = {NULL};
   int argc = parser(string, argv);
   int idx = findCmd(argv[0], commandStrings, MODULES_SIZE);
-  if (idx < 0)
+  if (idx < 0){
     print_f(STDOUT_FILENO, "%s: Command not found \n", string);
+    return -1;
+  }
+
   else {
     int mode;
     if(foreceBG) {
@@ -114,7 +109,7 @@ void checkModule(char *string, int new_in, int new_out, int foreceBG) {
       else
         mode = FOREGROUND;
     }
-    commandFunctions[idx](argc, argv, mode, new_in, new_out);
+    return commandFunctions[idx](argc, argv, mode, new_in, new_out);
   }
 }
 
@@ -130,11 +125,11 @@ void getCommand(char *str) {
   *p = '\0';
   char *cmd1 = str, *cmd2 = p + 1;
 
-  checkModule(cmd2, fds[0], STDOUT_FILENO, 1);
+  pid_t waitFor = checkModule(cmd2, fds[0], STDOUT_FILENO, 1);
   checkModule(cmd1, STDIN_FILENO, fds[1], 0);
   plugPipe(id); // signal EOF to right process.
 
-  //wait();
+  waitPid(waitFor);
 
   closePipe(id);
 }

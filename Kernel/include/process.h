@@ -36,6 +36,7 @@ void setRsp(pid_t pid, uint64_t rsp);
 int setStatusToBlocked(pid_t pid);
 int setStatusToReady(pid_t pid);
 int setPriority(pid_t pid, uint8_t priority);
+int setWaitingPid(pid_t waitFor, pid_t waitOn);
 uint64_t getRsp(pid_t pid);
 int getPriority(pid_t pid);
 uint8_t isReady(pid_t pid);
@@ -43,7 +44,7 @@ uint8_t isBlocked(pid_t pid);
 uint8_t isTerminated(pid_t pid);
 uint8_t isWaiting(pid_t pid);
 int dup(pid_t pid, int old, int new);
-int wait(void);
+int wait(pid_t pid);
 void showAllPs(void);
 int getFd(pid_t pid, uint8_t fd);
 

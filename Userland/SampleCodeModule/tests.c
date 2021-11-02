@@ -7,13 +7,11 @@ typedef struct MM_rq {
 
 void testMM() {
   mm_rq mm_rqs[MAX_BLOCKS];
-  uint8_t rq;
-  uint32_t total;
 
   while (1) {
+    uint8_t rq = 0;
+    uint32_t total = 0;
     print(STDOUT_FILENO, "Testing memory manager module:\n", 32);
-    rq = 0;
-    total = 0;
 
     // Request as many blocks as we can
     print(STDOUT_FILENO, "Requesting blocks.\n", 19);

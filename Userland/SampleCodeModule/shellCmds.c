@@ -99,8 +99,8 @@ void loop(int argc, char *argv[]) {
   exit();
 }
 
-void loopCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
-  processManager((uint64_t) &loop, argc, argv, mode, new_in, new_out);
+pid_t loopCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
+  return processManager((uint64_t) &loop, argc, argv, mode, new_in, new_out);
 }
 
 void printArgs(int argc, char *argv[]) {
@@ -113,20 +113,20 @@ void printArgs(int argc, char *argv[]) {
   exit();
 }
 
-void printArgsCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
-  processManager((uint64_t) &printArgs, argc, argv, mode, new_in, new_out);
+pid_t printArgsCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
+  return processManager((uint64_t) &printArgs, argc, argv, mode, new_in, new_out);
 }
 
-void catCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
-  processManager((uint64_t) &cat, argc, argv, mode, new_in, new_out);
+pid_t catCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
+  return processManager((uint64_t) &cat, argc, argv, mode, new_in, new_out);
 }
 
-void filterCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
-  processManager((uint64_t) &filter, argc, argv, mode, new_in, new_out);
+pid_t filterCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
+  return processManager((uint64_t) &filter, argc, argv, mode, new_in, new_out);
 }
 
-void wcCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
-  processManager((uint64_t) &wc, argc, argv, mode, new_in, new_out);
+pid_t wcCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
+  return processManager((uint64_t) &wc, argc, argv, mode, new_in, new_out);
 }
 
 void broombroom(void) {

@@ -163,7 +163,7 @@ _Stoul(const char *s, char **endptr,
        int base) { /* convert string to unsigned long, with checking */
   const char *sc, *sd;
   const char *s1;
-  char dig, sign;
+  char sign;
   unsigned long x;
   sc = s;
   sign = *sc == '-' || *sc == '+' ? *sc++ : '+';
@@ -183,7 +183,7 @@ _Stoul(const char *s, char **endptr,
   for (s1 = sc; *sc == '0'; ++sc)
     ; /* skip leading zeros */
   x = 0;
-  for ( ; (sd = (char *)memchr(digits, TO_LOWER(*sc), base)) != NULL;
+  for (char dig ; (sd = (char *)memchr(digits, TO_LOWER(*sc), base)) != NULL;
        ++sc) {                /* accumulate digits */
     dig = sd - digits; /* for overflow checking */
     x = x * base + dig;

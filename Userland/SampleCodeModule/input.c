@@ -33,8 +33,9 @@ void wc(void) {
   char buf[MAX_BUF_SIZE] = {0};
   int lineCounter = 0, byteCounter = 0, read;
   do {
-    if((read = get_s(buf, MAX_BUF_SIZE)) < 0 )
+    if((read = get_s(buf, MAX_BUF_SIZE)) < 0 ){
       exit();
+    }  
     if (read > 0)
       lineCounter++;
     byteCounter += read;

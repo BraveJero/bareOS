@@ -55,7 +55,7 @@ void *alloc(size_t size){
 
 	if (minLevel == -1)	return NULL;
 
-	void * ans, *left, *right, *node;
+	void * ans, *node;
 	list_t * link;
 
 	int availableLevel = getFirstAvailableLevel(minLevel);
@@ -63,6 +63,7 @@ void *alloc(size_t size){
 	if (availableLevel == -1) return NULL;
 
 	while ( availableLevel < minLevel) {
+            void *left, *right;
 		node = (void *)list_pop(&allLists[availableLevel]);
 		uint64_t blockSize = SIZE_OF_BLOCKS_AT_LEVEL(availableLevel + 1, HEAP_SIZE);
 		left = node;
