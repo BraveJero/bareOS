@@ -9,6 +9,7 @@
 #include <string.h>
 #include <lib.h>
 #include <input.h>
+#include <philo.h>
 
 void helpCmd(void);
 void killCmd(int argc, char *argv[]);
@@ -20,5 +21,6 @@ pid_t printArgsCmd(int argc, char *argv[], int mode, int new_in, int new_out);
 pid_t catCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout);
 pid_t filterCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout);
 pid_t wcCmd(int argc, char *argv[], int mode, int new_stdin, int new_stdout);
+pid_t philoCmd(int argc, char *argv[], int mode, int new_in, int new_out);
 void broombroom(void);
 #endif
