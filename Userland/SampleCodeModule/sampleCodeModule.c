@@ -119,8 +119,10 @@ pid_t checkModule(char *string, int new_in, int new_out, int foreceBG) {
 
 void getCommand(char *str) {
   char *p = strchr(str, '|');
-  if (p == NULL)
-    return checkModule(str, STDIN_FILENO, STDOUT_FILENO, 0);
+  if (p == NULL){
+    checkModule(str, STDIN_FILENO, STDOUT_FILENO, 0);
+    return;
+  }
   int fds[2], id;
   if ((id = pipe(-1, fds)) < 0) { // First available pipe.
     print_f(STDOUT_FILENO, "Error opening pipe \n");
