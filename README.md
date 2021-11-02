@@ -2,32 +2,33 @@
 
 x64BareBones is a basic setup to develop operating systems for the Intel 64 bits architecture.
 
-The final goal of the project is to provide an entry point for a kernel and the possibility to load extra binary modules separated from the main kernel.
+This is an academic project where we develop a basic OS capable of managing basic inter process comunications (IPC's) methods like pipes and semaphores.
 
-Environment setup:
+## Environment setup:
 1- Install the following packages before building the Toolchain and Kernel:
-
+```bash
 nasm qemu gcc make
-
-2- Build the Toolchain
+```
+## Build the Toolchain
 
 Execute the following commands on the x64BareBones project directory:
-
+```bash
   user@linux:$ cd Toolchain
   user@linux:$ make all
-
-3- Build the Kernel
-
-From the x64BareBones project directory run:
-
-  user@linux:$ make all
-
-4- Run the kernel
+```
+## Build the Kernel
 
 From the x64BareBones project directory run:
+```bash
+  user@linux:$ make all MM=BUDDY
+```
+> Note that you can build the kernel with either `MM=BUDDY` or the default, `MM=FREE_MALLOC`
 
+## Run the kernel
+
+From the x64BareBones project directory run:
+```bash
   user@linux:$ ./run.sh
+```
 
-
-Author: Rodrigo Rearden (RowDaBoat)
-Collaborator: Augusto Nizzo McIntosh
+This project's report is in this repository's wiki.
