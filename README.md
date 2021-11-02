@@ -5,7 +5,7 @@ x64BareBones is a basic setup to develop operating systems for the Intel 64 bits
 This is an academic project where we develop a basic OS capable of managing basic inter process comunications (IPC's) methods like pipes and semaphores.
 
 ## Environment setup:
-1- Install the following packages before building the Toolchain and Kernel:
+Install the following packages before building the Toolchain and Kernel:
 ```bash
 nasm qemu gcc make
 ```
