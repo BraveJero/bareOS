@@ -27,8 +27,6 @@ static uint8_t isValidPid(pid_t pid) {
   return pid >= 0 && pid < MAX_PROCESS_COUNT && processes[pid] != NULL;
 }
 
-static uint8_t isBackground(uint8_t mode) { return mode & MASK_BACKGROUND; }
-
 pid_t createProcess(uint64_t rip, uint8_t priority, int argc, char *argv[],
                     uint8_t mode) {
   if (processCounter >= MAX_PROCESS_COUNT) {
@@ -112,7 +110,7 @@ int exec(pid_t pid) {
     return -1;
   }
 
-  if (!isBackground(processes[pid]->mode)) {
+  if (!isBackground(pid)) {
     block(processes[pid]->parent);
   }
 
@@ -123,7 +121,7 @@ int kill(pid_t pid) {
   if (!isValidPid(pid) || isTerminated(pid))
     return -1;
   processes[pid]->status = TERMINATED;
-  if (!isBackground(processes[pid]->mode)) {
+  if (!isBackground(pid)) {
     unblock(processes[pid]->parent);
   }
 
@@ -173,6 +171,11 @@ int getPriority(pid_t pid) {
     return -1;
   return processes[pid]->priority;
 }
+
+int8_t isBackground(pid_t pid) { 
+  return isValidPid(pid) ? processes[pid]->mode & MASK_BACKGROUND : -1;
+}
+
 
 int getFd(pid_t pid, uint8_t fd) {
   if (!isValidPid(pid) || isTerminated(pid) || fd > 2)
@@ -283,7 +286,7 @@ void showAllPs() {
       ncPrint("Process writes to: ");
       ncPrintDec(processes[i]->fds[WRITE]);
       ncNewline();
-      if (isBackground(processes[i]->mode)) {
+      if (isBackground(i)) {
         ncPrint("Process in background");
       } else {
         ncPrint("Process in foreground");

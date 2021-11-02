@@ -125,8 +125,11 @@ int64_t sys_read(unsigned int fd, char *buf, size_t count) {
     fd = getFd(getCurrentPid(), STDIN_FILENO);
   }
 
-  if (fd == STDIN_FILENO)
+  if (fd == STDIN_FILENO) {
+    if (isBackground(getCurrentPid()) == 1)
+      return -1;
     return stdRead(buf, count);
+  }
 
   return pipeRead(fd, buf, count);
 }

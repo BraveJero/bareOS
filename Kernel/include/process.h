@@ -40,6 +40,7 @@ int setWaitingPid(pid_t waitFor, pid_t waitOn);
 uint64_t getRsp(pid_t pid);
 int getPriority(pid_t pid);
 uint8_t isReady(pid_t pid);
+int8_t isBackground(pid_t pid);
 uint8_t isBlocked(pid_t pid);
 uint8_t isTerminated(pid_t pid);
 uint8_t isWaiting(pid_t pid);
