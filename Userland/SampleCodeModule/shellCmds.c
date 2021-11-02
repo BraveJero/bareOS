@@ -103,7 +103,7 @@ void loop(int argc, char *argv[]) {
 }
 
 pid_t loopCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
-  return processManager((uint64_t) &loop, argc, argv, mode, new_in, new_out);
+  return processManager((uint64_t) &loop, argc, argv, BACKGROUND, new_in, new_out);
 }
 
 void printArgs(int argc, char *argv[]) {
