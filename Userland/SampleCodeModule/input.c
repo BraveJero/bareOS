@@ -9,8 +9,10 @@ void cat(void) {
   char buffer[MAX_BUF_SIZE] = {0};
   int read = 0;
   do {
-    if((read = get_s(buffer, MAX_BUF_SIZE)) < 0 )
+    if((read = get_s(buffer, MAX_BUF_SIZE)) < 0 ) {
+      put_s(STDERR_FILENO, "\nError while reading.\n");
       exit();
+    }
     print(STDOUT_FILENO, buffer, read);
   } while (read != 0 && buffer[read-1] == '\n');
   exit();
@@ -21,8 +23,10 @@ void filter(void) {
   char buf[MAX_BUF_SIZE] = {0};
   int read = 0;
   do {
-    if((read = get_s(buf, MAX_BUF_SIZE)) < 0 )
+    if((read = get_s(buf, MAX_BUF_SIZE)) < 0 ) {
+      put_s(STDERR_FILENO, "\nError while reading.\n");
       exit();
+    }
     for(int i = 0; i < read && buf[i]; i++){
       if(!IS_VOWEL(buf[i]))
         put_char(STDOUT_FILENO, buf[i]);
@@ -35,7 +39,8 @@ void wc(void) {
   char buf[MAX_BUF_SIZE] = {0};
   int lineCounter = 0, byteCounter = 0, read;
   do {
-    if((read = get_s(buf, MAX_BUF_SIZE)) < 0 ){
+    if((read = get_s(buf, MAX_BUF_SIZE)) < 0 ) {
+      put_s(STDERR_FILENO, "\nError while reading.\n");
       exit();
     }  
     if (read > 0)
