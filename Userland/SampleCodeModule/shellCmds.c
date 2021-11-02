@@ -41,6 +41,7 @@ void killCmd(int argc, char *argv[]) {
   if(kill(pid) < 0) {
     print_f(STDOUT_FILENO, "Error killing process %d\n", pid);
   }
+  print_f(STDOUT_FILENO, "Process %d killed succesfully. \n", pid);
 }
 
 void blockCmd(int argc, char *argv[]){
@@ -57,6 +58,7 @@ void blockCmd(int argc, char *argv[]){
   if(block(pid) < 0) {
     print_f(STDOUT_FILENO, "Error blocking process %d\n", pid);
   }
+  print_f(STDOUT_FILENO, "Process %d blocked succesfully. \n", pid);
 }
 
 void unblockCmd(int argc, char *argv[]){
@@ -73,6 +75,7 @@ void unblockCmd(int argc, char *argv[]){
   if(unblock(pid) < 0) {
     print_f(STDOUT_FILENO, "Error unblocking process %d\n", pid);
   }
+  print_f(STDOUT_FILENO, "Process %d unblocked succesfully. \n", pid);
 }
 
 void niceCmd(int argc, char *argv[]){
@@ -91,6 +94,7 @@ void niceCmd(int argc, char *argv[]){
   if(nice(pid, adj) < 0) {
     print_f(STDOUT_FILENO, "Error unblocking process %d\n", pid);
   }
+  print_f(STDOUT_FILENO, "Process %d had it priority succesfully adjusted. \n", pid);
 }
 
 void loop(int argc, char *argv[]) {
