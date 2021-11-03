@@ -23,6 +23,8 @@ void help(void) {
   print_f(STDOUT_FILENO, " - pipe: Displays a list of all open pipes.\n");
   print_f(STDOUT_FILENO, " - phylo: Implements the Dining Philosophers.\n");
   print_f(STDOUT_FILENO, " - loop: Prints pid once every timer tick.\n");
+  print_f(STDOUT_FILENO,
+          " - loop: Prints pid once every timer tick. It ALWAYS runs in background\n");
   print_f(STDOUT_FILENO, " - printArgs <argv>: Prints argc and argv.\n");
   print_f(STDOUT_FILENO, " - clear: Clears the screen.\n\n");
   print_f(STDOUT_FILENO, "TESTS:\n - testPrio: Tests priority.\n");
