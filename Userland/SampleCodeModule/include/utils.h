@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <my_time.h>
 
 #define BYTES_TO_READ 32
 #define STDIN_FILENO 0
@@ -20,5 +21,6 @@ uint8_t memcheck(void *start, uint8_t value, uint32_t size);
 void *memset(void *s, int c, size_t n);
 int atoi(const char *s);
 unsigned long _Stoul(const char *s, char **endptr, int base);
+void sleep(uint8_t seconds);
 
 #endif

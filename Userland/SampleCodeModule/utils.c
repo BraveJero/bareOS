@@ -211,3 +211,8 @@ void *memset(void *s, int c,
     *su = uc;
   return (s);
 }
+
+void sleep(uint8_t seconds) {
+  uint64_t initial = getseconds();
+  while(getseconds() - initial < seconds);
+}

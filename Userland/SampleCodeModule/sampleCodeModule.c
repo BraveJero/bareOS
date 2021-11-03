@@ -15,7 +15,7 @@
 #include <tests.h>
 #include <utils.h>
 
-#define MODULES_SIZE 21
+#define MODULES_SIZE 22
 
 typedef pid_t (*commandType)(int argc, char *argv[], int mode, int, int);
 
@@ -40,6 +40,7 @@ static char *commandStrings[MODULES_SIZE] = {
     "sem",
     "memDump",
     "clear",
+    "philo",
     "bikegoesbrrr"
     };
 static commandType commandFunctions[MODULES_SIZE] = {
@@ -63,6 +64,7 @@ static commandType commandFunctions[MODULES_SIZE] = {
     (commandType) sem_dump,
     (commandType) mem_dump,
     (commandType) clear,
+    (commandType) philoCmd,
     (commandType) broombroom,
     };
 
