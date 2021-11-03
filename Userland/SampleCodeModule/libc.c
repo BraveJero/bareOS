@@ -126,7 +126,7 @@ int64_t get_s(char *buffer, uint64_t maxLength) {
     return ans;
   }
   if (ans < maxLength - 1) {
-    buffer[ans] = '\0'; 
+    buffer[ans] = '\0';
   }
   return ans;
 }

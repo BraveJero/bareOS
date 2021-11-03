@@ -20,53 +20,20 @@
 typedef pid_t (*commandType)(int argc, char *argv[], int mode, int, int);
 
 static char *commandStrings[MODULES_SIZE] = {
-    "help",
-    "ps",
-    "kill",
-    "block",
-    "unblock",
-    "nice",
-    "loop",
-    "printArgs",
-    "cat",
-    "filter",
-    "wc",
-    "testMM", 
-    "testPrs",
-    "testPrio",
-    "testSync",
-    "testNoSync",
-    "pipe",
-    "sem",
-    "memDump",
-    "clear",
-    "philo",
-    "bikegoesbrrr"
-    };
+    "help",    "ps",        "kill",     "block",       "unblock", "nice",
+    "loop",    "printArgs", "cat",      "filter",      "wc",      "testMM",
+    "testPrs", "testPrio",  "testSync", "testNoSync",  "pipe",    "sem",
+    "memDump", "clear",     "philo",    "bikegoesbrrr"};
 static commandType commandFunctions[MODULES_SIZE] = {
-    (commandType) helpCmd,
-    (commandType) ps,
-    (commandType) killCmd,
-    (commandType) blockCmd,
-    (commandType) unblockCmd,
-    (commandType) niceCmd,
-    (commandType) loopCmd,
-    (commandType) printArgsCmd,
-    (commandType) catCmd,
-    (commandType) filterCmd,
-    (commandType) wcCmd,
-    (commandType) testMM,
-    (commandType) testPrs,
-    (commandType) testPrio,
-    (commandType) testSync,
-    (commandType) testNoSync,
-    (commandType) pipe_dump,
-    (commandType) sem_dump,
-    (commandType) mem_dump,
-    (commandType) clear,
-    (commandType) philoCmd,
-    (commandType) broombroom,
-    };
+    (commandType)helpCmd,    (commandType)ps,           (commandType)killCmd,
+    (commandType)blockCmd,   (commandType)unblockCmd,   (commandType)niceCmd,
+    (commandType)loopCmd,    (commandType)printArgsCmd, (commandType)catCmd,
+    (commandType)filterCmd,  (commandType)wcCmd,        (commandType)testMM,
+    (commandType)testPrs,    (commandType)testPrio,     (commandType)testSync,
+    (commandType)testNoSync, (commandType)pipe_dump,    (commandType)sem_dump,
+    (commandType)mem_dump,   (commandType)clear,        (commandType)philoCmd,
+    (commandType)broombroom,
+};
 
 pid_t checkModule(char *string, int, int, int);
 void getCommand(char *str);
@@ -74,13 +41,24 @@ void getCommand(char *str);
 int main() {
   char buffer[MAX_COMMAND + 1];
   print_f(STDOUT_FILENO, "Welcome to...\n\n");
-  
-  put_s(STDOUT_FILENO, "'########:::::'###::::'########::'########::'#######:::'######::'####:\n##.... ##:::'## ##::: ##.... ##: ##.....::'##.... ##:'##... ##: ####:\n##:::: ##::'##:. ##:: ##:::: ##: ##::::::: ##:::: ##: ##:::..:: ####:\n########::'##:::. ##: ########:: ######::: ##:::: ##:. ######::: ##::\n##.... ##: #########: ##.. ##::: ##...:::: ##:::: ##::..... ##::..:::\n##:::: ##: ##.... ##: ##::. ##:: ##::::::: ##:::: ##:'##::: ##:'####:\n########:: ##:::: ##: ##:::. ##: ########:. #######::. ######:: ####:\n.......:::..:::::..::..:::::..::........:::.......::::......:::....::");
-  
+
+  put_s(STDOUT_FILENO,
+        "'########:::::'###::::'########::'########::'#######:::'######::'####:"
+        "\n##.... ##:::'## ##::: ##.... ##: ##.....::'##.... ##:'##... ##: "
+        "####:\n##:::: ##::'##:. ##:: ##:::: ##: ##::::::: ##:::: ##: "
+        "##:::..:: ####:\n########::'##:::. ##: ########:: ######::: ##:::: "
+        "##:. ######::: ##::\n##.... ##: #########: ##.. ##::: ##...:::: "
+        "##:::: ##::..... ##::..:::\n##:::: ##: ##.... ##: ##::. ##:: "
+        "##::::::: ##:::: ##:'##::: ##:'####:\n########:: ##:::: ##: ##:::. "
+        "##: ########:. #######::. ######:: "
+        "####:\n.......:::..:::::..::..:::::..::........:::.......::::......:::"
+        "....::");
+
   put_s(STDERR_FILENO, "\n\nPress enter to load into bareOS.\n");
   get_char();
 
-  print_f(STDOUT_FILENO, "\nType 'help' to see a list of all available commands.\n");
+  print_f(STDOUT_FILENO,
+          "\nType 'help' to see a list of all available commands.\n");
 
   while (1) {
     print_f(STDERR_FILENO, "\nbareOS $ ");
@@ -100,14 +78,14 @@ pid_t checkModule(char *string, int new_in, int new_out, int foreceBG) {
   char *argv[MAX_ARGS] = {NULL};
   int argc = parser(string, argv);
   int idx = findCmd(argv[0], commandStrings, MODULES_SIZE);
-  if (idx < 0){
+  if (idx < 0) {
     print_f(STDOUT_FILENO, "%s: Command not found \n", string);
     return -1;
   }
 
   else {
     int mode;
-    if(foreceBG) {
+    if (foreceBG) {
       mode = BACKGROUND;
     } else {
       if (argv[argc - 1][0] == '&')
@@ -121,7 +99,7 @@ pid_t checkModule(char *string, int new_in, int new_out, int foreceBG) {
 
 void getCommand(char *str) {
   char *p = strchr(str, '|');
-  if (p == NULL){
+  if (p == NULL) {
     checkModule(str, STDIN_FILENO, STDOUT_FILENO, 0);
     return;
   }

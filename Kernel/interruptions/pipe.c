@@ -193,10 +193,10 @@ int plugPipe(uint8_t pipeID) {
   if (sem_post(pipes[pipeID]->write) < 0) {
     return -1;
   }
-  
+
   if (sem_post(pipes[pipeID]->lock) < 0)
     return -1;
-  
+
   return 0;
 }
 
@@ -215,7 +215,8 @@ void pipe_dump(void) {
       printBlockedProcesses(pipes[i]->write);
       ncNewline();
       ncPrint("Pipe content in bytes: ");
-      for(int j = pipes[i]->r_pointer; j < pipes[i]->w_pointer; j = (j + 1) % PIPE_BUFFER_SIZE) {
+      for (int j = pipes[i]->r_pointer; j < pipes[i]->w_pointer;
+           j = (j + 1) % PIPE_BUFFER_SIZE) {
         ncPrintChar(pipes[i]->buf[j]);
       }
       ncNewline();

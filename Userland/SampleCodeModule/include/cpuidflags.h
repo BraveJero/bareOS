@@ -1,9 +1,9 @@
 #ifndef __CPUIDFLAGS_H__
 #define __CPUIDFLAGS_H__
 
-#include <stdio.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include <stdio.h>
 
 enum {
   CPUID_FEAT_ECX_SSE3 = 1 << 0,

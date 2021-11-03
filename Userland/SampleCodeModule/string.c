@@ -1,8 +1,8 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+#include <lib.h>
 #include <my_mem.h>
 #include <string.h>
-#include <lib.h>
 
 int8_t strcmp(const char *str1, const char *str2) {
   while (*str1 || *str2)
@@ -19,8 +19,8 @@ uint8_t strlen(const char *str) {
 }
 
 char *strchr(const char *s, char c) {
-  while(*s) {
-    if(*s == c)
+  while (*s) {
+    if (*s == c)
       return s;
     s++;
   }
@@ -49,7 +49,7 @@ int parser(char *input, char *argv[]) {
       j++;
     }
   }
-  if (input[i - 1] != '\0' &&  input[i - 1] != ' ') {
+  if (input[i - 1] != '\0' && input[i - 1] != ' ') {
     argv[j] = arg;
     argv[j][len] = '\0';
     j++;
@@ -59,8 +59,8 @@ int parser(char *input, char *argv[]) {
 }
 
 int findCmd(char *in, char *cmds[], int dim) {
-  for(int i = 0; i < dim; i++) {
-    if(strcmp(in, cmds[i]) == 0)
+  for (int i = 0; i < dim; i++) {
+    if (strcmp(in, cmds[i]) == 0)
       return i;
   }
   return -1;

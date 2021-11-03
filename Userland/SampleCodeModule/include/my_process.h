@@ -1,9 +1,9 @@
 #ifndef MY_PROCESS_H
 #define MY_PROCESS_H
 
+#include <lib.h>
 #include <stdint.h>
 #include <utils.h>
-#include <lib.h>
 
 #define FOREGROUND 0
 #define BACKGROUND 1
@@ -25,6 +25,7 @@ int exec(pid_t pid);
 int waitPid(pid_t pid);
 
 // C
-pid_t processManager(uint64_t rip, int argc, char *argv[], uint8_t mode, int new_in, int new_out);
+pid_t processManager(uint64_t rip, int argc, char *argv[], uint8_t mode,
+                     int new_in, int new_out);
 
 #endif

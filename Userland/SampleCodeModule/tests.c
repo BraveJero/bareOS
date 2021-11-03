@@ -240,7 +240,7 @@ void testNoSync() {
   global = 0;
 
   put_s(STDOUT_FILENO, "Testing no-sync module...\n");
-  
+
   char *argv[4];
   argv[0] = "0";
   argv[1] = "1";

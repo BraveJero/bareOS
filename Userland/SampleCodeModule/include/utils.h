@@ -2,9 +2,9 @@
 #define __UTILS_H__
 
 #include <ctype.h>
+#include <my_time.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <my_time.h>
 
 #define BYTES_TO_READ 32
 #define STDIN_FILENO 0

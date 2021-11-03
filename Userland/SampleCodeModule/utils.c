@@ -59,20 +59,28 @@ void printFeatures() {
     print_f(STDOUT_FILENO, "CPUID: YES\n");
 
     __get_cpuid(STDOUT_FILENO, &eax, &ebx, &ecx, &edx);
-    print_f(STDOUT_FILENO, "MX: %s\n", (edx & CPUID_FEAT_EDX_MMX) == 0 ? "NO" : "YES");
-    print_f(STDOUT_FILENO, "SSE: %s\n", (edx & CPUID_FEAT_EDX_SSE) == 0 ? "NO" : "YES");
-    print_f(STDOUT_FILENO, "SSE2: %s\n", (edx & CPUID_FEAT_EDX_SSE2) == 0 ? "NO" : "YES");
-    print_f(STDOUT_FILENO, "SSE3: %s\n", (ecx & CPUID_FEAT_ECX_SSE3) == 0 ? "NO" : "YES");
+    print_f(STDOUT_FILENO, "MX: %s\n",
+            (edx & CPUID_FEAT_EDX_MMX) == 0 ? "NO" : "YES");
+    print_f(STDOUT_FILENO, "SSE: %s\n",
+            (edx & CPUID_FEAT_EDX_SSE) == 0 ? "NO" : "YES");
+    print_f(STDOUT_FILENO, "SSE2: %s\n",
+            (edx & CPUID_FEAT_EDX_SSE2) == 0 ? "NO" : "YES");
+    print_f(STDOUT_FILENO, "SSE3: %s\n",
+            (ecx & CPUID_FEAT_ECX_SSE3) == 0 ? "NO" : "YES");
     print_f(STDOUT_FILENO, "SSE41: %s\n",
             (ecx & CPUID_FEAT_ECX_SSE4_1) == 0 ? "NO" : "YES");
     print_f(STDOUT_FILENO, "SSE42: %s\n",
             (ecx & CPUID_FEAT_ECX_SSE4_2) == 0 ? "NO" : "YES");
-    print_f(STDOUT_FILENO, "AESNI: %s\n", (ecx & CPUID_FEAT_ECX_AES) == 0 ? "NO" : "YES");
+    print_f(STDOUT_FILENO, "AESNI: %s\n",
+            (ecx & CPUID_FEAT_ECX_AES) == 0 ? "NO" : "YES");
     print_f(STDOUT_FILENO, "PCLMULQDQ: %s\n",
             (ecx & CPUID_FEAT_ECX_PCLMUL) == 0 ? "NO" : "YES");
-    print_f(STDOUT_FILENO, "AVX: %s\n", (ecx & CPUID_FEAT_ECX_AVX) == 0 ? "NO" : "YES");
-    print_f(STDOUT_FILENO, "VAESNI: %s\n", supports_vaesni() == 0 ? "NO" : "YES");
-    print_f(STDOUT_FILENO, "VPCLMULQDQ: %s\n", supports_vpclmulqdq() == 0 ? "NO" : "YES");
+    print_f(STDOUT_FILENO, "AVX: %s\n",
+            (ecx & CPUID_FEAT_ECX_AVX) == 0 ? "NO" : "YES");
+    print_f(STDOUT_FILENO, "VAESNI: %s\n",
+            supports_vaesni() == 0 ? "NO" : "YES");
+    print_f(STDOUT_FILENO, "VPCLMULQDQ: %s\n",
+            supports_vpclmulqdq() == 0 ? "NO" : "YES");
     print_f(STDOUT_FILENO, "F16C: %s\n", supports_f16c() == 0 ? "NO" : "YES");
     print_f(STDOUT_FILENO, "FMA: %s\n", supports_fma() == 0 ? "NO" : "YES");
     print_f(STDOUT_FILENO, "AVX2: %s\n", supports_avx2() == 0 ? "NO" : "YES");
@@ -95,8 +103,8 @@ void printQuadraticRoots() {
 
   put_char(STDOUT_FILENO, '\n');
 
-  print_f(STDOUT_FILENO, "%c(x) = %gx%c%c%gx%c%g\n\n", 13, a, 14, b >= 0 ? '+' : 0, b,
-          c >= 0 ? '+' : 0, c);
+  print_f(STDOUT_FILENO, "%c(x) = %gx%c%c%gx%c%g\n\n", 13, a, 14,
+          b >= 0 ? '+' : 0, b, c >= 0 ? '+' : 0, c);
   ans = _quadratic(&a, &b, &c, &x1, &x2);
   switch (ans) {
   case 0:
@@ -185,8 +193,8 @@ _Stoul(const char *s, char **endptr,
   for (s1 = sc; *sc == '0'; ++sc)
     ; /* skip leading zeros */
   x = 0;
-  for (char dig ; (sd = (char *)memchr(digits, TO_LOWER(*sc), base)) != NULL;
-       ++sc) {                /* accumulate digits */
+  for (char dig; (sd = (char *)memchr(digits, TO_LOWER(*sc), base)) != NULL;
+       ++sc) {         /* accumulate digits */
     dig = sd - digits; /* for overflow checking */
     x = x * base + dig;
   }
@@ -214,5 +222,6 @@ void *memset(void *s, int c,
 
 void sleep(uint8_t seconds) {
   uint64_t initial = getseconds();
-  while(getseconds() - initial < seconds);
+  while (getseconds() - initial < seconds)
+    ;
 }
