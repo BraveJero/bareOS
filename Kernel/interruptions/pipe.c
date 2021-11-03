@@ -2,11 +2,11 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <pipe.h>
 
-#define BUFFER_SIZE 256 // Defined locally to use it as a cyclic buffer.
+#define BUFFER_SIZE 65536 // Defined locally to use it as a cyclic buffer.
 
 typedef struct pipe {
   char buf[BUFFER_SIZE];
-  uint8_t r_pointer, w_pointer;
+  uint16_t r_pointer, w_pointer;
   uint16_t write, lock, reading;
   uint8_t userCount;
 } Pipe;
