@@ -89,7 +89,7 @@ int sem_close(uint16_t semID) {
 }
 
 void printBlockedProcesses(uint16_t semId) {
-  if(semId > MAX_SEMS || semaphores[semId] == NULL)
+  if(semId >= MAX_SEMS || semaphores[semId] == NULL)
     return;
     
   ncPrint("Blocked processes: ");

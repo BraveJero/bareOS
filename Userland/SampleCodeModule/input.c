@@ -3,8 +3,8 @@
 #include <input.h>
 
 #define IS_VOWEL(c)                                                            \
-  (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' || c == 'a' ||     \
-   c == 'e' || c == 'i' || c == 'o' || c == 'u')
+  ((c) == 'A' || (c) == 'E' || (c) == 'I' || (c) == 'O' || (c) == 'U' ||       \
+   (c) == 'a' || (c) == 'e' || (c) == 'i' || (c) == 'o' || (c) == 'u')
 
 void cat(void) {
   char buffer[MAX_BUF_SIZE] = {0};

@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 #define MAX_PROCESS_COUNT 256
-#define PROCESS_SIZE 8 * 1024
+#define PROCESS_SIZE (8 * 1024)
 
 #define STDIN_FILENO 0
 #define STDOUT_FILENO 1

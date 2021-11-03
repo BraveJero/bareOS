@@ -73,13 +73,13 @@ pid_t createProcess(uint64_t rip, uint8_t priority, int argc, char *argv[],
     newProcess->argv[argc] = NULL;
   }
 
-  if (argc > 0 && newProcess->argv[0] != NULL) {
+  if (argc > 0 && newProcess->argv && newProcess->argv[0] != NULL) {
     newProcess->name = newProcess->argv[0];
   } else {
     newProcess->name = "";
   }
 
-  priority = priority < MIN_PRIORITY? MIN_PRIORITY : priority;
+  priority = priority <= MIN_PRIORITY? MIN_PRIORITY : priority;
   priority = priority > MAX_PRIORITY? MAX_PRIORITY : priority;
 
   uint64_t rsp = newProcess->stack_base + (PROCESS_SIZE - 1);
@@ -178,7 +178,7 @@ int8_t isBackground(pid_t pid) {
 
 
 int getFd(pid_t pid, uint8_t fd) {
-  if (!isValidPid(pid) || isTerminated(pid) || fd > 2)
+  if (!isValidPid(pid) || isTerminated(pid) || fd >= 2)
     return -1;
   return processes[pid]->fds[fd];
 }
@@ -208,10 +208,7 @@ int setStatusToBlocked(pid_t pid) {
 }
 
 int setStatusToReady(pid_t pid) {
-  if (!isValidPid(pid) || isTerminated(pid))
-    return -1;
-  processes[pid]->status = READY;
-  return 0;
+  return unblock(pid);
 }
 
 int setWaitingPid(pid_t waitFor, pid_t waitOn) {
@@ -225,7 +222,7 @@ int setPriority(pid_t pid, uint8_t priority) {
   if (!isValidPid(pid) || isTerminated(pid))
     return -1;
   
-  priority = priority < MIN_PRIORITY? MIN_PRIORITY : priority;
+  priority = priority <= MIN_PRIORITY? MIN_PRIORITY : priority;
   priority = priority > MAX_PRIORITY? MAX_PRIORITY : priority;
 
   processes[pid]->priority = priority;

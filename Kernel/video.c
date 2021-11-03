@@ -33,12 +33,6 @@ static void setPixel(uint64_t x, uint64_t y, Color *color) {
   screen[2] = color->r;
 }
 
-void drawShellBorder(Color *color) {
-  for (uint64_t j = 0; j < vbeInfo->height; j++)
-    for (uint64_t i = -2; i < 3; i++)
-      setPixel(vbeInfo->width / 2 + i, j, color);
-}
-
 void fillScreen(Color *color) {
   for (uint64_t i = 0; i < vbeInfo->width; i++)
     for (uint64_t j = 0; j < vbeInfo->height; j++)
