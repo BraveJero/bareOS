@@ -42,10 +42,37 @@ void philosopher(int argc, char *argv[]) {
 }
 
 void philoController(int argc, char *argv[]) {
+  
+  print_f(STDOUT_FILENO, "Press a to add a philosopher, r to remove one and q to quit\n");
   count = INITIAL_PHIL_NUM;
-  createPhilosophers(count);
-  openSems(count);
-  while(1);
+  int c;
+  while(1) {
+    print_f(STDOUT_FILENO, "\nCreating %d philosophers...\n", count);
+    createPhilosophers(count);
+    openSems(count);
+    if((c = get_char()) < 0){
+      print_f(STDERR_FILENO, "Reading error \n");
+      closeSems(count);
+      killPhilosophers(count);
+    }
+    if(c == 'q')
+      break;
+
+    if(c != 'a' && c != 'r')
+      continue;
+
+    killPhilosophers(count);
+    closeSems(count);
+
+    if(c == 'a')
+      count++;
+    if(c == 'r')
+      count--;
+
+    count = count > MAX_PHIL_NUM? MAX_PHIL_NUM : count;
+    count = count < MIN_PHIL_NUM? MIN_PHIL_NUM : count;
+
+  }
   killPhilosophers(count);
   closeSems(count);
   exit();
