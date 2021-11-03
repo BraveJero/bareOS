@@ -47,8 +47,8 @@ void philoController(int argc, char *argv[]) {
   print_f(STDOUT_FILENO,
           "Press a to add a philosopher, r to remove one and q to quit\n");
   count = INITIAL_PHIL_NUM;
-  int c;
   while (1) {
+    int c;
     print_f(STDOUT_FILENO, "\nCreating %d philosophers...\n", count);
     createPhilosophers(count);
     openSems(count);
