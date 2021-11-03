@@ -11,7 +11,7 @@
 #include <input.h>
 #include <philo.h>
 
-void helpCmd(void);
+pid_t helpCmd(int argc, char *argv[], int mode, int new_in, int new_out);
 void killCmd(int argc, char *argv[]);
 void blockCmd(int argc, char *argv[]);
 void unblockCmd(int argc, char *argv[]);

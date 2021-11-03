@@ -2,7 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <shellCmds.h>
 
-void helpCmd(void) {
+void help(void) {
   print_f(STDOUT_FILENO, "Commands:\n");
   print_f(STDOUT_FILENO, " - help: Displays a list of all available commands.\n");
   print_f(STDOUT_FILENO, " - memDump: Displays information about the heap.\n");
@@ -25,6 +25,11 @@ void helpCmd(void) {
   print_f(STDOUT_FILENO, " - testMM: Tests memory manager.\n");
   print_f(STDOUT_FILENO, " - testPrs: Tests process creation.\n\n");
   print_f(STDOUT_FILENO, "EOF is signaled by TAB.\n");
+  exit();
+}
+
+pid_t helpCmd(int argc, char *argv[], int mode, int new_in, int new_out) {
+  return processManager((uint64_t) &help, argc, argv, mode, new_in, new_out);
 }
 
 void killCmd(int argc, char *argv[]) {
