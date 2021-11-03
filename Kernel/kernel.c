@@ -34,106 +34,14 @@ void *getStackBase() {
   );
 }
 
-// void printArgs(int argc, char *argv[]){
-//   ncPrint("Cantidad de argumentos: ");
-//   ncPrintDec(argc);
-  
-//   for(int i = 0; i < argc; i++){
-//     ncNewline();
-//     ncPrint(argv[i]);
-//     ncNewline();
-//   }
-  
-//   kill(getCurrentPid());
-// }
-
-// void printA(){
-//   int blocked = 0;
-//   while(1) {
-//     ncPrint("A");
-//     _hlt();
-//   }
-// }
-
-// void printB(){
-//   while(1) {
-//     ncPrint("B");
-//     _hlt();
-//   }
-// }
-
-// void printC(){
-//   while(1) {
-//     ncPrint("C");
-//     _hlt();
-//   }
-// }
-
-// void processControl() {
-//   while(seconds_elapsed() < 1);
-//   block(1);
-//   while(seconds_elapsed() < 2);
-//   block(2);
-// 	unblock(1);
-// 	while(seconds_elapsed() < 3);
-// 	unblock(2);
-// 	setPriority(1, 3);
-// 	setPriority(2, 2);
-// 	setPriority(3, 1);
-// 	while(seconds_elapsed() < 4);
-// 	block(1);
-// 	block(2);
-// 	block(3);
-// 	while(seconds_elapsed() < 6);
-// 	unblock(1);
-// 	unblock(2);
-// 	unblock(3);
-// 	kill(4);
-// }
-
 
 void *initializeKernelBinary() {
-  // char buffer[10];
-
-  // ncPrint("[x64BareBones]");
-  // ncNewline();
-
-  // ncPrint("CPU Vendor:");
-  // ncPrint(cpuVendor(buffer));
-  // ncNewline();
-
-  // ncPrint("[Loading modules]");
-  // ncNewline();
+  
   void *moduleAddresses[] = {sampleCodeModuleAddress, sampleDataModuleAddress};
 
   loadModules(&endOfKernelBinary, moduleAddresses);
-  // ncPrint("[Done]");
-  // ncNewline();
-  // ncNewline();
-
-  // ncPrint("[Initializing kernel's binary]");
-  // ncNewline();
 
   clearBSS(&bss, &endOfKernel - &bss);
-
-  // ncPrint("  text: 0x");
-  // ncPrintHex((uint64_t)&text);
-  // ncNewline();
-  // ncPrint("  rodata: 0x");
-  // ncPrintHex((uint64_t)&rodata);
-  // ncNewline();
-  // ncPrint("  data: 0x");
-  // ncPrintHex((uint64_t)&data);
-  // ncNewline();
-  // ncPrint("  bss: 0x");
-  // ncPrintHex((uint64_t)&bss);
-  // ncNewline();
-
-  // ncPrint("[Done]");
-  // ncNewline();
-  // ncNewline();
-
-  //init_screen();
 
   return getStackBase();
 }
@@ -152,43 +60,13 @@ int main() {
   initKeyboard();
   initScheduler();
 
-	// createProcess((uint64_t) &printA, 0, "printA", 0, NULL);
-	// createProcess((uint64_t) &printB, 0, "printB", 0, NULL);
-	// createProcess((uint64_t) &printC, 0, "printC", 0, NULL);
-	// createProcess((uint64_t) &processControl, 0, "control", 0, NULL);
-  // char *argv[] = {"printargs", "Hola Mundo", "Juan Garcia", NULL};
-  // createProcess((uint64_t) &printArgs, 0, "printargs", 3, argv);
   char *argv[2] = {"shell", NULL};
   pid_t pid = createProcess((uint64_t)sampleCodeModuleAddress, 10, 1, argv, MASK_FOREGROUND);
   exec(pid);
 
-
-  //showAllPs();
-
   load_idt();
   while(1) { _hlt(); }
-  
-  //(((EntryPoint)sampleCodeModuleAddress)());
 
-  void * aiuda = alloc(20);
-  mem_dump();
-  ncPrint("-------------------------");
-  ncNewline();
-  free(aiuda);
-  mem_dump();
-  ncNewline();
-  ncNewline();
-
-  ncPrint("  Sample data module at 0x");
-  ncPrintHex((uint64_t)sampleDataModuleAddress);
-
-  ncNewline();
-  ncPrint("  Sample data module contents: ");
-  ncPrint((char *)sampleDataModuleAddress);
-  ncNewline();
-
-  ncPrint("[Finished]");
-  ncNewline();
 
   return 0;
 }
