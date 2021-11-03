@@ -59,10 +59,7 @@ void philoController(int argc, char *argv[]) {
     }
     if (c == 'q')
       break;
-
-    if (c != 'a' && c != 'r')
-      continue;
-
+      
     killPhilosophers(count);
     closeSems(count);
 
