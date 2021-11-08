@@ -49,4 +49,10 @@ int wait(pid_t pid);
 void showAllPs(void);
 int getFd(pid_t pid, uint8_t fd);
 
+
+
+// Defensa :)
+int addAllocatedBlock(pid_t pid, void *ptr);
+int freeAllocatedBlock(pid_t pid, void *ptr);
+
 #endif

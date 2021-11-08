@@ -10,6 +10,8 @@
 #define MIN_PRIORITY 0
 #define MAX_PRIORITY 9
 
+#define MAX_MEMORY_ALLOCS 10
+
 typedef struct process {
   pid_t pid, parent, wait;
   uint8_t priority, mode;
@@ -17,6 +19,8 @@ typedef struct process {
   uint64_t rsp, rip, stack_base;
   char **argv, *name;
   int fds[2], argc; // save the "stdin" and "stdout" for this process.
+  void *allocated[MAX_MEMORY_ALLOCS];
+  uint8_t allocs;
 } Process;
 
 static pid_t processCounter = 0;
@@ -25,6 +29,28 @@ static char *states[] = {"Ready", "Terminated", "Blocked"};
 
 static uint8_t isValidPid(pid_t pid) {
   return pid >= 0 && pid < MAX_PROCESS_COUNT && processes[pid] != NULL;
+}
+
+int addAllocatedBlock(pid_t pid, void *ptr) {
+  // if (!isValidPid(pid) || processes[pid] == NULL) 
+  //   return -1;
+  if (processes[pid]->allocs >= MAX_MEMORY_ALLOCS)
+    return -1;
+  processes[pid]->allocated[processes[pid]->allocs++] = ptr;
+  return 0;
+}
+
+int freeAllocatedBlock(pid_t pid, void *ptr) {
+  // if (!isValidPid(pid) || processes[pid] == NULL)   // This is not necessary as long as freeAllocatedBlock is only called from the Kenrel.
+  //   return -1;
+  long i = 0;
+  while (processes[pid]->allocated[i] != ptr && i < MAX_MEMORY_ALLOCS) {  // As before, it's not the best option but for a naive impl we belive it is valid.
+    i++;
+  }
+  if (i == MAX_MEMORY_ALLOCS)
+    return -1;
+  processes[pid]->allocated[i] = NULL;
+  return 0;
 }
 
 pid_t createProcess(uint64_t rip, uint8_t priority, int argc, char *argv[],
@@ -38,6 +64,9 @@ pid_t createProcess(uint64_t rip, uint8_t priority, int argc, char *argv[],
   if (newProcess == NULL) {
     return -1;
   }
+
+  for(int i = 0; i < MAX_MEMORY_ALLOCS; i++)
+    newProcess->allocated[i] = NULL;
 
   newProcess->stack_base = (uint64_t)alloc(PROCESS_SIZE);
 
@@ -96,6 +125,10 @@ pid_t createProcess(uint64_t rip, uint8_t priority, int argc, char *argv[],
   newProcess->wait = -1;
   newProcess->fds[READ] = STDIN_FILENO;
   newProcess->fds[WRITE] = STDOUT_FILENO;
+  newProcess->allocs = 0;
+  for (uint8_t i = 0; i < MAX_MEMORY_ALLOCS; i++) {
+    newProcess->allocated[i] = NULL;
+  }
 
   processes[processCounter++] = newProcess;
 
@@ -160,6 +193,11 @@ void remove(pid_t pid) {
         free(processes[pid]->argv[i]);
       free(processes[pid]->argv);
     }
+
+    for(int i = 0; i < processes[pid]->allocs; i++)
+      if(processes[pid]->allocated[i] != NULL)
+        free(processes[pid]->allocated[i]);
+
     processes[pid] = NULL;
   }
 }

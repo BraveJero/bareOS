@@ -116,6 +116,7 @@ void niceCmd(int argc, char *argv[]) {
 }
 
 void loop(int argc, char *argv[]) {
+  void *ptr = alloc(2000);
   while (1) {
     uint64_t ticks = getticks();
     print_f(STDOUT_FILENO, " %d ", getpid());
